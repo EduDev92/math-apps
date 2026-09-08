@@ -1,0 +1,47 @@
+:root {
+  --bg-main: #eef2f9;
+  --card-bg: #ffffff;
+  --text-main: #1f2a3d;
+  --text-muted: #5b6b82;
+
+  --blue-deep: #1b3a6b;
+  --blue-primary: #2e5fa3;
+  --blue-soft: #dce7f7;
+
+  --green-success: #2e9e5b;
+  --green-soft: #dff3e6;
+
+  --red-error: #d14343;
+  --red-soft: #fbe1e1;
+
+  --border-subtle: #dbe3ee;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-card: 0 8px 24px rgba(27, 58, 107, 0.07);
+
+  --font-family: 'Heebo', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  direction: rtl;
+  text-align: right;
+  line-height: 1.5;
+}
+
+/* בידוד כיווניות עבור מתמטיקה */
+.math-ltr {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  display: inline-block;
+}
