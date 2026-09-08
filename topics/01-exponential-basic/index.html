@@ -568,6 +568,123 @@
       margin-top: 18px;
     }
 
+    .name-gate {
+      max-width: 480px;
+      margin: 30px auto;
+      text-align: center;
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 28px 22px;
+    }
+
+    .name-gate-text {
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--blue-deep);
+    }
+
+    .name-gate-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-family);
+      font-size: 1rem;
+      margin-bottom: 14px;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .name-gate-input:focus {
+      outline: none;
+      border-color: var(--blue-primary);
+    }
+
+    .certificate-card {
+      position: relative;
+      background: linear-gradient(135deg, #fffbea 0%, #ffffff 60%);
+      border: 3px solid #d4af37;
+      border-radius: var(--radius-lg);
+      padding: 34px 26px 26px;
+      text-align: center;
+      max-width: 560px;
+      margin: 10px auto 0;
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+    }
+
+    .certificate-card::before {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border: 1px solid #e9d38a;
+      border-radius: calc(var(--radius-lg) - 6px);
+      pointer-events: none;
+    }
+
+    .certificate-trophy {
+      font-size: 48px;
+      line-height: 1;
+      margin: 0 auto 10px;
+      text-align: center;
+    }
+
+    .certificate-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #92660b;
+      margin-bottom: 16px;
+    }
+
+    .certificate-line {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .certificate-student-name {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--blue-deep);
+      margin-bottom: 12px;
+    }
+
+    .certificate-lesson-name {
+      font-size: 0.92rem;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .certificate-score {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1f7a41;
+      margin-bottom: 18px;
+    }
+
+    .certificate-quote {
+      font-style: italic;
+      font-size: 0.96rem;
+      color: var(--blue-primary);
+      padding: 0 10px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .certificate-ref {
+      position: absolute;
+      bottom: 8px;
+      left: 14px;
+      font-size: 0.68rem;
+      color: #b8b8b8;
+      direction: ltr;
+    }
+
+    .btn-download-cert {
+      max-width: 420px;
+    }
+
     /* Buttons */
     .btn {
       padding: 12px 26px;
@@ -708,6 +825,22 @@
       .lesson-card {
         padding: 20px;
       }
+      .certificate-card {
+        padding: 26px 16px 20px;
+      }
+      .certificate-title {
+        font-size: 1.05rem;
+      }
+      .certificate-student-name {
+        font-size: 1.3rem;
+      }
+      .summary-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .summary-actions .btn {
+        width: 100%;
+      }
     }
 
     @media print {
@@ -824,16 +957,25 @@
 
       <section class="step-panel" id="step-3" data-step="3" hidden>
         <h2 class="step-heading">שלב 3: מתרגלים</h2>
-        <div class="quiz-header">
-          <div>שאלה <span id="qIndex">1</span> מתוך 10</div>
-          <div>ציון מצטבר: <span id="qScore">0</span>/10</div>
+
+        <div class="name-gate" id="nameGate">
+          <p class="name-gate-text">הקלידו את שמכם המלא כדי להתחיל בתרגול ולקבל תעודת סיום אישית</p>
+          <input type="text" id="studentNameInput" class="name-gate-input" placeholder="לדוגמה: ישראל ישראלי" autocomplete="name">
+          <button type="button" id="btnStartQuiz" class="btn btn-primary" disabled>בואו נתחיל</button>
         </div>
-        <div class="quiz-dots" id="quizDots"></div>
-        <div class="quiz-body" id="quizBody"></div>
-        <div class="quiz-feedback" id="quizFeedback" hidden></div>
-        <div class="quiz-actions">
-          <button id="btnCheckAnswer" class="btn btn-primary" type="button">בדיקת תשובה</button>
-          <button id="btnNextQuestion" class="btn btn-primary" type="button" hidden>לשאלה הבאה ←</button>
+
+        <div id="quizContent" hidden>
+          <div class="quiz-header">
+            <div>שאלה <span id="qIndex">1</span> מתוך 10</div>
+            <div>ציון מצטבר: <span id="qScore">0</span>/10</div>
+          </div>
+          <div class="quiz-dots" id="quizDots"></div>
+          <div class="quiz-body" id="quizBody"></div>
+          <div class="quiz-feedback" id="quizFeedback" hidden></div>
+          <div class="quiz-actions">
+            <button id="btnCheckAnswer" class="btn btn-primary" type="button">בדיקת תשובה</button>
+            <button id="btnNextQuestion" class="btn btn-primary" type="button" hidden>לשאלה הבאה ←</button>
+          </div>
         </div>
       </section>
 
@@ -877,11 +1019,22 @@
               </tbody>
             </table>
           </div>
+
+          <div class="certificate-card" id="certificateCard">
+            <div class="certificate-trophy" aria-hidden="true">🏆</div>
+            <h3 class="certificate-title">תעודת הצטיינות והערכה במתמטיקה - 5 יח"ל</h3>
+            <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
+            <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
+            <p class="certificate-lesson-name" id="certLessonName">לומדה: מבוא ומאפייני הפונקציה המעריכית</p>
+            <p class="certificate-score" id="certScore">ציון סופי: 0 (0/10)</p>
+            <p class="certificate-quote" id="certQuote"></p>
+            <div class="certificate-ref" id="certRef">Ref: #572-000-A</div>
+          </div>
         </div>
 
         <div class="summary-actions">
           <button id="btnRestart" class="btn btn-secondary" type="button">התחל מחדש</button>
-          <button id="btnPrint" class="btn btn-primary" type="button">הדפסת / שמירת תעודה</button>
+          <button id="btnDownloadCert" class="btn btn-primary btn-download-cert" type="button">שמירת התעודה כתמונה (לשליחה בוואטסאפ / קלאסרום)</button>
         </div>
       </section>
 
@@ -896,6 +1049,7 @@
   <script src="../../shared/components/math-input-pad.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     var katexOptions = {
       delimiters: [
@@ -905,7 +1059,13 @@
       throwOnError: false
     };
 
+    var LESSON_NAME = 'מבוא ומאפייני הפונקציה המעריכית';
+
     var currentStep = 1;
+    var studentName = '';
+    var quizStarted = false;
+    var quizTiming = { startTime: null, totalSeconds: null };
+    var certRefCode = '';
     var state = {
       a: 2,
       showE: false,
@@ -1377,6 +1537,24 @@
       else { verdict = 'כדאי לחזור על החומר בשלבים 1-2 ולתרגל שוב.'; cardClass = 'results-low'; }
       document.getElementById('resultsVerdict').textContent = verdict;
       document.getElementById('resultsCard').className = 'results-card ' + cardClass;
+      renderCertificate(pct, correct, total);
+    }
+
+    function generateRandomRefCode() {
+      return String(randInt(100, 999));
+    }
+
+    function renderCertificate(pct, correct, total) {
+      document.getElementById('certStudentName').textContent = studentName || 'תלמיד/ה';
+      document.getElementById('certLessonName').textContent = 'לומדה: ' + LESSON_NAME;
+      document.getElementById('certScore').textContent = 'ציון סופי: ' + pct + ' (' + correct + '/' + total + ')';
+      var quote;
+      if (pct >= 90) quote = '"ההצלחה היא סך כל המאמצים הקטנים שנעשים יום אחרי יום."';
+      else if (pct >= 70) quote = '"טעויות הן שכר הלימוד של ההצלחה הבאה שלך. המשיכו לחקור!"';
+      else quote = '"מי שלא מעז לנסות, לעולם לא יגלה לאילו גבהים הוא מסוגל להגיע."';
+      document.getElementById('certQuote').textContent = quote;
+      if (!certRefCode) certRefCode = generateRandomRefCode();
+      document.getElementById('certRef').textContent = 'Ref: #572-' + certRefCode + '-A';
     }
 
     /* ---------- Navigation ---------- */
@@ -1405,7 +1583,10 @@
       currentStep = n;
       document.getElementById('stepProgress').setAttribute('current-step', n);
 
-      if (n === 3 && state.quiz.questions.length === 0) startQuiz();
+      if (n === 3) {
+        document.getElementById('nameGate').hidden = quizStarted;
+        document.getElementById('quizContent').hidden = !quizStarted;
+      }
       if (n === 4) renderResults();
 
       updateNavButtons();
@@ -1463,17 +1644,59 @@
         document.getElementById('quizFeedback').hidden = true;
         document.getElementById('btnCheckAnswer').hidden = true;
         document.getElementById('btnNextQuestion').hidden = true;
+        if (quizTiming.startTime) {
+          quizTiming.totalSeconds = Math.round((Date.now() - quizTiming.startTime) / 1000);
+        }
+        certRefCode = generateRandomRefCode();
         updateNavButtons();
       }
     });
 
+    document.getElementById('studentNameInput').addEventListener('input', function () {
+      document.getElementById('btnStartQuiz').disabled = this.value.trim().length < 2;
+    });
+
+    document.getElementById('btnStartQuiz').addEventListener('click', function () {
+      studentName = document.getElementById('studentNameInput').value.trim();
+      if (studentName.length < 2) return;
+      quizStarted = true;
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      certRefCode = '';
+      document.getElementById('nameGate').hidden = true;
+      document.getElementById('quizContent').hidden = false;
+      startQuiz();
+    });
+
     document.getElementById('btnRestart').addEventListener('click', function () {
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      certRefCode = '';
       startQuiz();
       goToStep(3);
     });
 
-    document.getElementById('btnPrint').addEventListener('click', function () {
-      window.print();
+    document.getElementById('btnDownloadCert').addEventListener('click', function () {
+      var btn = this;
+      var originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'מכינים תמונה...';
+      html2canvas(document.getElementById('certificateCard'), { backgroundColor: '#ffffff', scale: 2 }).then(function (canvas) {
+        var safeStudent = (studentName || 'תלמיד').replace(/[\\/:*?"<>|]/g, '').trim();
+        var link = document.createElement('a');
+        link.download = 'תעודה_' + safeStudent + '_' + LESSON_NAME + '.png';
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }).catch(function (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        alert('אירעה שגיאה ביצירת התמונה. נסו שוב.');
+      });
     });
 
     drawGraph(state.a, state.showE);
