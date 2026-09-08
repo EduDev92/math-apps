@@ -45,3 +45,9 @@ body {
   unicode-bidi: isolate !important;
   display: inline-block;
 }
+
+/* כל נוסחת KaTeX מבודדת אוטומטית כ-LTR, גם כשהיא משובצת בתוך משפט עברי */
+.katex {
+  direction: ltr;
+  unicode-bidi: isolate;
+}

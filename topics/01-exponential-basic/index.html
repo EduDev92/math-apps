@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מבוא ומאפייני הפונקציה המעריכית | לומדה 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/css/common.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <style>
+    :root {
+      --orange-strong: #c2650b;
+      --orange-soft: #fdecd2;
+    }
+
+    body {
+      background: var(--bg-main);
+    }
+
+    .topbar {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 14px 20px;
+    }
+
+    .back-link {
+      color: var(--blue-primary);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .lesson-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    .lesson-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: 32px;
+    }
+
+    .step-panel[hidden] {
+      display: none;
+    }
+
+    .step-heading {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--blue-deep);
+      margin-bottom: 6px;
+    }
+
+    .step-intro {
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      font-size: 0.98rem;
+    }
+
+    .content-block {
+      margin-bottom: 26px;
+    }
+
+    .content-block h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin-bottom: 10px;
+    }
+
+    .content-block p {
+      margin-bottom: 8px;
+    }
+
+    .highlight-block {
+      background: var(--blue-soft);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+    }
+
+    .highlight-block h3 {
+      color: var(--blue-deep);
+    }
+
+    .reason-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .reason-list li {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .compare-col {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .compare-col h4 {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .seq {
+      direction: ltr;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--blue-deep);
+    }
+
+    .property-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .property-card {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      position: relative;
+    }
+
+    .property-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--blue-primary);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+
+    .property-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .math-ltr-block {
+      direction: ltr;
+      text-align: center;
+      margin: 10px 0;
+      font-size: 1.15rem;
+    }
+
+    /* Step 2: explorer */
+    .explorer-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+    }
+
+    .graph-panel {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .graph-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .graph-svg text {
+      font-family: var(--font-family);
+    }
+
+    .grid-line {
+      stroke: var(--border-subtle);
+      stroke-width: 1;
+    }
+
+    .axis-line {
+      stroke: #94a3b8;
+      stroke-width: 1.5;
+    }
+
+    .asymptote-line {
+      stroke: var(--red-error);
+      stroke-width: 1.5;
+      stroke-dasharray: 6, 4;
+      opacity: 0.75;
+    }
+
+    .axis-label {
+      font-size: 11px;
+      fill: var(--text-muted);
+      text-anchor: middle;
+    }
+
+    .axis-label-y {
+      text-anchor: end;
+    }
+
+    .curve-main {
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+    }
+
+    .curve-growth {
+      stroke: var(--green-success);
+    }
+
+    .curve-decay {
+      stroke: var(--orange-strong);
+    }
+
+    .curve-flat {
+      stroke: #94a3b8;
+    }
+
+    .curve-e {
+      fill: none;
+      stroke: #7c3aed;
+      stroke-width: 2;
+      stroke-dasharray: 5, 5;
+    }
+
+    .point-marker {
+      fill: var(--blue-primary);
+      stroke: #fff;
+      stroke-width: 2;
+    }
+
+    .point-label {
+      font-size: 12px;
+      fill: var(--blue-deep);
+      font-weight: 700;
+    }
+
+    .graph-message {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .msg-growth {
+      background: var(--green-soft);
+      color: #1f7a41;
+    }
+
+    .msg-decay {
+      background: var(--orange-soft);
+      color: var(--orange-strong);
+    }
+
+    .msg-flat {
+      background: #eef2f9;
+      color: var(--text-muted);
+    }
+
+    .controls-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .slider-label {
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--blue-primary);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+
+    .legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 0.88rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-swatch {
+      width: 18px;
+      height: 4px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+
+    .swatch-main {
+      background: var(--blue-primary);
+    }
+
+    .swatch-e {
+      background: #7c3aed;
+    }
+
+    .swatch-point {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--blue-primary);
+    }
+
+    .swatch-asymptote {
+      background: var(--red-error);
+    }
+
+    /* Step 3: quiz */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .quiz-dots {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .quiz-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #dbe3ee;
+      transition: all 0.2s;
+    }
+
+    .quiz-dot.dot-current {
+      box-shadow: 0 0 0 3px var(--blue-soft);
+      background: var(--blue-primary);
+    }
+
+    .quiz-dot.dot-correct {
+      background: var(--green-success);
+    }
+
+    .quiz-dot.dot-incorrect {
+      background: var(--red-error);
+    }
+
+    .quiz-body {
+      min-height: 160px;
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 22px;
+    }
+
+    .quiz-instruction {
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .quiz-formula {
+      direction: ltr;
+      text-align: center;
+      font-size: 1.3rem;
+      margin: 14px 0;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .quiz-option-btn {
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border-subtle);
+      background: #fff;
+      font-family: var(--font-family);
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      min-width: 120px;
+      transition: all 0.15s;
+    }
+
+    .quiz-option-btn:hover:not(:disabled) {
+      border-color: var(--blue-primary);
+      background: var(--blue-soft);
+    }
+
+    .quiz-option-btn:disabled {
+      cursor: default;
+    }
+
+    .option-correct {
+      background: var(--green-soft) !important;
+      border-color: var(--green-success) !important;
+      color: #1f7a41;
+    }
+
+    .option-incorrect {
+      background: var(--red-soft) !important;
+      border-color: var(--red-error) !important;
+      color: #8f2323;
+    }
+
+    .quiz-graph-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .quiz-graph-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      border: 2px solid var(--border-subtle);
+      background: #fff;
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      cursor: pointer;
+      font-family: var(--font-family);
+      font-weight: 700;
+      transition: all 0.15s;
+    }
+
+    .quiz-graph-btn:hover:not(:disabled) {
+      border-color: var(--blue-primary);
+    }
+
+    .mini-graph {
+      width: 140px;
+      height: 100px;
+    }
+
+    .mini-axis {
+      stroke: #cbd5e3;
+      stroke-width: 1;
+    }
+
+    .mini-curve {
+      fill: none;
+      stroke: var(--blue-primary);
+      stroke-width: 2;
+    }
+
+    .quiz-input-wrap {
+      margin-top: 16px;
+      max-width: 360px;
+      margin-inline: auto;
+    }
+
+    .quiz-complete-msg {
+      text-align: center;
+      font-weight: 700;
+      color: var(--blue-deep);
+      padding: 30px 10px;
+    }
+
+    .quiz-feedback {
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+    }
+
+    .feedback-correct {
+      background: var(--green-soft);
+      border: 1px solid var(--green-success);
+      color: #1f7a41;
+    }
+
+    .feedback-incorrect {
+      background: var(--red-soft);
+      border: 1px solid var(--red-error);
+      color: #8f2323;
+    }
+
+    .feedback-explain {
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    .quiz-actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 18px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 26px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--blue-deep);
+    }
+
+    .btn-primary:disabled {
+      background: #a9bcd8;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #eef2f9;
+      color: var(--blue-primary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: var(--blue-soft);
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* Step 4: summary */
+    .results-card {
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      text-align: center;
+      margin-bottom: 26px;
+      transition: all 0.2s;
+    }
+
+    .results-good {
+      border-color: var(--green-success);
+      background: var(--green-soft);
+    }
+
+    .results-mid {
+      border-color: var(--orange-strong);
+      background: var(--orange-soft);
+    }
+
+    .results-low {
+      border-color: var(--red-error);
+      background: var(--red-soft);
+    }
+
+    .results-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--blue-deep);
+    }
+
+    .results-label {
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .results-percent-row {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .results-verdict {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--blue-deep);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-bottom: 24px;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      border: 1px solid var(--border-subtle);
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .compare-table th {
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      font-weight: 700;
+    }
+
+    .compare-table td:first-child {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .summary-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 780px) {
+      .explorer-layout {
+        grid-template-columns: 1fr;
+      }
+      .compare-grid {
+        grid-template-columns: 1fr;
+      }
+      .lesson-card {
+        padding: 20px;
+      }
+    }
+
+    @media print {
+      .topbar, .nav-buttons, step-progress, #step-1, #step-2, #step-3, .summary-actions {
+        display: none !important;
+      }
+      body {
+        background: #fff;
+      }
+      .lesson-card {
+        box-shadow: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../../index.html" class="back-link">→ חזרה לעץ הנושאים</a>
+  </div>
+
+  <div class="lesson-container">
+    <step-progress id="stepProgress" current-step="1"></step-progress>
+
+    <div class="lesson-card">
+
+      <section class="step-panel" id="step-1" data-step="1">
+        <h2 class="step-heading">שלב 1: מכירים</h2>
+        <p class="step-intro">היכרות עם הגדרת הפונקציה המעריכית והתכונות הבסיסיות המשותפות לכל הפונקציות מהסוג הזה.</p>
+
+        <div class="content-block">
+          <h3>הגדרת הפונקציה המעריכית</h3>
+          <p>פונקציה מעריכית היא פונקציה מהצורה:</p>
+          <div class="math-ltr-block">$$f(x) = a^x$$</div>
+          <p>כאשר $a > 0$ וגם $a \neq 1$.</p>
+          <ul class="reason-list">
+            <li><strong>מדוע $a>0$?</strong> אם הבסיס שלילי, עבור חלק מערכי $x$ (למשל $x=\tfrac{1}{2}$) הביטוי אינו מוגדר במספרים ממשיים — לדוגמה $(-4)^{0.5}=\sqrt{-4}$.</li>
+            <li><strong>מדוע $a \neq 1$?</strong> אם $a=1$, מתקבל $f(x)=1^x=1$ לכל $x$ — זו פונקציה קבועה, ואינה נחשבת לפונקציה מעריכית.</li>
+          </ul>
+        </div>
+
+        <div class="content-block">
+          <h3>גדילה ליניארית מול גדילה מעריכית</h3>
+          <p>בגדילה ליניארית מוסיפים בכל שלב את אותה כמות קבועה. בגדילה מעריכית מכפילים בכל שלב באותו גורם קבוע — ולכן קצב הגדילה עצמו הולך וגדל.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <h4>גדילה ליניארית (תוספת קבועה של 2)</h4>
+              <div class="seq">1 → 3 → 5 → 7 → 9</div>
+            </div>
+            <div class="compare-col">
+              <h4>גדילה מעריכית (הכפלה פי 2 — התחלקות תאים)</h4>
+              <div class="seq">1 → 2 → 4 → 8 → 16</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>ארבע תכונות ליבה משותפות לכל הפונקציות המעריכיות</h3>
+          <div class="property-grid">
+            <div class="property-card">
+              <span class="property-num">1</span>
+              <h4>תחום הגדרה</h4>
+              <p>הפונקציה מוגדרת לכל $x$ ממשי.</p>
+            </div>
+            <div class="property-card">
+              <span class="property-num">2</span>
+              <h4>תחום חיוביות</h4>
+              <p>$f(x) > 0$ לכל $x$ — הגרף תמיד מעל ציר ה-$x$, לעולם אינו מתאפס ואינו שלילי.</p>
+            </div>
+            <div class="property-card">
+              <span class="property-num">3</span>
+              <h4>חיתוך ציר $y$</h4>
+              <p>הגרף תמיד עובר דרך הנקודה $(0,1)$, כי $a^0=1$ לכל $a$.</p>
+            </div>
+            <div class="property-card">
+              <span class="property-num">4</span>
+              <h4>אסימפטוטה אופקית</h4>
+              <p>הישר $y=0$ (ציר ה-$x$) הוא אסימפטוטה אופקית של הגרף.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-block highlight-block">
+          <h3>המספר $e$</h3>
+          <p>קיים בסיס מיוחד וטבעי הנקרא <strong>המספר $e$</strong>, כאשר $e \approx 2.718$. הפונקציה $f(x)=e^x$ נקראת "הפונקציה המעריכית הטבעית", ותככב בהמשך הקורס בחשבון דיפרנציאלי ואינטגרלי.</p>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-2" data-step="2" hidden>
+        <h2 class="step-heading">שלב 2: חוקרים</h2>
+        <p class="step-intro">גררו את הסליידר כדי לשנות את ערך הבסיס $a$, וצפו כיצד הגרף של $f(x)=a^x$ משתנה בזמן אמת.</p>
+
+        <div class="explorer-layout">
+          <div class="graph-panel">
+            <svg id="graphSvg" viewBox="0 0 600 420" class="graph-svg"></svg>
+            <div id="graphMessage" class="graph-message"></div>
+          </div>
+          <div class="controls-panel">
+            <label for="baseSlider" class="slider-label">בסיס $a$ = <span id="baseValue">2.0</span></label>
+            <input type="range" id="baseSlider" min="0.1" max="5" step="0.1" value="2">
+            <label class="checkbox-row">
+              <input type="checkbox" id="showEToggle">
+              <span>הצג את $f(x)=e^x$ להשוואה</span>
+            </label>
+            <div class="legend">
+              <div class="legend-item"><span class="legend-swatch swatch-main"></span> $f(x)=a^x$</div>
+              <div class="legend-item" id="legendE" hidden><span class="legend-swatch swatch-e"></span> $f(x)=e^x$</div>
+              <div class="legend-item"><span class="legend-swatch swatch-point"></span> נקודה $(0,1)$</div>
+              <div class="legend-item"><span class="legend-swatch swatch-asymptote"></span> אסימפטוטה $y=0$</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-3" data-step="3" hidden>
+        <h2 class="step-heading">שלב 3: מתרגלים</h2>
+        <div class="quiz-header">
+          <div>שאלה <span id="qIndex">1</span> מתוך 10</div>
+          <div>ציון מצטבר: <span id="qScore">0</span>/10</div>
+        </div>
+        <div class="quiz-dots" id="quizDots"></div>
+        <div class="quiz-body" id="quizBody"></div>
+        <div class="quiz-feedback" id="quizFeedback" hidden></div>
+        <div class="quiz-actions">
+          <button id="btnCheckAnswer" class="btn btn-primary" type="button">בדיקת תשובה</button>
+          <button id="btnNextQuestion" class="btn btn-primary" type="button" hidden>לשאלה הבאה ←</button>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-4" data-step="4" hidden>
+        <h2 class="step-heading">שלב 4: מסכמים</h2>
+
+        <div class="printable-area">
+          <div class="results-card" id="resultsCard">
+            <div class="results-number" id="resultsCorrect">0</div>
+            <div class="results-label">תשובות נכונות מתוך 10</div>
+            <div class="results-percent-row">אחוז הצלחה: <span id="resultsPercent">0%</span></div>
+            <div class="results-verdict" id="resultsVerdict"></div>
+          </div>
+
+          <h3 class="content-block-title" style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת השוואה: $a&gt;1$ מול $0&lt;a&lt;1$</h3>
+          <div class="table-wrap">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>$a &gt; 1$</th>
+                  <th>$0 &lt; a &lt; 1$</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>מגמה</td>
+                  <td>עולה (גדילה מעריכית)</td>
+                  <td>יורדת (דעיכה מעריכית)</td>
+                </tr>
+                <tr>
+                  <td>אסימפטוטה</td>
+                  <td>$y=0$, כש-$x \to -\infty$</td>
+                  <td>$y=0$, כש-$x \to +\infty$</td>
+                </tr>
+                <tr>
+                  <td>דוגמאות</td>
+                  <td>$2^x,\ 3^x,\ e^x$</td>
+                  <td>$\left(\tfrac12\right)^x,\ \left(\tfrac34\right)^x$</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="summary-actions">
+          <button id="btnRestart" class="btn btn-secondary" type="button">התחל מחדש</button>
+          <button id="btnPrint" class="btn btn-primary" type="button">הדפסת / שמירת תעודה</button>
+        </div>
+      </section>
+
+      <div class="nav-buttons">
+        <button id="btnPrev" class="btn btn-secondary" type="button">→ הקודם</button>
+        <button id="btnNext" class="btn btn-primary" type="button">הבא ←</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../shared/components/step-progress.js"></script>
+  <script src="../../shared/components/math-input-pad.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script>
+    var katexOptions = {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    };
+
+    var currentStep = 1;
+    var state = {
+      a: 2,
+      showE: false,
+      quiz: {
+        questions: [],
+        index: 0,
+        score: 0,
+        answers: [],
+        locked: false
+      }
+    };
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function randChoice(arr) {
+      return arr[randInt(0, arr.length - 1)];
+    }
+
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = randInt(0, i);
+        var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+      }
+      return a;
+    }
+
+    /* ---------- Step 2: interactive graph ---------- */
+
+    function buildFullCurvePath(base, mx, my, xmin, xmax, ymax) {
+      var steps = 240;
+      var d = '';
+      for (var i = 0; i <= steps; i++) {
+        var x = xmin + (xmax - xmin) * i / steps;
+        var y = Math.pow(base, x);
+        y = Math.min(y, ymax + 40);
+        var px = mx(x), py = my(y);
+        d += (i === 0 ? 'M' : 'L') + px.toFixed(2) + ',' + py.toFixed(2) + ' ';
+      }
+      return d.trim();
+    }
+
+    function drawGraph(a, showE) {
+      var W = 600, H = 420, PAD = 44, XMIN = -4, XMAX = 4, YMIN = -1, YMAX = 6;
+      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
+      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
+
+      var markup = '';
+
+      for (var gx = Math.ceil(XMIN); gx <= Math.floor(XMAX); gx++) {
+        markup += '<line x1="' + mx(gx) + '" y1="' + my(YMIN) + '" x2="' + mx(gx) + '" y2="' + my(YMAX) + '" class="grid-line"/>';
+        if (gx !== 0) markup += '<text x="' + mx(gx) + '" y="' + (my(0) + 16) + '" class="axis-label">' + gx + '</text>';
+      }
+      for (var gy = Math.ceil(YMIN); gy <= Math.floor(YMAX); gy++) {
+        markup += '<line x1="' + mx(XMIN) + '" y1="' + my(gy) + '" x2="' + mx(XMAX) + '" y2="' + my(gy) + '" class="grid-line"/>';
+        if (gy !== 0) markup += '<text x="' + (mx(0) - 10) + '" y="' + (my(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
+      }
+
+      markup += '<line x1="' + mx(XMIN) + '" y1="' + my(0) + '" x2="' + mx(XMAX) + '" y2="' + my(0) + '" class="asymptote-line"/>';
+      markup += '<line x1="' + mx(0) + '" y1="' + my(YMIN) + '" x2="' + mx(0) + '" y2="' + my(YMAX) + '" class="axis-line"/>';
+
+      if (showE) {
+        markup += '<path d="' + buildFullCurvePath(Math.E, mx, my, XMIN, XMAX, YMAX) + '" class="curve-e"/>';
+      }
+
+      var curveClass = 'curve-main';
+      if (Math.abs(a - 1) < 0.001) curveClass += ' curve-flat';
+      else if (a > 1) curveClass += ' curve-growth';
+      else curveClass += ' curve-decay';
+
+      if (Math.abs(a - 1) < 0.001) {
+        markup += '<line x1="' + mx(XMIN) + '" y1="' + my(1) + '" x2="' + mx(XMAX) + '" y2="' + my(1) + '" class="' + curveClass + '"/>';
+      } else {
+        markup += '<path d="' + buildFullCurvePath(a, mx, my, XMIN, XMAX, YMAX) + '" class="' + curveClass + '"/>';
+      }
+
+      markup += '<circle cx="' + mx(0) + '" cy="' + my(1) + '" r="6" class="point-marker"/>';
+      markup += '<text x="' + (mx(0) + 10) + '" y="' + (my(1) - 10) + '" class="point-label">(0,1)</text>';
+
+      document.getElementById('graphSvg').innerHTML = markup;
+    }
+
+    function updateMessage(a) {
+      var el = document.getElementById('graphMessage');
+      el.className = 'graph-message';
+      if (Math.abs(a - 1) < 0.001) {
+        el.classList.add('msg-flat');
+        el.innerHTML = 'כאשר $a=1$ מתקבל הקו האופקי $y=1$ — זו אינה פונקציה מעריכית, כי הבסיס חייב להיות שונה מ-1.';
+      } else if (a > 1) {
+        el.classList.add('msg-growth');
+        el.textContent = 'גדילה מעריכית (פונקציה עולה)';
+      } else {
+        el.classList.add('msg-decay');
+        el.textContent = 'דעיכה מעריכית (פונקציה יורדת)';
+      }
+      renderMathInElement(el, katexOptions);
+    }
+
+    function buildMiniGraphMarkup(base) {
+      var w = 140, h = 100, pad = 14, xmin = -3, xmax = 3, ymin = -1, ymax = 5;
+      var mx = function (x) { return pad + (x - xmin) / (xmax - xmin) * (w - 2 * pad); };
+      var my = function (y) { return h - pad - (y - ymin) / (ymax - ymin) * (h - 2 * pad); };
+      var d = '';
+      var steps = 60;
+      for (var i = 0; i <= steps; i++) {
+        var x = xmin + (xmax - xmin) * i / steps;
+        var y = Math.pow(base, x);
+        y = Math.min(y, ymax + 20);
+        var px = mx(x), py = my(y);
+        d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1) + ' ';
+      }
+      return '<line x1="' + pad + '" y1="' + my(0) + '" x2="' + (w - pad) + '" y2="' + my(0) + '" class="mini-axis"/>' +
+        '<line x1="' + mx(0) + '" y1="' + pad + '" x2="' + mx(0) + '" y2="' + (h - pad) + '" class="mini-axis"/>' +
+        '<path d="' + d.trim() + '" class="mini-curve"/>';
+    }
+
+    /* ---------- Step 3: quiz question bank ---------- */
+
+    function generateTypeA() {
+      var forms = ['exp', 'lin', 'pow'];
+      var chosen = randChoice(forms);
+      var b = randInt(2, 9);
+      var c = randInt(2, 9);
+      var n = randInt(2, 5);
+      var displayLatex, correctLabel, explainWhy;
+      if (chosen === 'exp') {
+        displayLatex = b + '^x';
+        correctLabel = 'מעריכית';
+        explainWhy = 'זוהי פונקציה מעריכית, כי המשתנה $x$ נמצא בחזקה.';
+      } else if (chosen === 'lin') {
+        displayLatex = c + 'x';
+        correctLabel = 'ליניארית';
+        explainWhy = 'זוהי פונקציה ליניארית, כי $x$ מוכפל במקדם קבוע בחזקה ראשונה.';
+      } else {
+        displayLatex = 'x^{' + n + '}';
+        correctLabel = 'חזקה';
+        explainWhy = 'זוהי פונקציית חזקה, כי הבסיס הוא המשתנה $x$ והמעריך קבוע.';
+      }
+      var options = shuffle(['מעריכית', 'ליניארית', 'חזקה']);
+      return {
+        type: 'A', kind: 'choice',
+        promptText: 'לאיזה סוג פונקציה שייך הביטוי הבא?',
+        promptLatex: 'f(x) = ' + displayLatex,
+        options: options,
+        correctIndex: options.indexOf(correctLabel),
+        explain: explainWhy
+      };
+    }
+
+    function generateTypeB() {
+      var mode = randChoice(['int', 'dec', 'frac']);
+      var base, displayLatex;
+      if (mode === 'int') {
+        base = randInt(2, 9);
+        displayLatex = String(base);
+      } else if (mode === 'dec') {
+        base = randChoice([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.2, 1.5, 1.8]);
+        displayLatex = String(base);
+      } else {
+        var pairs = [[1, 2], [1, 3], [2, 3], [3, 4], [2, 5], [3, 2], [4, 3], [5, 2], [5, 3]];
+        var pair = randChoice(pairs);
+        base = pair[0] / pair[1];
+        displayLatex = '\\tfrac{' + pair[0] + '}{' + pair[1] + '}';
+      }
+      var trend = base > 1 ? 'עולה' : 'יורדת';
+      var options = shuffle(['עולה', 'יורדת']);
+      return {
+        type: 'B', kind: 'choice',
+        promptText: 'האם הפונקציה הבאה עולה או יורדת?',
+        promptLatex: 'f(x) = \\left(' + displayLatex + '\\right)^x',
+        options: options,
+        correctIndex: options.indexOf(trend),
+        explain: 'מכיוון שהבסיס ' + (base > 1 ? 'גדול מ-1' : 'נמצא בין 0 ל-1') + ', הפונקציה ' + trend + ' לאורך כל תחום ההגדרה שלה.'
+      };
+    }
+
+    function generateTypeC() {
+      var pool = [
+        { label: '1.5', value: 1.5 },
+        { label: '2', value: 2 },
+        { label: '3', value: 3 },
+        { label: '4', value: 4 },
+        { label: '5', value: 5 },
+        { label: 'e', value: Math.E }
+      ];
+      var chosen = shuffle(pool).slice(0, 3);
+      var order = shuffle([0, 1, 2]);
+      var targetSlot = randInt(0, 2);
+      var targetBase = chosen[targetSlot];
+      var displayedBases = order.map(function (idx) { return chosen[idx]; });
+      var correctIndex = order.indexOf(targetSlot);
+      return {
+        type: 'C', kind: 'graphchoice',
+        promptText: 'איזה מהגרפים הבאים מתאים לפונקציה הבאה?',
+        promptLatex: 'f(x) = ' + targetBase.label + '^x',
+        graphs: displayedBases.map(function (b) { return b.value; }),
+        correctIndex: correctIndex,
+        explain: 'ככל שהבסיס גדול יותר, הגרף תלול יותר. עבור $a=' + targetBase.label + '$ יש לבחור את הגרף עם קצב הגדילה המתאים.'
+      };
+    }
+
+    var TYPE_D_BANK = [
+      { baseDisplay: '4', expDisplay: '-0.5', correctValue: 0.5 },
+      { baseDisplay: '9', expDisplay: '0.5', correctValue: 3 },
+      { baseDisplay: '8', expDisplay: '\\tfrac{1}{3}', correctValue: 2 },
+      { baseDisplay: '27', expDisplay: '-\\tfrac{1}{3}', correctValue: 1 / 3 },
+      { baseDisplay: '2', expDisplay: '-3', correctValue: 0.125 },
+      { baseDisplay: '16', expDisplay: '0.25', correctValue: 2 },
+      { baseDisplay: '3', expDisplay: '-2', correctValue: 1 / 9 },
+      { baseDisplay: '4', expDisplay: '1.5', correctValue: 8 },
+      { baseDisplay: '25', expDisplay: '-0.5', correctValue: 0.2 },
+      { baseDisplay: '8', expDisplay: '-\\tfrac{2}{3}', correctValue: 0.25 }
+    ];
+
+    function formatNiceNumber(v) {
+      var known = [
+        [0.5, '\\tfrac{1}{2}'], [0.25, '\\tfrac{1}{4}'], [0.125, '\\tfrac{1}{8}'],
+        [1 / 3, '\\tfrac{1}{3}'], [1 / 9, '\\tfrac{1}{9}'], [0.2, '\\tfrac{1}{5}']
+      ];
+      for (var i = 0; i < known.length; i++) {
+        if (Math.abs(v - known[i][0]) < 1e-9) return known[i][1];
+      }
+      return String(v);
+    }
+
+    var TYPE_E_BANK = [
+      { answer: false, text: function (a) { return 'הגרף של $f(x)=' + a + '^x$ חותך את ציר ה-$x$ בנקודה כלשהי.'; }, explain: 'הגרף של פונקציה מעריכית לעולם אינו מתאפס — $f(x)>0$ לכל $x$, ולכן אין חיתוך עם ציר ה-$x$.' },
+      { answer: true, text: function (a) { return 'האסימפטוטה האופקית של $f(x)=' + a + '^x$ היא הישר $y=0$.'; }, explain: 'ציר ה-$x$ ($y=0$) הוא תמיד האסימפטוטה האופקית של כל פונקציה מעריכית.' },
+      { answer: true, text: function (a) { return 'מתקיים $f(0)=1$ עבור $f(x)=' + a + '^x$.'; }, explain: 'לכל בסיס $a$ מתקיים $a^0=1$, ולכן הגרף תמיד עובר דרך הנקודה $(0,1)$.' },
+      { answer: false, text: function (a) { return 'הפונקציה $f(x)=' + a + '^x$ יכולה לקבל ערכים שליליים.'; }, explain: 'פונקציה מעריכית עם בסיס חיובי היא תמיד חיובית — $f(x)>0$ לכל $x$ בתחום ההגדרה.' },
+      { answer: false, text: function (a) { return 'הפונקציה $f(x)=1^x$ נחשבת לפונקציה מעריכית לכל דבר ועניין.'; }, explain: 'כאשר $a=1$ מתקבלת הפונקציה הקבועה $y=1$ — היא אינה עולה ואינה יורדת, ולכן אינה מוגדרת כפונקציה מעריכית.' }
+    ];
+
+    function generateTypeE(usedIndices) {
+      var idx;
+      do { idx = randInt(0, TYPE_E_BANK.length - 1); } while (usedIndices.indexOf(idx) !== -1);
+      usedIndices.push(idx);
+      var item = TYPE_E_BANK[idx];
+      var a = randInt(2, 9);
+      var options = shuffle(['נכון', 'לא נכון']);
+      var correctLabel = item.answer ? 'נכון' : 'לא נכון';
+      return {
+        type: 'E', kind: 'choice',
+        promptText: item.text(a),
+        promptLatex: null,
+        options: options,
+        correctIndex: options.indexOf(correctLabel),
+        explain: item.explain
+      };
+    }
+
+    function generateQuizQuestions() {
+      var qs = [];
+      qs.push(generateTypeA()); qs.push(generateTypeA());
+      qs.push(generateTypeB()); qs.push(generateTypeB());
+      qs.push(generateTypeC()); qs.push(generateTypeC());
+
+      var usedD = [];
+      for (var i = 0; i < 2; i++) {
+        var idx;
+        do { idx = randInt(0, TYPE_D_BANK.length - 1); } while (usedD.indexOf(idx) !== -1);
+        usedD.push(idx);
+        var item = TYPE_D_BANK[idx];
+        qs.push({
+          type: 'D', kind: 'input',
+          promptText: 'חשבו את הערך של הביטוי, והזינו את התשובה במקלדת המתמטית:',
+          promptLatex: item.baseDisplay + '^{' + item.expDisplay + '} = \\ ?',
+          correctValue: item.correctValue,
+          explain: '$' + item.baseDisplay + '^{' + item.expDisplay + '} = ' + formatNiceNumber(item.correctValue) + '$'
+        });
+      }
+
+      var usedE = [];
+      qs.push(generateTypeE(usedE));
+      qs.push(generateTypeE(usedE));
+
+      return shuffle(qs);
+    }
+
+    function parseLatexNumber(raw) {
+      if (!raw) return null;
+      var s = raw.trim().replace(/\\left|\\right/g, '');
+      var fracMatch = s.match(/^(-)?\\t?frac\{(-?\d+(?:\.\d+)?)\}\{(-?\d+(?:\.\d+)?)\}$/);
+      if (fracMatch) {
+        var outerNeg = !!fracMatch[1];
+        var num = parseFloat(fracMatch[2]);
+        var den = parseFloat(fracMatch[3]);
+        if (den === 0) return null;
+        var val = num / den;
+        return outerNeg ? -val : val;
+      }
+      if (/^-?\d+(\.\d+)?$/.test(s)) return parseFloat(s);
+      return NaN;
+    }
+
+    /* ---------- Step 3: quiz rendering ---------- */
+
+    function buildQuizDotsSkeleton() {
+      var wrap = document.getElementById('quizDots');
+      wrap.innerHTML = '';
+      for (var i = 0; i < 10; i++) {
+        var dot = document.createElement('span');
+        dot.className = 'quiz-dot';
+        wrap.appendChild(dot);
+      }
+      updateQuizDots();
+    }
+
+    function updateQuizDots() {
+      var dots = document.querySelectorAll('#quizDots .quiz-dot');
+      dots.forEach(function (dot, i) {
+        dot.classList.remove('dot-current', 'dot-correct', 'dot-incorrect');
+        if (i === state.quiz.index) dot.classList.add('dot-current');
+        if (state.quiz.answers[i] === true) dot.classList.add('dot-correct');
+        else if (state.quiz.answers[i] === false) dot.classList.add('dot-incorrect');
+      });
+    }
+
+    function renderQuizQuestion() {
+      var q = state.quiz.questions[state.quiz.index];
+      document.getElementById('qIndex').textContent = state.quiz.index + 1;
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+
+      var feedbackEl = document.getElementById('quizFeedback');
+      feedbackEl.hidden = true;
+      feedbackEl.innerHTML = '';
+
+      var checkBtn = document.getElementById('btnCheckAnswer');
+      var nextBtn = document.getElementById('btnNextQuestion');
+      nextBtn.hidden = true;
+      checkBtn.hidden = (q.kind !== 'input');
+
+      var html = '';
+      if (q.promptText) html += '<p class="quiz-instruction">' + q.promptText + '</p>';
+      if (q.promptLatex) html += '<div class="quiz-formula">$$' + q.promptLatex + '$$</div>';
+
+      if (q.kind === 'choice') {
+        html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
+          return '<button type="button" class="quiz-option-btn" data-index="' + i + '">' + opt + '</button>';
+        }).join('') + '</div>';
+      } else if (q.kind === 'graphchoice') {
+        html += '<div class="quiz-graph-options">' + q.graphs.map(function (base, i) {
+          return '<button type="button" class="quiz-graph-btn" data-index="' + i + '"><svg viewBox="0 0 140 100" class="mini-graph">' + buildMiniGraphMarkup(base) + '</svg><span>גרף ' + (i + 1) + '</span></button>';
+        }).join('') + '</div>';
+      } else if (q.kind === 'input') {
+        html += '<div class="quiz-input-wrap"><math-input-pad id="answerPad"></math-input-pad></div>';
+      }
+
+      document.getElementById('quizBody').innerHTML = html;
+
+      if (q.kind === 'choice' || q.kind === 'graphchoice') {
+        var selector = q.kind === 'choice' ? '.quiz-option-btn' : '.quiz-graph-btn';
+        document.querySelectorAll('#quizBody ' + selector).forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (state.quiz.locked) return;
+            var idx = parseInt(this.dataset.index, 10);
+            submitAnswer(idx === q.correctIndex, this, selector);
+          });
+        });
+      }
+
+      renderMathInElement(document.getElementById('quizBody'), katexOptions);
+    }
+
+    function showFeedback(isCorrect, explain) {
+      var el = document.getElementById('quizFeedback');
+      el.hidden = false;
+      el.className = 'quiz-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+      el.innerHTML = '<strong>' + (isCorrect ? 'תשובה נכונה!' : 'לא נכון.') + '</strong><div class="feedback-explain">' + (explain || '') + '</div>';
+      renderMathInElement(el, katexOptions);
+    }
+
+    function submitAnswer(isCorrect, clickedBtn, selector) {
+      state.quiz.locked = true;
+      var q = state.quiz.questions[state.quiz.index];
+      state.quiz.answers[state.quiz.index] = isCorrect;
+      if (isCorrect) state.quiz.score++;
+
+      if (selector) {
+        document.querySelectorAll('#quizBody ' + selector).forEach(function (b) {
+          b.disabled = true;
+          var idx = parseInt(b.dataset.index, 10);
+          if (idx === q.correctIndex) b.classList.add('option-correct');
+          else if (b === clickedBtn) b.classList.add('option-incorrect');
+        });
+      }
+
+      showFeedback(isCorrect, q.explain);
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+      document.getElementById('btnCheckAnswer').hidden = true;
+      document.getElementById('btnNextQuestion').hidden = false;
+    }
+
+    function startQuiz() {
+      state.quiz.questions = generateQuizQuestions();
+      state.quiz.index = 0;
+      state.quiz.score = 0;
+      state.quiz.answers = [];
+      state.quiz.locked = false;
+      buildQuizDotsSkeleton();
+      renderQuizQuestion();
+    }
+
+    /* ---------- Step 4: results ---------- */
+
+    function renderResults() {
+      var total = 10;
+      var correct = state.quiz.score;
+      var pct = Math.round((correct / total) * 100);
+      document.getElementById('resultsCorrect').textContent = correct;
+      document.getElementById('resultsPercent').textContent = pct + '%';
+      var verdict;
+      var cardClass;
+      if (pct >= 90) { verdict = 'מצוין! שליטה מלאה בחומר.'; cardClass = 'results-good'; }
+      else if (pct >= 70) { verdict = 'טוב מאוד! יש עוד קצת לחדד.'; cardClass = 'results-good'; }
+      else if (pct >= 50) { verdict = 'סביר — כדאי לחזור על שלבים 1-2 ולנסות שוב.'; cardClass = 'results-mid'; }
+      else { verdict = 'כדאי לחזור על החומר בשלבים 1-2 ולתרגל שוב.'; cardClass = 'results-low'; }
+      document.getElementById('resultsVerdict').textContent = verdict;
+      document.getElementById('resultsCard').className = 'results-card ' + cardClass;
+    }
+
+    /* ---------- Navigation ---------- */
+
+    function updateNavButtons() {
+      var btnPrev = document.getElementById('btnPrev');
+      var btnNext = document.getElementById('btnNext');
+      var navRow = document.querySelector('.nav-buttons');
+      btnPrev.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+      navRow.style.display = currentStep === 4 ? 'none' : 'flex';
+
+      if (currentStep === 3) {
+        var quizDone = state.quiz.questions.length > 0 && state.quiz.index >= state.quiz.questions.length;
+        btnNext.disabled = !quizDone;
+        btnNext.title = quizDone ? '' : 'השלימו את כל 10 השאלות כדי להמשיך';
+      } else {
+        btnNext.disabled = false;
+        btnNext.title = '';
+      }
+    }
+
+    function goToStep(n) {
+      document.querySelectorAll('.step-panel').forEach(function (panel) {
+        panel.hidden = (parseInt(panel.dataset.step, 10) !== n);
+      });
+      currentStep = n;
+      document.getElementById('stepProgress').setAttribute('current-step', n);
+
+      if (n === 3 && state.quiz.questions.length === 0) startQuiz();
+      if (n === 4) renderResults();
+
+      updateNavButtons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ---------- Init & event wiring ---------- */
+
+    document.getElementById('btnNext').addEventListener('click', function () {
+      if (currentStep < 4) goToStep(currentStep + 1);
+    });
+    document.getElementById('btnPrev').addEventListener('click', function () {
+      if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    var slider = document.getElementById('baseSlider');
+    var baseValueEl = document.getElementById('baseValue');
+    var showEToggle = document.getElementById('showEToggle');
+
+    slider.addEventListener('input', function () {
+      state.a = parseFloat(slider.value);
+      baseValueEl.textContent = state.a.toFixed(1);
+      drawGraph(state.a, state.showE);
+      updateMessage(state.a);
+    });
+
+    showEToggle.addEventListener('change', function () {
+      state.showE = showEToggle.checked;
+      document.getElementById('legendE').hidden = !state.showE;
+      drawGraph(state.a, state.showE);
+    });
+
+    document.getElementById('btnCheckAnswer').addEventListener('click', function () {
+      var q = state.quiz.questions[state.quiz.index];
+      if (q.kind !== 'input' || state.quiz.locked) return;
+      var pad = document.getElementById('answerPad');
+      var raw = pad ? pad.value : '';
+      var val = parseLatexNumber(raw);
+      var unparseable = (val === null || (typeof val === 'number' && isNaN(val)));
+      var isCorrect = !unparseable && Math.abs(val - q.correctValue) < 0.02;
+      submitAnswer(isCorrect, null, null);
+      if (unparseable) {
+        var explainEl = document.querySelector('#quizFeedback .feedback-explain');
+        if (explainEl) explainEl.insertAdjacentHTML('afterbegin', '<p>לא זיהינו את הפורמט של התשובה — נסו להזין מספר או שבר בעזרת כפתור a/b.</p>');
+      }
+    });
+
+    document.getElementById('btnNextQuestion').addEventListener('click', function () {
+      state.quiz.index++;
+      state.quiz.locked = false;
+      if (state.quiz.index < state.quiz.questions.length) {
+        renderQuizQuestion();
+      } else {
+        document.getElementById('quizBody').innerHTML = '<p class="quiz-complete-msg">כל הכבוד! סיימתם את כל 10 השאלות. לחצו על "הבא" כדי לראות את הסיכום שלכם.</p>';
+        document.getElementById('quizFeedback').hidden = true;
+        document.getElementById('btnCheckAnswer').hidden = true;
+        document.getElementById('btnNextQuestion').hidden = true;
+        updateNavButtons();
+      }
+    });
+
+    document.getElementById('btnRestart').addEventListener('click', function () {
+      startQuiz();
+      goToStep(3);
+    });
+
+    document.getElementById('btnPrint').addEventListener('click', function () {
+      window.print();
+    });
+
+    drawGraph(state.a, state.showE);
+    updateMessage(state.a);
+    slider.value = state.a;
+    baseValueEl.textContent = state.a.toFixed(1);
+    updateNavButtons();
+    renderMathInElement(document.body, katexOptions);
+  </script>
+</body>
+</html>
