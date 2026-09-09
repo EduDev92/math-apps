@@ -145,6 +145,16 @@
       margin-bottom: 14px;
     }
 
+    .equation-display {
+      background: #fff;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 1.05rem;
+    }
+
     .solution-readout.flip-active { border-color: var(--red-error); color: #8f2323; }
     .solution-readout.flip-inactive { border-color: var(--green-success); color: #1f7a41; }
 
@@ -406,16 +416,17 @@
 
         <div class="lab-block">
           <h3>מעבדה ב׳: אי-שוויון ריבועי במעריך</h3>
-          <p>גררו את הסליידר כדי לשנות את $c$ בביטוי $x^2 \le c$, וצפו בתחום הפתרון (בין השורשים) על הפרבולה.</p>
+          <p>אי-שוויון מהצורה $2^{x^2}\le k$ (כאשר $k$ הוא חזקה של 2) מצטמצם, בדיוק כמו בשלב 1, להשוואת המעריכים: $2^{x^2}\le2^{c} \iff x^2\le c$. גררו את הסליידר כדי לשנות את $k$, וצפו כיצד תחום הפתרון (בין השורשים) משתנה על הפרבולה.</p>
           <div class="explorer-layout">
             <div class="graph-panel">
+              <div class="equation-display" id="quadEquationDisplay"></div>
               <svg id="quadSvg" viewBox="0 0 600 400" class="graph-svg"></svg>
             </div>
             <div class="controls-panel">
               <div class="solution-readout" id="quadReadout"></div>
               <div class="param-row">
-                <label for="cSlider">c: <span id="cValue">4</span></label>
-                <input type="range" id="cSlider" min="1" max="16" step="1" value="4">
+                <label for="cSlider">k: <span id="cValue">16</span></label>
+                <input type="range" id="cSlider" min="0" max="5" step="1" value="3">
               </div>
             </div>
           </div>
@@ -616,13 +627,17 @@
 
     /* ---------- Lab B: quadratic-in-exponent inequality ---------- */
 
-    var QW = 600, QH = 400, QPAD = 44, QXMIN = -6, QXMAX = 6, QYMIN = -2, QYMAX = 20;
+    var QW = 600, QH = 400, QPAD = 44, QXMIN = -4, QXMAX = 4, QYMIN = -2, QYMAX = 8;
     var qmx = function (x) { return QPAD + (x - QXMIN) / (QXMAX - QXMIN) * (QW - 2 * QPAD); };
     var qmy = function (y) { return QH - QPAD - (y - QYMIN) / (QYMAX - QYMIN) * (QH - 2 * QPAD); };
 
+    var K_MILESTONES = [2, 4, 8, 16, 32, 64];
+
     function drawQuadGraph() {
-      var c = parseFloat(document.getElementById('cSlider').value);
-      document.getElementById('cValue').textContent = c;
+      var kIndex = parseInt(document.getElementById('cSlider').value, 10);
+      var k = K_MILESTONES[kIndex];
+      var c = Math.log2(k);
+      document.getElementById('cValue').textContent = k;
       var root = Math.sqrt(c);
 
       var markup = '';
@@ -651,9 +666,13 @@
 
       document.getElementById('quadSvg').innerHTML = markup;
 
+      var equationEl = document.getElementById('quadEquationDisplay');
+      equationEl.innerHTML = '$$2^{x^2} \\le ' + k + ' \\quad\\Longrightarrow\\quad 2^{x^2} \\le 2^{' + c + '} \\quad\\Longrightarrow\\quad x^2 \\le ' + c + '$$';
+      renderMathInElement(equationEl, katexOptions);
+
       var readoutEl = document.getElementById('quadReadout');
       readoutEl.className = 'solution-readout flip-inactive';
-      readoutEl.innerHTML = 'הפתרון של $x^2 \\le ' + c + '$: $-' + root.toFixed(2) + ' \\le x \\le ' + root.toFixed(2) + '$';
+      readoutEl.innerHTML = 'הפתרון של $2^{x^2}\\le ' + k + '$: $-' + root.toFixed(2) + ' \\le x \\le ' + root.toFixed(2) + '$';
       renderMathInElement(readoutEl, katexOptions);
     }
 
