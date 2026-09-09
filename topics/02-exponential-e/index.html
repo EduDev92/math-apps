@@ -1218,41 +1218,66 @@
 
     /* ---------- Step 3: quiz question bank ---------- */
 
+    function buildUniqueExponentOptions(correctExp, rawDistractors) {
+      var used = {};
+      used[correctExp] = true;
+      var fallbackPool = [correctExp - 1, correctExp + 1, correctExp - 2, correctExp + 2, correctExp * 2, 0, 1, 2, -1];
+      var fallbackIdx = 0;
+      var result = [];
+      rawDistractors.forEach(function (val) {
+        var v = val;
+        while (used[v] !== undefined) {
+          while (fallbackIdx < fallbackPool.length && used[fallbackPool[fallbackIdx]] !== undefined) fallbackIdx++;
+          v = fallbackIdx < fallbackPool.length ? fallbackPool[fallbackIdx] : (correctExp + 100 + fallbackIdx);
+          fallbackIdx++;
+        }
+        used[v] = true;
+        result.push(v);
+      });
+      return result;
+    }
+
     var POWER_RULE_TEMPLATES = [
       function () {
         var m = randInt(1, 5), n = randInt(1, 4);
-        var correct = '$e^{' + (m + n) + '}$';
-        var d1 = '$e^{' + (m * n) + '}$';
-        var d2 = '$e^{' + (m - n) + '}$';
+        var correctExp = m + n;
+        var distExps = buildUniqueExponentOptions(correctExp, [m * n, m - n]);
+        var correct = '$e^{' + correctExp + '}$';
+        var d1 = '$e^{' + distExps[0] + '}$';
+        var d2 = '$e^{' + distExps[1] + '}$';
         var opts = shuffle([correct, d1, d2]);
         return {
           promptLatex: 'e^{' + m + '} \\cdot e^{' + n + '} = \\ ?',
           options: opts, correctIndex: opts.indexOf(correct),
-          explain: 'בכפל חזקות עם אותו בסיס מחברים את המעריכים: $e^{' + m + '}\\cdot e^{' + n + '} = e^{' + m + '+' + n + '} = e^{' + (m + n) + '}$.'
+          explain: 'בכפל חזקות עם אותו בסיס מחברים את המעריכים: $e^{' + m + '}\\cdot e^{' + n + '} = e^{' + m + '+' + n + '} = e^{' + correctExp + '}$.'
         };
       },
       function () {
         var m = randInt(4, 8), n = randInt(1, 3);
-        var correct = '$e^{' + (m - n) + '}$';
-        var d1 = '$e^{' + (m + n) + '}$';
-        var d2 = '$e^{' + Math.round(m / n) + '}$';
+        var correctExp = m - n;
+        var distExps = buildUniqueExponentOptions(correctExp, [m + n, Math.round(m / n)]);
+        var correct = '$e^{' + correctExp + '}$';
+        var d1 = '$e^{' + distExps[0] + '}$';
+        var d2 = '$e^{' + distExps[1] + '}$';
         var opts = shuffle([correct, d1, d2]);
         return {
           promptLatex: '\\dfrac{e^{' + m + '}}{e^{' + n + '}} = \\ ?',
           options: opts, correctIndex: opts.indexOf(correct),
-          explain: 'בחילוק חזקות עם אותו בסיס מחסרים את המעריכים: $\\dfrac{e^{' + m + '}}{e^{' + n + '}} = e^{' + m + '-' + n + '} = e^{' + (m - n) + '}$.'
+          explain: 'בחילוק חזקות עם אותו בסיס מחסרים את המעריכים: $\\dfrac{e^{' + m + '}}{e^{' + n + '}} = e^{' + m + '-' + n + '} = e^{' + correctExp + '}$.'
         };
       },
       function () {
         var m = randInt(2, 4), n = randInt(2, 3);
-        var correct = '$e^{' + (m * n) + '}$';
-        var d1 = '$e^{' + (m + n) + '}$';
-        var d2 = '$e^{' + Math.pow(m, n) + '}$';
+        var correctExp = m * n;
+        var distExps = buildUniqueExponentOptions(correctExp, [m + n, Math.pow(m, n)]);
+        var correct = '$e^{' + correctExp + '}$';
+        var d1 = '$e^{' + distExps[0] + '}$';
+        var d2 = '$e^{' + distExps[1] + '}$';
         var opts = shuffle([correct, d1, d2]);
         return {
           promptLatex: '\\left(e^{' + m + '}\\right)^{' + n + '} = \\ ?',
           options: opts, correctIndex: opts.indexOf(correct),
-          explain: 'בהעלאת חזקה בחזקה כופלים את המעריכים: $\\left(e^{' + m + '}\\right)^{' + n + '} = e^{' + m + '\\cdot ' + n + '} = e^{' + (m * n) + '}$.'
+          explain: 'בהעלאת חזקה בחזקה כופלים את המעריכים: $\\left(e^{' + m + '}\\right)^{' + n + '} = e^{' + m + '\\cdot ' + n + '} = e^{' + correctExp + '}$.'
         };
       },
       function () {
@@ -1482,7 +1507,7 @@
           btn.addEventListener('click', function () {
             if (state.quiz.locked) return;
             var idx = parseInt(this.dataset.index, 10);
-            submitAnswer(idx === q.correctIndex, this, '.quiz-option-btn');
+            submitAnswer(q.options[idx] === q.options[q.correctIndex], this, '.quiz-option-btn');
           });
         });
       }
@@ -1508,7 +1533,7 @@
         document.querySelectorAll('#quizBody ' + selector).forEach(function (b) {
           b.disabled = true;
           var idx = parseInt(b.dataset.index, 10);
-          if (idx === q.correctIndex) b.classList.add('option-correct');
+          if (q.options && q.options[idx] === q.options[q.correctIndex]) b.classList.add('option-correct');
           else if (b === clickedBtn) b.classList.add('option-incorrect');
         });
       }

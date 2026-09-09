@@ -1405,7 +1405,7 @@
           btn.addEventListener('click', function () {
             if (state.quiz.locked) return;
             var idx = parseInt(this.dataset.index, 10);
-            submitAnswer(idx === q.correctIndex, this, '.quiz-option-btn');
+            submitAnswer(q.options[idx] === q.options[q.correctIndex], this, '.quiz-option-btn');
           });
         });
       }
@@ -1431,7 +1431,7 @@
         document.querySelectorAll('#quizBody ' + selector).forEach(function (b) {
           b.disabled = true;
           var idx = parseInt(b.dataset.index, 10);
-          if (idx === q.correctIndex) b.classList.add('option-correct');
+          if (q.options && q.options[idx] === q.options[q.correctIndex]) b.classList.add('option-correct');
           else if (b === clickedBtn) b.classList.add('option-incorrect');
         });
       }
