@@ -50,4 +50,25 @@ body {
 .katex {
   direction: ltr;
   unicode-bidi: isolate;
+  max-width: 100%;
+}
+
+/* מונע מנוסחאות ארוכות לגלוש מחוץ לכרטיסים במסכים צרים - גלילה אופקית מקומית במקום חריגה */
+.katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 480px) {
+  .katex {
+    font-size: 0.9em;
+  }
+
+  .lesson-card {
+    padding: 14px 10px;
+    overflow-x: hidden;
+  }
 }
