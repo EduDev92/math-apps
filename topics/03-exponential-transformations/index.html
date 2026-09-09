@@ -1232,6 +1232,41 @@
       { label: '-e^{-x}', fn: function (x) { return -Math.exp(-x); } }
     ];
 
+    function findMidVisiblePoint(fn, xmin, xmax, ymin, ymax) {
+      var steps = 120;
+      var mid = (ymin + ymax) / 2;
+      var best = null, bestDist = Infinity;
+      for (var i = 0; i <= steps; i++) {
+        var x = xmin + (xmax - xmin) * i / steps;
+        var y = fn(x);
+        if (y >= ymin && y <= ymax) {
+          var dist = Math.abs(y - mid);
+          if (dist < bestDist) { bestDist = dist; best = { x: x, y: y }; }
+        }
+      }
+      if (!best) {
+        var yv = fn(xmax);
+        best = { x: xmax, y: Math.max(ymin, Math.min(ymax, yv)) };
+      }
+      return best;
+    }
+
+    function pickDistinguishingX(curves) {
+      var candidates = [1, -1, 2, -2, 0.5, -0.5, 1.5, -1.5];
+      for (var ci = 0; ci < candidates.length; ci++) {
+        var x = candidates[ci];
+        var vals = curves.map(function (c) { return c.fn(x); });
+        var allDistinct = true;
+        for (var i = 0; i < vals.length; i++) {
+          for (var j = i + 1; j < vals.length; j++) {
+            if (Math.abs(vals[i] - vals[j]) < 0.05) allDistinct = false;
+          }
+        }
+        if (allDistinct) return x;
+      }
+      return 1;
+    }
+
     function buildMultiCurveMarkup(curves) {
       var W = 560, H = 340, PAD = 40, XMIN = -4, XMAX = 4, YMIN = -6, YMAX = 8;
       var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
@@ -1252,29 +1287,57 @@
       curves.forEach(function (c, i) {
         var colorIdx = (i % 3) + 1;
         markup += '<path d="' + buildFnCurvePath(c.fn, mx, my, XMIN, XMAX, YMIN, YMAX) + '" class="multi-curve curve-q' + colorIdx + '"/>';
+        var lp = findMidVisiblePoint(c.fn, XMIN, XMAX, YMIN, YMAX);
+        markup += '<text x="' + mx(lp.x) + '" y="' + (my(lp.y) - 8) + '" class="curve-q-label curve-q' + colorIdx + '-label">' + c.roman + '</text>';
       });
 
       return markup;
     }
 
+    var MULTIGRAPH_COLOR_NAMES = { 'I': 'כחול', 'II': 'כתום', 'III': 'סגול' };
+
+    function formatNiceDecimal(v) {
+      var rounded = Math.round(v * 100) / 100;
+      return String(rounded);
+    }
+
     function generateTypeD() {
       var count = randChoice([2, 3]);
-      var chosen = shuffle(TRANSFORM_VARIANTS).slice(0, count);
+      var chosenVariants = shuffle(TRANSFORM_VARIANTS).slice(0, count);
+      var fnNames = ['f', 'g', 'h'];
       var romanLabels = ['I', 'II', 'III'];
-      var order = shuffle(chosen.map(function (_, i) { return i; }));
-      var curves = order.map(function (origIdx, pos) {
-        return { fn: chosen[origIdx].fn, label: chosen[origIdx].label, roman: romanLabels[pos] };
+      var romanOrder = shuffle(romanLabels.slice(0, count));
+      var curves = chosenVariants.map(function (v, i) {
+        return { fn: v.fn, label: v.label, roman: romanOrder[i], fnName: fnNames[i] };
       });
+
       var target = curves[randInt(0, curves.length - 1)];
-      var options = romanLabels.slice(0, count);
+      var romanSorted = romanLabels.slice(0, count);
+      var options = romanSorted;
+
+      var colorListText = romanSorted.map(function (r) { return r + ' (' + MULTIGRAPH_COLOR_NAMES[r] + ')'; }).join(' ו-');
+      var promptText = 'נתונות ' + (count === 2 ? 'שתי' : 'שלוש') + ' הפונקציות:';
+      var promptLatex = '\\begin{aligned} ' + curves.map(function (c) { return c.fnName + '(x) &= ' + c.label; }).join(' \\\\ ') + ' \\end{aligned}';
+      var promptTextAfter = 'במערכת הצירים שלפניכם משורטטים הגרפים ' + colorListText + '. איזה מהגרפים מתאים לפונקציה ' + target.fnName + '(x)?';
+
+      var evalX = pickDistinguishingX(curves);
+      var vals = curves.map(function (c) { return { fnName: c.fnName, value: c.fn(evalX) }; });
+      var valueLines = vals.map(function (v) { return v.fnName + '(' + evalX + ') = ' + formatNiceDecimal(v.value); }).join('\\,,\\ ');
+      var sortedDesc = vals.slice().sort(function (a, b) { return b.value - a.value; });
+      var rank = -1;
+      for (var ri = 0; ri < sortedDesc.length; ri++) if (sortedDesc[ri].fnName === target.fnName) rank = ri;
+      var rankText = rank === 0 ? 'הגבוה מביניהם' : (rank === sortedDesc.length - 1 ? 'הנמוך מביניהם' : 'באמצע, מבין הערכים');
+      var explain = 'עבור $x=' + evalX + '$ מתקיים: $' + valueLines + '$. הערך ' + rankText + ' הוא של $' + target.fnName + '(x)$, ולכן גרף ' + target.roman + ' מתאים לה.';
+
       return {
         type: 'D', kind: 'multigraph',
-        promptText: 'איזה מהגרפים הבאים מתאים לפונקציה הבאה?',
-        promptLatex: 'g(x) = ' + target.label,
+        promptText: promptText,
+        promptLatex: promptLatex,
+        promptTextAfter: promptTextAfter,
         curves: curves,
         options: options,
         correctIndex: options.indexOf(target.roman),
-        explain: 'שימו לב לכיוון הגדילה/דעיכה, לשיקוף ולהזזה האנכית כדי לזהות את הגרף המתאים ל-$g(x)=' + target.label + '$.'
+        explain: explain
       };
     }
 
@@ -1388,11 +1451,12 @@
       var html = '';
       if (q.promptText) html += '<p class="quiz-instruction">' + q.promptText + '</p>';
       if (q.promptLatex) html += '<div class="quiz-formula">$$' + q.promptLatex + '$$</div>';
+      if (q.promptTextAfter) html += '<p class="quiz-instruction">' + q.promptTextAfter + '</p>';
 
       if (q.kind === 'multigraph') {
         html += '<div class="quiz-multigraph-wrap"><svg viewBox="0 0 560 340" class="quiz-multigraph">' + buildMultiCurveMarkup(q.curves) + '</svg>' +
           '<div class="multigraph-legend">' + q.curves.map(function (c, i) {
-            return '<span class="multigraph-legend-item curve-q' + ((i % 3) + 1) + '-label">' + c.roman + ': $' + c.label + '$</span>';
+            return '<span class="multigraph-legend-item curve-q' + ((i % 3) + 1) + '-label">גרף ' + c.roman + '</span>';
           }).join('') + '</div></div>';
       }
 

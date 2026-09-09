@@ -1275,41 +1275,72 @@
       };
     }
 
+    function formatBaseX(label) {
+      if (label.indexOf('frac') !== -1) {
+        return '\\left(' + label + '\\right)^x';
+      }
+      return label + '^x';
+    }
+
+    function formatNiceDecimal(v) {
+      var rounded = Math.round(v * 100) / 100;
+      return String(rounded);
+    }
+
     var GROWTH_POOL = [
       { label: '1.5', value: 1.5 }, { label: '2', value: 2 }, { label: '2.5', value: 2.5 },
       { label: '3', value: 3 }, { label: '4', value: 4 }, { label: '5', value: 5 },
       { label: '7', value: 7 }, { label: 'e', value: Math.E }
     ];
     var DECAY_POOL = [
-      { label: '\\tfrac{1}{2}', value: 1 / 2 }, { label: '\\tfrac{1}{3}', value: 1 / 3 },
-      { label: '\\tfrac{1}{4}', value: 1 / 4 }, { label: '\\tfrac{1}{5}', value: 1 / 5 },
-      { label: '\\tfrac{2}{3}', value: 2 / 3 }, { label: '\\tfrac{3}{4}', value: 3 / 4 },
-      { label: '\\tfrac{2}{5}', value: 2 / 5 }
+      { label: '\\frac{1}{2}', value: 1 / 2 }, { label: '\\frac{1}{3}', value: 1 / 3 },
+      { label: '\\frac{1}{4}', value: 1 / 4 }, { label: '\\frac{1}{5}', value: 1 / 5 },
+      { label: '\\frac{2}{3}', value: 2 / 3 }, { label: '\\frac{3}{4}', value: 3 / 4 },
+      { label: '\\frac{2}{5}', value: 2 / 5 }
     ];
+
+    var MULTIGRAPH_COLOR_NAMES = { 'I': 'כחול', 'II': 'כתום', 'III': 'סגול' };
 
     function generateTypeC() {
       var mode = randChoice(['growth', 'decay']);
       var pool = mode === 'growth' ? GROWTH_POOL : DECAY_POOL;
       var count = randChoice([2, 3]);
-      var chosen = shuffle(pool).slice(0, count);
+      var chosenBases = shuffle(pool).slice(0, count);
+      var fnNames = ['f', 'g', 'h'];
       var romanLabels = ['I', 'II', 'III'];
-      var order = shuffle(chosen.map(function (_, i) { return i; }));
-      var curves = order.map(function (origIdx, pos) {
-        return { value: chosen[origIdx].value, label: chosen[origIdx].label, roman: romanLabels[pos] };
+      var romanOrder = shuffle(romanLabels.slice(0, count));
+      var curves = chosenBases.map(function (b, i) {
+        return { value: b.value, label: b.label, roman: romanOrder[i], fnName: fnNames[i] };
       });
+
       var target = curves[randInt(0, curves.length - 1)];
-      var options = romanLabels.slice(0, count);
-      var direction = mode === 'growth'
-        ? 'עבור $x>0$ הגרף עם הבסיס הגדול יותר תלול יותר, ואילו עבור $x<0$ הסדר מתהפך — הגרף עם הבסיס הגדול יותר קרוב יותר לאסימפטוטה.'
-        : 'עבור $x>0$ הגרף עם הבסיס הקטן יותר יורד מהר יותר (קרוב יותר לאסימפטוטה), ואילו עבור $x<0$ הסדר מתהפך.';
+      var romanSorted = romanLabels.slice(0, count);
+      var options = romanSorted;
+
+      var colorListText = romanSorted.map(function (r) { return r + ' (' + MULTIGRAPH_COLOR_NAMES[r] + ')'; }).join(' ו-');
+      var promptText = 'נתונות ' + (count === 2 ? 'שתי' : 'שלוש') + ' הפונקציות:';
+      var promptLatex = '\\begin{aligned} ' + curves.map(function (c) { return c.fnName + '(x) &= ' + formatBaseX(c.label); }).join(' \\\\ ') + ' \\end{aligned}';
+      var promptTextAfter = 'במערכת הצירים שלפניכם משורטטים הגרפים ' + colorListText + '. איזה מהגרפים מתאים לפונקציה ' + target.fnName + '(x)?';
+
+      var evalX = mode === 'growth' ? 1 : -1;
+      var vals = curves.map(function (c) { return { fnName: c.fnName, roman: c.roman, value: Math.pow(c.value, evalX) }; });
+      var valueLines = vals.map(function (v) { return v.fnName + '(' + evalX + ') = ' + formatNiceDecimal(v.value); }).join('\\,,\\ ');
+      var sortedDesc = vals.slice().sort(function (a, b) { return b.value - a.value; });
+      var rank = -1;
+      for (var ri = 0; ri < sortedDesc.length; ri++) if (sortedDesc[ri].fnName === target.fnName) rank = ri;
+      var rankText = rank === 0 ? 'הגבוה מביניהם' : (rank === sortedDesc.length - 1 ? 'הנמוך מביניהם' : 'באמצע, מבין הערכים');
+      var sideText = evalX < 0 ? 'משמאל לציר ה-y' : 'מימין לציר ה-y';
+      var explain = 'עבור $x=' + evalX + '$ מתקיים: $' + valueLines + '$. הערך ' + rankText + ' ' + sideText + ' הוא של $' + target.fnName + '(x)$, ולכן גרף ' + target.roman + ' מתאים לה.';
+
       return {
         type: 'C', kind: 'multigraph',
-        promptText: 'איזה מהגרפים הבאים מתאים לפונקציה הבאה? נמקו לפי קצב הגדילה/תלילות.',
-        promptLatex: 'f(x) = ' + target.label + '^x',
+        promptText: promptText,
+        promptLatex: promptLatex,
+        promptTextAfter: promptTextAfter,
         curves: curves,
         options: options,
         correctIndex: options.indexOf(target.roman),
-        explain: 'כל הגרפים עוברים דרך הנקודה המשותפת $(0,1)$. ' + direction + ' הגרף המסומן ' + target.roman + ' מתאים לבסיס $a=' + target.label + '$.'
+        explain: explain
       };
     }
 
@@ -1379,7 +1410,7 @@
         return {
           type: 'F', kind: 'choice',
           promptText: 'ללא חישוב מדויק, קבעו לפי מונוטוניות הפונקציה איזה סימן מתאים:',
-          promptLatex: 'f(x) = ' + chosenBase.label + '^x \\quad:\\quad f(' + x1 + ')\\ \\square\\ f(' + x2 + ')',
+          promptLatex: 'f(x) = ' + formatBaseX(chosenBase.label) + ' \\quad:\\quad f(' + x1 + ')\\ \\square\\ f(' + x2 + ')',
           options: options,
           correctIndex: options.indexOf('$' + symbol + '$'),
           explain: 'הבסיס ' + (isGrowth ? 'גדול מ-1, ולכן $f$ עולה' : 'נמצא בין 0 ל-1, ולכן $f$ יורדת') + '. מכיוון ש-$' + x1 + (x1 < x2 ? '<' : '>') + x2 + '$, מתקיים $f(' + x1 + ')' + symbol + 'f(' + x2 + ')$.'
@@ -1405,7 +1436,7 @@
         return {
           type: 'F', kind: 'choice',
           promptText: 'ללא חישוב מדויק, קבעו לפי מונוטוניות הפונקציות איזה סימן מתאים:',
-          promptLatex: 'f(x) = ' + baseA.label + '^x,\\ g(x) = ' + baseB.label + '^x \\quad:\\quad f(' + xVal + ')\\ \\square\\ g(' + xVal + ')',
+          promptLatex: 'f(x) = ' + formatBaseX(baseA.label) + ',\\ g(x) = ' + formatBaseX(baseB.label) + ' \\quad:\\quad f(' + xVal + ')\\ \\square\\ g(' + xVal + ')',
           options: options,
           correctIndex: options.indexOf('$' + symbol2 + '$'),
           explain: explainText
@@ -1499,11 +1530,12 @@
       var html = '';
       if (q.promptText) html += '<p class="quiz-instruction">' + q.promptText + '</p>';
       if (q.promptLatex) html += '<div class="quiz-formula">$$' + q.promptLatex + '$$</div>';
+      if (q.promptTextAfter) html += '<p class="quiz-instruction">' + q.promptTextAfter + '</p>';
 
       if (q.kind === 'multigraph') {
         html += '<div class="quiz-multigraph-wrap"><svg viewBox="0 0 560 340" class="quiz-multigraph">' + buildMultiCurveMarkup(q.curves) + '</svg>' +
           '<div class="multigraph-legend">' + q.curves.map(function (c, i) {
-            return '<span class="multigraph-legend-item curve-q' + ((i % 3) + 1) + '-label">' + c.roman + ': $' + c.label + '^x$</span>';
+            return '<span class="multigraph-legend-item curve-q' + ((i % 3) + 1) + '-label">גרף ' + c.roman + '</span>';
           }).join('') + '</div></div>';
       }
 
