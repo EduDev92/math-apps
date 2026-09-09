@@ -1224,29 +1224,23 @@
     /* ---------- Step 3: quiz question bank ---------- */
 
     function generateTypeA() {
-      var forms = ['exp', 'lin', 'pow'];
-      var chosen = randChoice(forms);
+      var chosen = randChoice(['exp', 'lin']);
       var b = randInt(2, 9);
       var c = randInt(2, 9);
-      var n = randInt(2, 5);
       var displayLatex, correctLabel, explainWhy;
       if (chosen === 'exp') {
         displayLatex = b + '^x';
-        correctLabel = 'מעריכית';
-        explainWhy = 'זוהי פונקציה מעריכית, כי המשתנה $x$ נמצא בחזקה.';
-      } else if (chosen === 'lin') {
-        displayLatex = c + 'x';
-        correctLabel = 'ליניארית';
-        explainWhy = 'זוהי פונקציה ליניארית, כי $x$ מוכפל במקדם קבוע בחזקה ראשונה.';
+        correctLabel = 'גדילה מעריכית';
+        explainWhy = 'זוהי גדילה מעריכית: המשתנה $x$ נמצא בחזקה, ולכן כל הגדלה של $x$ ביחידה אחת מכפילה את הערך באותו גורם קבוע.';
       } else {
-        displayLatex = 'x^{' + n + '}';
-        correctLabel = 'חזקה';
-        explainWhy = 'זוהי פונקציית חזקה, כי הבסיס הוא המשתנה $x$ והמעריך קבוע.';
+        displayLatex = c + 'x';
+        correctLabel = 'גדילה ליניארית';
+        explainWhy = 'זוהי גדילה ליניארית: $x$ מוכפל במקדם קבוע בחזקה ראשונה, ולכן כל הגדלה של $x$ ביחידה אחת מוסיפה לערך את אותו מספר קבוע.';
       }
-      var options = shuffle(['מעריכית', 'ליניארית', 'חזקה']);
+      var options = shuffle(['גדילה מעריכית', 'גדילה ליניארית']);
       return {
         type: 'A', kind: 'choice',
-        promptText: 'לאיזה סוג פונקציה שייך הביטוי הבא?',
+        promptText: 'איזה סוג גדילה מתאר הביטוי הבא?',
         promptLatex: 'f(x) = ' + displayLatex,
         options: options,
         correctIndex: options.indexOf(correctLabel),
@@ -1369,11 +1363,61 @@
       };
     }
 
+    function generateTypeF() {
+      var mode = randChoice(['sameFn', 'sameX']);
+      var options = shuffle(['$<$', '$=$', '$>$']);
+
+      if (mode === 'sameFn') {
+        var chosenBase = randChoice(GROWTH_POOL.concat(DECAY_POOL));
+        var x1 = randInt(-4, 4);
+        var x2;
+        do { x2 = randInt(-4, 4); } while (x2 === x1);
+        var v1 = Math.pow(chosenBase.value, x1);
+        var v2 = Math.pow(chosenBase.value, x2);
+        var symbol = v1 < v2 ? '<' : (v1 > v2 ? '>' : '=');
+        var isGrowth = chosenBase.value > 1;
+        return {
+          type: 'F', kind: 'choice',
+          promptText: 'ללא חישוב מדויק, קבעו לפי מונוטוניות הפונקציה איזה סימן מתאים:',
+          promptLatex: 'f(x) = ' + chosenBase.label + '^x \\quad:\\quad f(' + x1 + ')\\ \\square\\ f(' + x2 + ')',
+          options: options,
+          correctIndex: options.indexOf('$' + symbol + '$'),
+          explain: 'הבסיס ' + (isGrowth ? 'גדול מ-1, ולכן $f$ עולה' : 'נמצא בין 0 ל-1, ולכן $f$ יורדת') + '. מכיוון ש-$' + x1 + (x1 < x2 ? '<' : '>') + x2 + '$, מתקיים $f(' + x1 + ')' + symbol + 'f(' + x2 + ')$.'
+        };
+      } else {
+        var pool = shuffle(GROWTH_POOL.concat(DECAY_POOL));
+        var baseA = pool[0], baseB = pool[1];
+        var xVal = randChoice([-2, -1, 0, 1, 2, 3]);
+        var symbol2;
+        if (xVal === 0) symbol2 = '=';
+        else if (xVal > 0) symbol2 = baseA.value > baseB.value ? '>' : '<';
+        else symbol2 = baseA.value > baseB.value ? '<' : '>';
+
+        var explainText;
+        if (xVal === 0) {
+          explainText = 'עבור $x=0$ מתקיים תמיד $a^0=1$ לכל בסיס $a$, ולכן $f(0)=g(0)=1$.';
+        } else if (xVal > 0) {
+          explainText = 'עבור $x>0$, ככל שהבסיס גדול יותר כך הערך גדול יותר.';
+        } else {
+          explainText = 'עבור $x<0$, ככל שהבסיס גדול יותר כך הערך קטן יותר (הסדר מתהפך).';
+        }
+
+        return {
+          type: 'F', kind: 'choice',
+          promptText: 'ללא חישוב מדויק, קבעו לפי מונוטוניות הפונקציות איזה סימן מתאים:',
+          promptLatex: 'f(x) = ' + baseA.label + '^x,\\ g(x) = ' + baseB.label + '^x \\quad:\\quad f(' + xVal + ')\\ \\square\\ g(' + xVal + ')',
+          options: options,
+          correctIndex: options.indexOf('$' + symbol2 + '$'),
+          explain: explainText
+        };
+      }
+    }
+
     function generateQuizQuestions() {
       var qs = [];
       qs.push(generateTypeA()); qs.push(generateTypeA());
       qs.push(generateTypeB()); qs.push(generateTypeB());
-      qs.push(generateTypeC()); qs.push(generateTypeC());
+      qs.push(generateTypeC());
 
       var usedD = [];
       for (var i = 0; i < 2; i++) {
@@ -1392,7 +1436,8 @@
 
       var usedE = [];
       qs.push(generateTypeE(usedE));
-      qs.push(generateTypeE(usedE));
+
+      qs.push(generateTypeF()); qs.push(generateTypeF());
 
       return shuffle(qs);
     }

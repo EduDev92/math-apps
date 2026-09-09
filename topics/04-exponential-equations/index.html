@@ -759,11 +759,11 @@
         final: 't=8 \\ \\text{תקף} \\quad\\Rightarrow\\quad 2^x=8 \\quad\\Rightarrow\\quad x=3'
       },
       {
-        equationLatex: 'e^{2x} - 5e^x + 6 = 0',
-        step1: 't = e^x \\quad\\Rightarrow\\quad t^2 - 5t + 6 = 0',
-        step2: '(t-2)(t-3) = 0 \\quad\\Rightarrow\\quad t=2 \\ \\text{או}\\ t=3',
-        roots: [{ t: 2, valid: true }, { t: 3, valid: true }],
-        final: 't=2 \\Rightarrow x=\\ln 2 \\quad , \\quad t=3 \\Rightarrow x=\\ln 3'
+        equationLatex: '9^x - 10\\cdot3^x + 9 = 0',
+        step1: 't = 3^x \\quad\\Rightarrow\\quad t^2 - 10t + 9 = 0',
+        step2: '(t-1)(t-9) = 0 \\quad\\Rightarrow\\quad t=1 \\ \\text{או}\\ t=9',
+        roots: [{ t: 1, valid: true }, { t: 9, valid: true }],
+        final: 't=1 \\Rightarrow x=0 \\quad , \\quad t=9 \\Rightarrow x=2'
       }
     ];
 
@@ -843,7 +843,7 @@
       { promptLatex: '4^{2x} - 4^x - 12 = 0', correctLabel: '1', explain: 'מציבים $t=4^x$: $t^2-t-12=0 \\Rightarrow (t-4)(t+3)=0 \\Rightarrow t=4$ או $t=-3$. פוסלים $t=-3$, ומקבלים פתרון יחיד: $x=1$.' },
       { promptLatex: '9^x - 4\\cdot3^x + 3 = 0', correctLabel: '2', explain: 'מציבים $t=3^x$: $t^2-4t+3=0 \\Rightarrow (t-1)(t-3)=0 \\Rightarrow t=1$ או $t=3$. שני הפתרונות חיוביים: $x=0$ ו-$x=1$.' },
       { promptLatex: '4^x - 6\\cdot2^x - 16 = 0', correctLabel: '1', explain: 'מציבים $t=2^x$: $t^2-6t-16=0 \\Rightarrow (t-8)(t+2)=0 \\Rightarrow t=8$ או $t=-2$. פוסלים $t=-2$, ומקבלים פתרון יחיד: $x=3$.' },
-      { promptLatex: 'e^{2x} - 5e^x + 6 = 0', correctLabel: '2', explain: 'מציבים $t=e^x$: $t^2-5t+6=0 \\Rightarrow (t-2)(t-3)=0 \\Rightarrow t=2$ או $t=3$. שני הפתרונות חיוביים: $x=\\ln2$ ו-$x=\\ln3$.' }
+      { promptLatex: '9^x - 10\\cdot3^x + 9 = 0', correctLabel: '2', explain: 'מציבים $t=3^x$: $t^2-10t+9=0 \\Rightarrow (t-1)(t-9)=0 \\Rightarrow t=1$ או $t=9$. שני הפתרונות חיוביים: $x=0$ ו-$x=2$.' }
     ];
 
     function pickTwo(bank) {

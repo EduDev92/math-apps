@@ -1317,23 +1317,30 @@
       };
     }
 
-    function generateTypeS(xVal) {
-      var bases = [{ key: '2', value: 2 }, { key: 'e', value: Math.E }, { key: '3', value: 3 }];
-      var slopes = bases.map(function (b) { return Math.log(b.value) * Math.pow(b.value, xVal); });
-      var maxIdx = 0;
-      for (var i = 1; i < slopes.length; i++) if (slopes[i] > slopes[maxIdx]) maxIdx = i;
-      var order = shuffle([0, 1, 2]);
-      var options = order.map(function (i) { return '$' + bases[i].key + '^x$'; });
-      var correctIndex = order.indexOf(maxIdx);
+    var PROPERTY_BANK = [
+      { answer: true, text: 'הפונקציה $f(x)=e^x$ מוגדרת לכל $x$ ממשי.', explain: 'תחום ההגדרה של $e^x$ הוא כל המספרים הממשיים, בדיוק כמו כל פונקציה מעריכית אחרת.' },
+      { answer: true, text: 'הפונקציה $f(x)=e^x$ חיובית לכל $x$.', explain: '$e^x>0$ לכל $x$, בדיוק כמו כל פונקציה מעריכית עם בסיס חיובי.' },
+      { answer: true, text: 'הפונקציה $f(x)=e^x$ עולה לכל $x$.', explain: 'מכיוון ש-$e\\approx2.718>1$, הפונקציה $e^x$ עולה בכל תחום ההגדרה שלה.' },
+      { answer: true, text: 'גרף הפונקציה $f(x)=e^x$ חותך את ציר ה-y בנקודה $(0,1)$.', explain: 'לכל בסיס $a$ מתקיים $a^0=1$, ובפרט $e^0=1$.' },
+      { answer: true, text: 'האסימפטוטה האופקית של $f(x)=e^x$ היא הישר $y=0$.', explain: 'כמו כל פונקציה מעריכית עולה, $e^x$ מתקרב ל-0 (אך לא מגיע אליו) כאשר $x$ שואף למינוס אינסוף.' },
+      { answer: false, text: 'הפונקציה $g(x)=\\left(\\tfrac1e\\right)^x$ עולה לכל $x$.', explain: 'הבסיס $\\tfrac1e$ נמצא בין 0 ל-1 (כי $e>1$), ולכן $g(x)=\\left(\\tfrac1e\\right)^x$ יורדת לכל $x$.' },
+      { answer: false, text: 'קיים ערך $x$ שעבורו $e^x=0$.', explain: '$e^x>0$ לכל $x$ ולעולם אינו מתאפס, ולכן אין ערך $x$ שמקיים $e^x=0$.' }
+    ];
+
+    function generatePropertyQuestion(usedIndices) {
+      var idx;
+      do { idx = randInt(0, PROPERTY_BANK.length - 1); } while (usedIndices.indexOf(idx) !== -1);
+      usedIndices.push(idx);
+      var item = PROPERTY_BANK[idx];
+      var options = shuffle(['נכון', 'לא נכון']);
+      var correctLabel = item.answer ? 'נכון' : 'לא נכון';
       return {
-        type: 'S', kind: 'choice',
-        promptText: 'עבור אילו מהפונקציות הבאות המשיק (קו המשיק) תלול ביותר בנקודה x = ' + xVal + '?',
+        type: 'PROP', kind: 'choice',
+        promptText: item.text,
         promptLatex: null,
         options: options,
-        correctIndex: correctIndex,
-        explain: 'שיפוע המשיק ל-$b^x$ בנקודה נתונה שווה ל-$\\ln(b)\\cdot b^x$. ' + (xVal < 0
-          ? 'עבור ערכי x שליליים מספיק, ככל שהבסיס קטן יותר — השיפוע (בערכו) גדול יותר, בדיוק כפי שראיתם בהיפוך התלילות בגרפים בלומדה הקודמת.'
-          : 'עבור $x \\geq 0$, ככל שהבסיס גדול יותר — השיפוע גדול יותר.')
+        correctIndex: options.indexOf(correctLabel),
+        explain: item.explain
       };
     }
 
@@ -1420,20 +1427,14 @@
       var usedP = [];
       for (var i = 0; i < 3; i++) qs.push(generatePowerRuleQuestion(usedP));
 
-      var usedX = [];
-      var xPool = [-2, -1, 0, 1, 2];
-      for (var j = 0; j < 3; j++) {
-        var xv;
-        do { xv = randChoice(xPool); } while (usedX.indexOf(xv) !== -1);
-        usedX.push(xv);
-        qs.push(generateTypeS(xv));
-      }
-
       var usedL = [];
       for (var k = 0; k < 2; k++) qs.push(generateLimitQuestion(usedL));
 
       var usedI = [];
-      for (var m = 0; m < 2; m++) qs.push(generateInputQuestion(usedI));
+      for (var m = 0; m < 3; m++) qs.push(generateInputQuestion(usedI));
+
+      var usedProp = [];
+      for (var p = 0; p < 2; p++) qs.push(generatePropertyQuestion(usedProp));
 
       return shuffle(qs);
     }
