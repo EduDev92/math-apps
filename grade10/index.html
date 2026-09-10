@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מרחב לומדות גיאומטריה | כיתה י'</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../shared/css/common.css">
+  <style>
+    .portal-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--blue-deep);
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+    .topic-section {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 30px;
+    }
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .app-card {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .app-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .app-card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      flex-grow: 1;
+    }
+    .badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #64748b;
+    }
+    .badge-available {
+      background: var(--green-soft);
+      color: #1f7a41;
+    }
+    .app-card-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+    }
+    .app-card-link:hover {
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-card);
+      transform: translateY(-2px);
+    }
+    .grade-tag {
+      display: inline-block;
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="portal-container">
+    <header class="header">
+      <span class="grade-tag">כיתה י' &middot; 4 יח"ל</span>
+      <h1>מרחב לומדות אינטראקטיביות בגיאומטריה</h1>
+      <p>גיאומטריה במישור – למידה, חקירה ותרגול אינטראקטיבי</p>
+    </header>
+
+    <main>
+      <section class="topic-section">
+        <h2 class="topic-title">נושא 1: מרובעים</h2>
+        <div class="apps-grid">
+          <a class="app-card app-card-link" href="topics/01-quadrilaterals/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>1. תכונות מרובעים</h3>
+            <p>צלעות ואלכסונים במקבילית, מלבן, מעוין, ריבוע וטרפזים על סוגיהם — היכרות, מעבדת תכונות אינטראקטיבית ותרגול.</p>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
