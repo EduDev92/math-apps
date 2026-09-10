@@ -188,6 +188,11 @@
     .certificate-quote { font-style: italic; font-size: 0.96rem; color: var(--blue-primary); padding: 0 10px; margin-bottom: 16px; line-height: 1.6; }
     .certificate-ref { position: absolute; bottom: 8px; left: 14px; font-size: 0.68rem; color: #b8b8b8; direction: ltr; }
     .btn-download-cert { max-width: 420px; }
+    .encouragement-card { background: var(--orange-soft); border: 2px dashed var(--orange-strong); border-radius: var(--radius-lg); padding: 32px 24px; text-align: center; max-width: 480px; margin: 10px auto 0; }
+    .encouragement-icon { font-size: 44px; margin-bottom: 12px; }
+    .encouragement-text { font-size: 1.02rem; color: var(--text-main); font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
+    .btn-retry-fail { font-size: 1.05rem; padding: 14px 32px; }
+    .summary-actions[hidden] { display: none; }
 
     .summary-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
@@ -328,8 +333,8 @@
           </div>
 
           <div class="certificate-card" id="certificateCard">
-            <div class="certificate-trophy" aria-hidden="true">🏆</div>
-            <h3 class="certificate-title">תעודת הצטיינות והערכה במתמטיקה - 5 יח"ל</h3>
+            <div class="certificate-trophy" id="certIcon" aria-hidden="true">🏆</div>
+            <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות והערכה במתמטיקה - 5 יח"ל</h3>
             <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
             <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
             <p class="certificate-lesson-name" id="certLessonName">לומדה: זוגיות, אי-זוגיות וסימן הפונקציה</p>
@@ -337,9 +342,15 @@
             <p class="certificate-quote" id="certQuote"></p>
             <div class="certificate-ref" id="certTime">Time: 0s</div>
           </div>
+
+          <div class="encouragement-card" id="encouragementCard" hidden>
+            <div class="encouragement-icon" aria-hidden="true">💪</div>
+            <p class="encouragement-text">לא נורא! כדי להרוויח את התעודה, יש לקבל ציון עובר (60 ומעלה). חזרו לתרגל ונסו שוב.</p>
+            <button id="btnRetryFail" class="btn btn-primary btn-retry-fail" type="button">נסה שוב</button>
+          </div>
         </div>
 
-        <div class="summary-actions">
+        <div class="summary-actions" id="summaryActions">
           <button id="btnRestart" class="btn btn-secondary" type="button">התחל מחדש</button>
           <button id="btnDownloadCert" class="btn btn-primary btn-download-cert" type="button">שמירת התעודה כתמונה (לשליחה בוואטסאפ / קלאסרום)</button>
         </div>
@@ -677,22 +688,33 @@
       document.getElementById('resultsPercent').textContent = pct + '%';
       var verdict, cardClass;
       if (pct >= 90) { verdict = 'מצוין! שליטה מלאה בחומר.'; cardClass = 'results-good'; }
-      else if (pct >= 70) { verdict = 'טוב מאוד! יש עוד קצת לחדד.'; cardClass = 'results-good'; }
-      else if (pct >= 50) { verdict = 'סביר — כדאי לחזור על שלבים 1-2 ולנסות שוב.'; cardClass = 'results-mid'; }
-      else { verdict = 'כדאי לחזור על החומר בשלבים 1-2 ולתרגל שוב.'; cardClass = 'results-low'; }
+      else if (pct >= 60) { verdict = 'כל הכבוד, עברתם בהצלחה!'; cardClass = 'results-mid'; }
+      else { verdict = 'עדיין לא עברתם את סף המעבר (60). חזרו לתרגל ונסו שוב.'; cardClass = 'results-low'; }
       document.getElementById('resultsVerdict').textContent = verdict;
       document.getElementById('resultsCard').className = 'results-card ' + cardClass;
-      renderCertificate(pct, correct, total);
+
+      var passed = pct >= 60;
+      document.getElementById('certificateCard').hidden = !passed;
+      document.getElementById('encouragementCard').hidden = passed;
+      document.getElementById('summaryActions').hidden = !passed;
+
+      if (passed) renderCertificate(pct, correct, total);
     }
 
     function renderCertificate(pct, correct, total) {
       document.getElementById('certStudentName').textContent = studentName || 'תלמיד/ה';
       document.getElementById('certLessonName').textContent = 'לומדה: ' + LESSON_NAME;
       document.getElementById('certScore').textContent = 'ציון סופי: ' + pct + ' (' + correct + '/' + total + ')';
-      var quote;
-      if (pct >= 90) quote = '"ההצלחה היא סך כל המאמצים הקטנים שנעשים יום אחרי יום."';
-      else if (pct >= 70) quote = '"טעויות הן שכר הלימוד של ההצלחה הבאה שלך. המשיכו לחקור!"';
-      else quote = '"מי שלא מעז לנסות, לעולם לא יגלה לאילו גבהים הוא מסוגל להגיע."';
+      var icon, title, quote;
+      if (pct >= 90) {
+        icon = '🏆'; title = 'תעודת הצטיינות';
+        quote = '"ההצלחה היא סך כל המאמצים הקטנים שנעשים יום אחרי יום."';
+      } else {
+        icon = '🏅'; title = 'תעודת סיום בהצלחה';
+        quote = '"טעויות הן שכר הלימוד של ההצלחה הבאה שלך. המשיכו לחקור!"';
+      }
+      document.getElementById('certIcon').textContent = icon;
+      document.getElementById('certTitleText').textContent = title;
       document.getElementById('certQuote').textContent = quote;
       var timeText = (typeof quizTiming.totalSeconds === 'number') ? 'Time: ' + quizTiming.totalSeconds + 's' : '';
       document.getElementById('certTime').textContent = timeText;
@@ -775,12 +797,15 @@
       startQuiz();
     });
 
-    document.getElementById('btnRestart').addEventListener('click', function () {
+    function restartQuiz() {
       quizTiming.startTime = Date.now();
       quizTiming.totalSeconds = null;
       startQuiz();
       goToStep(3);
-    });
+    }
+    document.getElementById('btnRestart').addEventListener('click', restartQuiz);
+    var btnRetryFail = document.getElementById('btnRetryFail');
+    if (btnRetryFail) btnRetryFail.addEventListener('click', restartQuiz);
 
     document.getElementById('btnDownloadCert').addEventListener('click', function () {
       var btn = this;
