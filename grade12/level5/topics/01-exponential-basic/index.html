@@ -3,18 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>טרנספורמציות בפונקציה מעריכית | לומדה 3</title>
+  <title>מבוא ומאפייני הפונקציה המעריכית | לומדה 1</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../../shared/css/common.css">
+  <link rel="stylesheet" href="../../../../shared/css/common.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <style>
     :root {
       --orange-strong: #c2650b;
       --orange-soft: #fdecd2;
-      --purple-strong: #7c3aed;
-      --purple-soft: #ede9fe;
     }
 
     body {
@@ -39,7 +37,7 @@
     }
 
     .lesson-container {
-      max-width: 980px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 24px 20px 60px;
     }
@@ -93,18 +91,52 @@
       color: var(--blue-deep);
     }
 
-    .math-ltr-block {
+    .reason-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .reason-list li {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .compare-col {
+      background: #f8fafc;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+
+    .compare-col h4 {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .seq {
       direction: ltr;
       text-align: center;
-      margin: 10px 0;
+      font-weight: 800;
       font-size: 1.15rem;
-      max-width: 100%;
-      overflow-x: auto;
+      color: var(--blue-deep);
     }
 
     .property-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 14px;
       margin-top: 10px;
     }
@@ -114,6 +146,7 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 16px;
+      position: relative;
     }
 
     .property-num {
@@ -134,46 +167,15 @@
       font-size: 1rem;
       font-weight: 700;
       margin-bottom: 6px;
-      color: var(--blue-deep);
     }
 
-    .property-card .rule-formula {
+    .math-ltr-block {
       direction: ltr;
       text-align: center;
-      margin: 6px 0;
-      font-size: 1.05rem;
+      margin: 10px 0;
+      font-size: 1.15rem;
       max-width: 100%;
       overflow-x: auto;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      margin-bottom: 10px;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    .data-table th,
-    .data-table td {
-      border: 1px solid var(--border-subtle);
-      padding: 12px 14px;
-      text-align: center;
-    }
-
-    .data-table th {
-      background: var(--blue-soft);
-      color: var(--blue-deep);
-      font-weight: 700;
-    }
-
-    .data-table td:first-child {
-      background: #f8fafc;
-      font-weight: 700;
-      color: var(--text-muted);
     }
 
     /* Step 2: explorer */
@@ -194,9 +196,6 @@
       width: 100%;
       height: auto;
       display: block;
-      background: #fff;
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
       direction: ltr;
     }
 
@@ -235,12 +234,23 @@
       fill: none;
       stroke-width: 3;
       stroke-linecap: round;
-      stroke: var(--blue-primary);
     }
 
-    .curve-reference {
-      fill: none;
+    .curve-growth {
+      stroke: var(--green-success);
+    }
+
+    .curve-decay {
+      stroke: var(--orange-strong);
+    }
+
+    .curve-flat {
       stroke: #94a3b8;
+    }
+
+    .curve-e {
+      fill: none;
+      stroke: #7c3aed;
       stroke-width: 2;
       stroke-dasharray: 5, 5;
     }
@@ -257,22 +267,39 @@
       font-weight: 700;
     }
 
+    .graph-message {
+      margin-top: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+
+    .msg-growth {
+      background: var(--green-soft);
+      color: #1f7a41;
+    }
+
+    .msg-decay {
+      background: var(--orange-soft);
+      color: var(--orange-strong);
+    }
+
+    .msg-flat {
+      background: #eef2f9;
+      color: var(--text-muted);
+    }
+
     .controls-panel {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 14px;
     }
 
-    .param-row {
-      margin-bottom: 12px;
-    }
-
-    .param-row label {
-      display: block;
+    .slider-label {
       font-weight: 700;
       color: var(--text-main);
-      margin-bottom: 6px;
-      font-size: 0.92rem;
     }
 
     input[type="range"] {
@@ -286,24 +313,6 @@
       gap: 8px;
       font-size: 0.92rem;
       cursor: pointer;
-      margin: 8px 0 14px;
-    }
-
-    .equation-display {
-      background: #fff;
-      border: 2px solid var(--blue-soft);
-      border-radius: var(--radius-md);
-      padding: 12px;
-      text-align: center;
-      margin-bottom: 12px;
-    }
-
-    .asymptote-readout {
-      text-align: center;
-      font-weight: 700;
-      color: var(--red-error);
-      margin-bottom: 14px;
-      font-size: 0.95rem;
     }
 
     .legend {
@@ -334,8 +343,15 @@
       background: var(--blue-primary);
     }
 
-    .swatch-ref {
-      background: #94a3b8;
+    .swatch-e {
+      background: #7c3aed;
+    }
+
+    .swatch-point {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--blue-primary);
     }
 
     .swatch-asymptote {
@@ -558,99 +574,6 @@
       margin-top: 18px;
     }
 
-    /* Buttons */
-    .btn {
-      padding: 12px 26px;
-      border-radius: var(--radius-sm);
-      border: none;
-      font-family: var(--font-family);
-      font-weight: 700;
-      font-size: 0.98rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .btn-primary {
-      background: var(--blue-primary);
-      color: #fff;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: var(--blue-deep);
-    }
-
-    .btn-primary:disabled {
-      background: #a9bcd8;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: #eef2f9;
-      color: var(--blue-primary);
-      border: 1px solid var(--border-subtle);
-    }
-
-    .btn-secondary:hover {
-      background: var(--blue-soft);
-    }
-
-    .nav-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    /* Step 4: summary */
-    .results-card {
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 26px;
-      text-align: center;
-      margin-bottom: 26px;
-      transition: all 0.2s;
-    }
-
-    .results-good {
-      border-color: var(--green-success);
-      background: var(--green-soft);
-    }
-
-    .results-mid {
-      border-color: var(--orange-strong);
-      background: var(--orange-soft);
-    }
-
-    .results-low {
-      border-color: var(--red-error);
-      background: var(--red-soft);
-    }
-
-    .results-number {
-      font-size: 3rem;
-      font-weight: 800;
-      color: var(--blue-deep);
-    }
-
-    .results-label {
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-
-    .results-percent-row {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .results-verdict {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--blue-deep);
-    }
-
     .name-gate {
       max-width: 480px;
       margin: 30px auto;
@@ -773,6 +696,129 @@
     .btn-retry-fail { font-size: 1.05rem; padding: 14px 32px; }
     .summary-actions[hidden] { display: none; }
 
+    /* Buttons */
+    .btn {
+      padding: 12px 26px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-primary {
+      background: var(--blue-primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--blue-deep);
+    }
+
+    .btn-primary:disabled {
+      background: #a9bcd8;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #eef2f9;
+      color: var(--blue-primary);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .btn-secondary:hover {
+      background: var(--blue-soft);
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* Step 4: summary */
+    .results-card {
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      text-align: center;
+      margin-bottom: 26px;
+      transition: all 0.2s;
+    }
+
+    .results-good {
+      border-color: var(--green-success);
+      background: var(--green-soft);
+    }
+
+    .results-mid {
+      border-color: var(--orange-strong);
+      background: var(--orange-soft);
+    }
+
+    .results-low {
+      border-color: var(--red-error);
+      background: var(--red-soft);
+    }
+
+    .results-number {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--blue-deep);
+    }
+
+    .results-label {
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .results-percent-row {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .results-verdict {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--blue-deep);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin-bottom: 24px;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      border: 1px solid var(--border-subtle);
+      padding: 12px 14px;
+      text-align: center;
+    }
+
+    .compare-table th {
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      font-weight: 700;
+    }
+
+    .compare-table td:first-child {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
     .summary-actions {
       display: flex;
       gap: 12px;
@@ -782,6 +828,9 @@
 
     @media (max-width: 780px) {
       .explorer-layout {
+        grid-template-columns: 1fr;
+      }
+      .compare-grid {
         grid-template-columns: 1fr;
       }
       .lesson-card {
@@ -831,91 +880,87 @@
 
       <section class="step-panel" id="step-1" data-step="1">
         <h2 class="step-heading">שלב 1: מכירים</h2>
-        <p class="step-intro">איך פרמטרים משנים את הגרף של פונקציית הבסיס $f(x)=e^x$ (או $a^x$) — ומה קורה לאסימפטוטה האופקית ולנקודות החיתוך בכל מקרה.</p>
+        <p class="step-intro">היכרות עם הגדרת הפונקציה המעריכית והתכונות הבסיסיות המשותפות לכל הפונקציות מהסוג הזה.</p>
 
-        <div class="content-block highlight-block">
-          <h3>התבנית הכללית</h3>
-          <div class="math-ltr-block">$$g(x) = k \cdot f(x-p) + d$$</div>
-          <p>כל טרנספורמציה על פונקציה מעריכית ניתנת לתיאור באמצעות שלושה פרמטרים: $k$ (מתיחה/כיווץ/שיקוף אנכי), $p$ (הזזה אופקית) ו-$d$ (הזזה אנכית) — ולעיתים גם ערך מוחלט מסביב לכל הביטוי.</p>
+        <div class="content-block">
+          <h3>הגדרת הפונקציה המעריכית</h3>
+          <p>פונקציה מעריכית היא פונקציה מהצורה:</p>
+          <div class="math-ltr-block">$$f(x) = a^x$$</div>
+          <p>כאשר $a > 0$ וגם $a \neq 1$.</p>
+          <ul class="reason-list">
+            <li><strong>מדוע $a>0$?</strong> אם הבסיס שלילי, עבור חלק מערכי $x$ (למשל $x=\tfrac{1}{2}$) הביטוי אינו מוגדר במספרים ממשיים — לדוגמה $(-4)^{0.5}=\sqrt{-4}$.</li>
+            <li><strong>מדוע $a \neq 1$?</strong> אם $a=1$, מתקבל $f(x)=1^x=1$ לכל $x$ — זו פונקציה קבועה, ואינה נחשבת לפונקציה מעריכית.</li>
+          </ul>
         </div>
 
         <div class="content-block">
-          <h3>שש הטרנספורמציות המרכזיות</h3>
+          <h3>גדילה ליניארית מול גדילה מעריכית</h3>
+          <p>בגדילה ליניארית מוסיפים בכל שלב את אותה כמות קבועה. בגדילה מעריכית מכפילים בכל שלב באותו גורם קבוע — ולכן קצב הגדילה עצמו הולך וגדל.</p>
+          <div class="compare-grid">
+            <div class="compare-col">
+              <h4>גדילה ליניארית (תוספת קבועה של 2)</h4>
+              <div class="seq">1 → 3 → 5 → 7 → 9</div>
+            </div>
+            <div class="compare-col">
+              <h4>גדילה מעריכית (הכפלה פי 2 — התחלקות תאים)</h4>
+              <div class="seq">1 → 2 → 4 → 8 → 16</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>ארבע תכונות ליבה משותפות לכל הפונקציות המעריכיות</h3>
           <div class="property-grid">
             <div class="property-card">
               <span class="property-num">1</span>
-              <h4>הזזה אנכית</h4>
-              <div class="rule-formula">$f(x) + d$</div>
-              <p>מזיזה את הגרף כולו למעלה ($d>0$) או למטה ($d<0$). <strong>קריטי:</strong> האסימפטוטה האופקית זזה מ-$y=0$ אל $y=d$.</p>
+              <h4>תחום הגדרה</h4>
+              <p>הפונקציה מוגדרת לכל $x$ ממשי.</p>
             </div>
             <div class="property-card">
               <span class="property-num">2</span>
-              <h4>הזזה אופקית</h4>
-              <div class="rule-formula">$f(x-p)$</div>
-              <p>מזיזה ימינה עבור $p>0$, שמאלה עבור $p<0$. האסימפטוטה <strong>אינה</strong> משתנה — נשארת $y=0$.</p>
+              <h4>תחום חיוביות</h4>
+              <p>$f(x) > 0$ לכל $x$ — הגרף תמיד מעל ציר ה-$x$, לעולם אינו מתאפס ואינו שלילי.</p>
             </div>
             <div class="property-card">
               <span class="property-num">3</span>
-              <h4>שיקוף ביחס לציר x</h4>
-              <div class="rule-formula">$-f(x)$</div>
-              <p>הופך את כל ערכי ה-$y$ לסימן הנגדי; הגרף כולו יורד מתחת לציר ה-$x$.</p>
+              <h4>חיתוך ציר $y$</h4>
+              <p>הגרף תמיד עובר דרך הנקודה $(0,1)$, כי $a^0=1$ לכל $a$.</p>
             </div>
             <div class="property-card">
               <span class="property-num">4</span>
-              <h4>שיקוף ביחס לציר y</h4>
-              <div class="rule-formula">$f(-x)$</div>
-              <p>הופך גדילה מעריכית לדעיכה מעריכית ולהפך. לדוגמה: $e^{-x} = \left(\tfrac{1}{e}\right)^x$.</p>
-            </div>
-            <div class="property-card">
-              <span class="property-num">5</span>
-              <h4>מתיחה/כיווץ אנכי</h4>
-              <div class="rule-formula">$k \cdot f(x)$</div>
-              <p>משנה את קצב הגדילה, וגם את נקודת החיתוך עם ציר $y$: $(0,1)$ הופכת ל-$(0,k)$.</p>
-            </div>
-            <div class="property-card">
-              <span class="property-num">6</span>
-              <h4>ערך מוחלט</h4>
-              <div class="rule-formula">$|f(x)|$</div>
-              <p>כל חלק שנמצא מתחת לציר ה-$x$ משתקף כלפי מעלה. אם האסימפטוטה המקורית הייתה $y=-d$ (שלילית), לאחר הערך המוחלט היא הופכת ל-$y=d$ (חיובית).</p>
+              <h4>אסימפטוטה אופקית</h4>
+              <p>הישר $y=0$ (ציר ה-$x$) הוא אסימפטוטה אופקית של הגרף.</p>
             </div>
           </div>
+        </div>
+
+        <div class="content-block highlight-block">
+          <h3>המספר $e$</h3>
+          <p>קיים בסיס מיוחד וטבעי הנקרא <strong>המספר $e$</strong>, כאשר $e \approx 2.718$. הפונקציה $f(x)=e^x$ נקראת "הפונקציה המעריכית הטבעית", ותככב בהמשך הקורס בחשבון דיפרנציאלי ואינטגרלי.</p>
         </div>
       </section>
 
       <section class="step-panel" id="step-2" data-step="2" hidden>
         <h2 class="step-heading">שלב 2: חוקרים</h2>
-        <p class="step-intro">גררו את הסליידרים כדי לשנות את $k$, $p$ ו-$d$ בפונקציה $g(x) = k\cdot e^{x-p}+d$, וצפו כיצד הגרף והאסימפטוטה משתנים בזמן אמת.</p>
+        <p class="step-intro">גררו את הסליידר כדי לשנות את ערך הבסיס $a$, וצפו כיצד הגרף של $f(x)=a^x$ משתנה בזמן אמת.</p>
 
         <div class="explorer-layout">
           <div class="graph-panel">
-            <svg id="graphSvg" viewBox="0 0 620 420" class="graph-svg"></svg>
+            <svg id="graphSvg" viewBox="0 0 600 420" class="graph-svg"></svg>
+            <div id="graphMessage" class="graph-message"></div>
           </div>
           <div class="controls-panel">
-            <div class="equation-display" id="equationDisplay"></div>
-            <div class="asymptote-readout" id="asymptoteReadout"></div>
-
-            <div class="param-row">
-              <label for="dSlider">d (הזזה אנכית): <span id="dValue">0</span></label>
-              <input type="range" id="dSlider" min="-5" max="5" step="0.5" value="0">
-            </div>
-            <div class="param-row">
-              <label for="pSlider">p (הזזה אופקית): <span id="pValue">0</span></label>
-              <input type="range" id="pSlider" min="-4" max="4" step="0.5" value="0">
-            </div>
-            <div class="param-row">
-              <label for="kSlider">k (מתיחה / שיקוף): <span id="kValue">1</span></label>
-              <input type="range" id="kSlider" min="-3" max="3" step="0.5" value="1">
-            </div>
-
+            <label for="baseSlider" class="slider-label">בסיס $a$ = <span id="baseValue">2.0</span></label>
+            <input type="range" id="baseSlider" min="0.1" max="5" step="0.1" value="2">
             <label class="checkbox-row">
-              <input type="checkbox" id="absToggle">
-              <span>הפעל ערך מוחלט $|g(x)|$</span>
+              <input type="checkbox" id="showEToggle">
+              <span>הצג את $f(x)=e^x$ להשוואה</span>
             </label>
-
             <div class="legend">
-              <div class="legend-item"><span class="legend-swatch swatch-main"></span> $g(x)$</div>
-              <div class="legend-item"><span class="legend-swatch swatch-ref"></span> $f(x)=e^x$ (מקור, להשוואה)</div>
-              <div class="legend-item"><span class="legend-swatch swatch-asymptote"></span> אסימפטוטה אופקית</div>
+              <div class="legend-item"><span class="legend-swatch swatch-main"></span> $f(x)=a^x$</div>
+              <div class="legend-item" id="legendE" hidden><span class="legend-swatch swatch-e"></span> $f(x)=e^x$</div>
+              <div class="legend-item"><span class="legend-swatch swatch-point"></span> נקודה $(0,1)$</div>
+              <div class="legend-item"><span class="legend-swatch swatch-asymptote"></span> אסימפטוטה $y=0$</div>
             </div>
           </div>
         </div>
@@ -956,46 +1001,31 @@
             <div class="results-verdict" id="resultsVerdict"></div>
           </div>
 
-          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: השפעת הטרנספורמציות</h3>
+          <h3 class="content-block-title" style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת השוואה: $a&gt;1$ מול $0&lt;a&lt;1$</h3>
           <div class="table-wrap">
-            <table class="data-table">
+            <table class="compare-table">
               <thead>
                 <tr>
-                  <th>טרנספורמציה</th>
-                  <th>השפעה על האסימפטוטה</th>
-                  <th>השפעה על חיתוך ציר y</th>
+                  <th></th>
+                  <th>$a &gt; 1$</th>
+                  <th>$0 &lt; a &lt; 1$</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>הזזה אנכית $f(x)+d$</td>
-                  <td>$y=0 \to y=d$</td>
-                  <td>$(0,1) \to (0,1+d)$</td>
+                  <td>מגמה</td>
+                  <td>עולה (גדילה מעריכית)</td>
+                  <td>יורדת (דעיכה מעריכית)</td>
                 </tr>
                 <tr>
-                  <td>הזזה אופקית $f(x-p)$</td>
-                  <td>ללא שינוי ($y=0$)</td>
-                  <td>$(0,1) \to (0,a^{-p})$</td>
+                  <td>אסימפטוטה</td>
+                  <td>$y=0$, כש-$x \to -\infty$</td>
+                  <td>$y=0$, כש-$x \to +\infty$</td>
                 </tr>
                 <tr>
-                  <td>שיקוף ביחס לציר x, $-f(x)$</td>
-                  <td>ללא שינוי ($y=0$)</td>
-                  <td>$(0,1) \to (0,-1)$</td>
-                </tr>
-                <tr>
-                  <td>שיקוף ביחס לציר y, $f(-x)$</td>
-                  <td>ללא שינוי ($y=0$)</td>
-                  <td>$(0,1) \to (0,1)$ (ללא שינוי)</td>
-                </tr>
-                <tr>
-                  <td>מתיחה אנכית $k\cdot f(x)$</td>
-                  <td>ללא שינוי ($y=0$)</td>
-                  <td>$(0,1) \to (0,k)$</td>
-                </tr>
-                <tr>
-                  <td>ערך מוחלט $|f(x)|$</td>
-                  <td>$y=-d \to y=d$</td>
-                  <td>$(0,y_0) \to (0,|y_0|)$</td>
+                  <td>דוגמאות</td>
+                  <td>$2^x,\ 3^x,\ e^x$</td>
+                  <td>$\left(\tfrac12\right)^x,\ \left(\tfrac34\right)^x$</td>
                 </tr>
               </tbody>
             </table>
@@ -1006,7 +1036,7 @@
             <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות והערכה במתמטיקה - 5 יח"ל</h3>
             <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
             <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
-            <p class="certificate-lesson-name" id="certLessonName">לומדה: טרנספורמציות בפונקציה מעריכית</p>
+            <p class="certificate-lesson-name" id="certLessonName">לומדה: מבוא ומאפייני הפונקציה המעריכית</p>
             <p class="certificate-score" id="certScore">ציון סופי: 0 (0/10)</p>
             <p class="certificate-quote" id="certQuote"></p>
             <div class="certificate-ref" id="certTime">Time: 0s</div>
@@ -1032,8 +1062,8 @@
     </div>
   </div>
 
-  <script src="../../shared/components/step-progress.js"></script>
-  <script src="../../shared/components/math-input-pad.js"></script>
+  <script src="../../../../shared/components/step-progress.js"></script>
+  <script src="../../../../shared/components/math-input-pad.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -1046,14 +1076,15 @@
       throwOnError: false
     };
 
-    var LESSON_NAME = 'טרנספורמציות בפונקציה מעריכית';
+    var LESSON_NAME = 'מבוא ומאפייני הפונקציה המעריכית';
 
     var currentStep = 1;
     var studentName = '';
     var quizStarted = false;
     var quizTiming = { startTime: null, totalSeconds: null };
     var state = {
-      params: { k: 1, p: 0, d: 0, useAbs: false },
+      a: 2,
+      showE: false,
       quiz: {
         questions: [],
         index: 0,
@@ -1080,206 +1111,98 @@
       return a;
     }
 
-    function clamp(v, lo, hi) {
-      return Math.max(lo, Math.min(hi, v));
-    }
+    /* ---------- Step 2: interactive graph ---------- */
 
-    function buildFnCurvePath(fn, mx, my, xmin, xmax, yClampMin, yClampMax) {
+    function buildFullCurvePath(base, mx, my, xmin, xmax, ymax) {
       var steps = 240;
       var d = '';
       for (var i = 0; i <= steps; i++) {
         var x = xmin + (xmax - xmin) * i / steps;
-        var y = fn(x);
-        y = clamp(y, yClampMin - 60, yClampMax + 60);
+        var y = Math.pow(base, x);
+        y = Math.min(y, ymax + 40);
         var px = mx(x), py = my(y);
         d += (i === 0 ? 'M' : 'L') + px.toFixed(2) + ',' + py.toFixed(2) + ' ';
       }
       return d.trim();
     }
 
-    /* ---------- Step 2: transformation explorer ---------- */
-
-    var GW = 620, GH = 420, GPAD = 46, GXMIN = -6, GXMAX = 6, GYMIN = -7, GYMAX = 9;
-    var gmx = function (x) { return GPAD + (x - GXMIN) / (GXMAX - GXMIN) * (GW - 2 * GPAD); };
-    var gmy = function (y) { return GH - GPAD - (y - GYMIN) / (GYMAX - GYMIN) * (GH - 2 * GPAD); };
-
-    function formatCoef(k) {
-      if (k === 1) return '';
-      if (k === -1) return '-';
-      return k + '\\cdot ';
-    }
-
-    function buildEquationLatex(k, p, d, useAbs) {
-      var kPart = formatCoef(k);
-      var expPart = 'e^{x' + (p === 0 ? '' : (p > 0 ? '-' + p : '+' + Math.abs(p))) + '}';
-      var dPart = d === 0 ? '' : (d > 0 ? '+' + d : '-' + Math.abs(d));
-      var inner = kPart + expPart + dPart;
-      var body = useAbs ? '\\left|' + inner + '\\right|' : inner;
-      return 'g(x) = ' + body;
-    }
-
-    function drawExplorerGraph() {
-      var k = state.params.k, p = state.params.p, d = state.params.d, useAbs = state.params.useAbs;
+    function drawGraph(a, showE) {
+      var W = 600, H = 420, PAD = 44, XMIN = -4, XMAX = 4, YMIN = -1, YMAX = 6;
+      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
+      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
 
       var markup = '';
-      for (var gx = Math.ceil(GXMIN); gx <= Math.floor(GXMAX); gx++) {
-        markup += '<line x1="' + gmx(gx) + '" y1="' + gmy(GYMIN) + '" x2="' + gmx(gx) + '" y2="' + gmy(GYMAX) + '" class="grid-line"/>';
-        if (gx !== 0) markup += '<text x="' + gmx(gx) + '" y="' + (gmy(0) + 16) + '" class="axis-label">' + gx + '</text>';
+
+      for (var gx = Math.ceil(XMIN); gx <= Math.floor(XMAX); gx++) {
+        markup += '<line x1="' + mx(gx) + '" y1="' + my(YMIN) + '" x2="' + mx(gx) + '" y2="' + my(YMAX) + '" class="grid-line"/>';
+        if (gx !== 0) markup += '<text x="' + mx(gx) + '" y="' + (my(0) + 16) + '" class="axis-label">' + gx + '</text>';
       }
-      for (var gy = Math.ceil(GYMIN); gy <= Math.floor(GYMAX); gy++) {
-        markup += '<line x1="' + gmx(GXMIN) + '" y1="' + gmy(gy) + '" x2="' + gmx(GXMAX) + '" y2="' + gmy(gy) + '" class="grid-line"/>';
-        if (gy !== 0) markup += '<text x="' + (gmx(0) - 8) + '" y="' + (gmy(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
+      for (var gy = Math.ceil(YMIN); gy <= Math.floor(YMAX); gy++) {
+        markup += '<line x1="' + mx(XMIN) + '" y1="' + my(gy) + '" x2="' + mx(XMAX) + '" y2="' + my(gy) + '" class="grid-line"/>';
+        if (gy !== 0) markup += '<text x="' + (mx(0) - 10) + '" y="' + (my(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
       }
-      markup += '<line x1="' + gmx(0) + '" y1="' + gmy(GYMIN) + '" x2="' + gmx(0) + '" y2="' + gmy(GYMAX) + '" class="axis-line"/>';
 
-      var asymptoteY = useAbs ? Math.abs(d) : d;
-      markup += '<line x1="' + gmx(GXMIN) + '" y1="' + gmy(asymptoteY) + '" x2="' + gmx(GXMAX) + '" y2="' + gmy(asymptoteY) + '" class="asymptote-line"/>';
+      markup += '<line x1="' + mx(XMIN) + '" y1="' + my(0) + '" x2="' + mx(XMAX) + '" y2="' + my(0) + '" class="asymptote-line"/>';
+      markup += '<line x1="' + mx(0) + '" y1="' + my(YMIN) + '" x2="' + mx(0) + '" y2="' + my(YMAX) + '" class="axis-line"/>';
 
-      markup += '<path d="' + buildFnCurvePath(function (x) { return Math.exp(x); }, gmx, gmy, GXMIN, GXMAX, GYMIN, GYMAX) + '" class="curve-reference"/>';
+      if (showE) {
+        markup += '<path d="' + buildFullCurvePath(Math.E, mx, my, XMIN, XMAX, YMAX) + '" class="curve-e"/>';
+      }
 
-      var gFn = function (x) {
-        var y = k * Math.exp(x - p) + d;
-        return useAbs ? Math.abs(y) : y;
-      };
-      markup += '<path d="' + buildFnCurvePath(gFn, gmx, gmy, GXMIN, GXMAX, GYMIN, GYMAX) + '" class="curve-main"/>';
+      var curveClass = 'curve-main';
+      if (Math.abs(a - 1) < 0.001) curveClass += ' curve-flat';
+      else if (a > 1) curveClass += ' curve-growth';
+      else curveClass += ' curve-decay';
 
-      var y0 = gFn(0);
-      markup += '<circle cx="' + gmx(0) + '" cy="' + gmy(clamp(y0, GYMIN, GYMAX)) + '" r="6" class="point-marker"/>';
-      markup += '<text x="' + (gmx(0) + 10) + '" y="' + (gmy(clamp(y0, GYMIN, GYMAX)) - 10) + '" class="point-label">(0, ' + y0.toFixed(2) + ')</text>';
+      if (Math.abs(a - 1) < 0.001) {
+        markup += '<line x1="' + mx(XMIN) + '" y1="' + my(1) + '" x2="' + mx(XMAX) + '" y2="' + my(1) + '" class="' + curveClass + '"/>';
+      } else {
+        markup += '<path d="' + buildFullCurvePath(a, mx, my, XMIN, XMAX, YMAX) + '" class="' + curveClass + '"/>';
+      }
+
+      markup += '<circle cx="' + mx(0) + '" cy="' + my(1) + '" r="6" class="point-marker"/>';
+      markup += '<text x="' + (mx(0) + 10) + '" y="' + (my(1) - 10) + '" class="point-label">(0,1)</text>';
 
       document.getElementById('graphSvg').innerHTML = markup;
-
-      document.getElementById('equationDisplay').innerHTML = '$$' + buildEquationLatex(k, p, d, useAbs) + '$$';
-      document.getElementById('asymptoteReadout').textContent = 'אסימפטוטה אופקית: y = ' + asymptoteY;
-      renderMathInElement(document.getElementById('equationDisplay'), katexOptions);
     }
 
-    function updateParamsFromControls() {
-      state.params.d = parseFloat(document.getElementById('dSlider').value);
-      state.params.p = parseFloat(document.getElementById('pSlider').value);
-      state.params.k = parseFloat(document.getElementById('kSlider').value);
-      state.params.useAbs = document.getElementById('absToggle').checked;
-      document.getElementById('dValue').textContent = state.params.d;
-      document.getElementById('pValue').textContent = state.params.p;
-      document.getElementById('kValue').textContent = state.params.k;
-      drawExplorerGraph();
+    function updateMessage(a) {
+      var el = document.getElementById('graphMessage');
+      el.className = 'graph-message';
+      if (Math.abs(a - 1) < 0.001) {
+        el.classList.add('msg-flat');
+        el.innerHTML = 'כאשר $a=1$ מתקבל הקו האופקי $y=1$ — זו אינה פונקציה מעריכית, כי הבסיס חייב להיות שונה מ-1.';
+      } else if (a > 1) {
+        el.classList.add('msg-growth');
+        el.textContent = 'גדילה מעריכית (פונקציה עולה)';
+      } else {
+        el.classList.add('msg-decay');
+        el.textContent = 'דעיכה מעריכית (פונקציה יורדת)';
+      }
+      renderMathInElement(el, katexOptions);
     }
 
-    document.getElementById('dSlider').addEventListener('input', updateParamsFromControls);
-    document.getElementById('pSlider').addEventListener('input', updateParamsFromControls);
-    document.getElementById('kSlider').addEventListener('input', updateParamsFromControls);
-    document.getElementById('absToggle').addEventListener('change', updateParamsFromControls);
-
-    /* ---------- Step 3: quiz question bank ---------- */
-
-    function generateTypeA() {
-      var hPool = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
-      var vPool = [-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6];
-      var h = randChoice(hPool);
-      var v = randChoice(vPool);
-      var hDir = h > 0 ? 'ימינה' : 'שמאלה';
-      var vDir = v > 0 ? 'מעלה' : 'מטה';
-      var wrongHDir = h > 0 ? 'שמאלה' : 'ימינה';
-      var wrongVDir = v > 0 ? 'מטה' : 'מעלה';
-
-      var expPart = h > 0 ? ('x-' + h) : ('x+' + Math.abs(h));
-      var vPart = v > 0 ? ('+' + v) : ('-' + Math.abs(v));
-      var promptLatex = 'g(x) = e^{' + expPart + '}' + vPart;
-
-      var correct = 'הזזה ' + hDir + ' ב-' + Math.abs(h) + ', והזזה ' + vDir + ' ב-' + Math.abs(v);
-      var d1 = 'הזזה ' + wrongHDir + ' ב-' + Math.abs(h) + ', והזזה ' + vDir + ' ב-' + Math.abs(v);
-      var d2 = 'הזזה ' + hDir + ' ב-' + Math.abs(h) + ', והזזה ' + wrongVDir + ' ב-' + Math.abs(v);
-      var options = shuffle([correct, d1, d2]);
-
-      return {
-        type: 'A', kind: 'choice',
-        promptText: 'אילו טרנספורמציות בוצעו כדי לקבל את הפונקציה הבאה מתוך $f(x)=e^x$?',
-        promptLatex: promptLatex,
-        options: options,
-        correctIndex: options.indexOf(correct),
-        explain: 'הביטוי $' + expPart + '$ בתוך המעריך מבצע הזזה ' + hDir + ' ב-' + Math.abs(h) + ' יחידות, וההוספה של $' + vPart + '$ מבצעת הזזה ' + vDir + ' ב-' + Math.abs(v) + ' יחידות.'
-      };
-    }
-
-    function generateTypeB() {
-      var baseLabel = randChoice(['e', '2', '3']);
-      var signExp = randChoice([1, -1]);
-      var d = randChoice([-6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6]);
-      var expPart = signExp === 1 ? 'x' : '-x';
-      var dPart = d > 0 ? ('+' + d) : ('-' + Math.abs(d));
-      var promptLatex = 'f(x) = ' + baseLabel + '^{' + expPart + '}' + dPart;
-      var options = shuffle(['y = ' + d, 'y = 0', 'y = ' + (-d)]);
-      return {
-        type: 'B', kind: 'choice',
-        promptText: 'מהי משוואת האסימפטוטה האופקית של הפונקציה הבאה?',
-        promptLatex: promptLatex,
-        options: options,
-        correctIndex: options.indexOf('y = ' + d),
-        explain: 'הזזה אנכית של $' + dPart + '$ מזיזה את האסימפטוטה מ-$y=0$ אל $y=' + d + '$ — ההזזה האופקית שבמעריך אינה משפיעה על האסימפטוטה.'
-      };
-    }
-
-    function generateTypeC() {
-      var baseLabel = randChoice(['e', '2', '3']);
-      var c = randInt(1, 6);
-      var promptLatex = 'h(x) = \\left|' + baseLabel + '^{-x} - ' + c + '\\right|';
-      var options = shuffle(['y = ' + c, 'y = -' + c, 'y = 0']);
-      return {
-        type: 'C', kind: 'choice',
-        promptText: 'מהי משוואת האסימפטוטה האופקית של הפונקציה הבאה (לאחר הערך המוחלט)?',
-        promptLatex: promptLatex,
-        options: options,
-        correctIndex: options.indexOf('y = ' + c),
-        explain: 'לפני הערך המוחלט האסימפטוטה היא $y=-' + c + '$ (שלילית). הערך המוחלט משקף אותה מעל ציר ה-$x$, ולכן היא הופכת ל-$y=' + c + '$.'
-      };
-    }
-
-    var TRANSFORM_VARIANTS = [
-      { label: 'e^x', fn: function (x) { return Math.exp(x); } },
-      { label: '-e^x', fn: function (x) { return -Math.exp(x); } },
-      { label: 'e^{-x}', fn: function (x) { return Math.exp(-x); } },
-      { label: 'e^{x}+3', fn: function (x) { return Math.exp(x) + 3; } },
-      { label: 'e^{x-2}', fn: function (x) { return Math.exp(x - 2); } },
-      { label: '-e^{-x}', fn: function (x) { return -Math.exp(-x); } }
-    ];
-
-    function findMidVisiblePoint(fn, xmin, xmax, ymin, ymax) {
+    function findCurveLabelPoint(base, xmin, xmax, ymax) {
       var steps = 120;
-      var mid = (ymin + ymax) / 2;
-      var best = null, bestDist = Infinity;
-      for (var i = 0; i <= steps; i++) {
-        var x = xmin + (xmax - xmin) * i / steps;
-        var y = fn(x);
-        if (y >= ymin && y <= ymax) {
-          var dist = Math.abs(y - mid);
-          if (dist < bestDist) { bestDist = dist; best = { x: x, y: y }; }
+      if (base >= 1) {
+        for (var i = steps; i >= 0; i--) {
+          var x = xmin + (xmax - xmin) * i / steps;
+          var y = Math.pow(base, x);
+          if (y <= ymax) return { x: x, y: y };
         }
-      }
-      if (!best) {
-        var yv = fn(xmax);
-        best = { x: xmax, y: Math.max(ymin, Math.min(ymax, yv)) };
-      }
-      return best;
-    }
-
-    function pickDistinguishingX(curves) {
-      var candidates = [1, -1, 2, -2, 0.5, -0.5, 1.5, -1.5];
-      for (var ci = 0; ci < candidates.length; ci++) {
-        var x = candidates[ci];
-        var vals = curves.map(function (c) { return c.fn(x); });
-        var allDistinct = true;
-        for (var i = 0; i < vals.length; i++) {
-          for (var j = i + 1; j < vals.length; j++) {
-            if (Math.abs(vals[i] - vals[j]) < 0.05) allDistinct = false;
-          }
+        return { x: xmax, y: Math.min(Math.pow(base, xmax), ymax) };
+      } else {
+        for (var j = 0; j <= steps; j++) {
+          var x2 = xmin + (xmax - xmin) * j / steps;
+          var y2 = Math.pow(base, x2);
+          if (y2 <= ymax) return { x: x2, y: y2 };
         }
-        if (allDistinct) return x;
+        return { x: xmin, y: Math.min(Math.pow(base, xmin), ymax) };
       }
-      return 1;
     }
 
     function buildMultiCurveMarkup(curves) {
-      var W = 560, H = 340, PAD = 40, XMIN = -4, XMAX = 4, YMIN = -6, YMAX = 8;
+      var W = 560, H = 340, PAD = 40, XMIN = -3, XMAX = 3, YMIN = -1, YMAX = 8;
       var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
       var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
 
@@ -1292,34 +1215,113 @@
         markup += '<line x1="' + mx(XMIN) + '" y1="' + my(gy) + '" x2="' + mx(XMAX) + '" y2="' + my(gy) + '" class="grid-line"/>';
         if (gy !== 0) markup += '<text x="' + (mx(0) - 8) + '" y="' + (my(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
       }
-      markup += '<line x1="' + mx(XMIN) + '" y1="' + my(0) + '" x2="' + mx(XMAX) + '" y2="' + my(0) + '" class="grid-line"/>';
+
+      markup += '<line x1="' + mx(XMIN) + '" y1="' + my(0) + '" x2="' + mx(XMAX) + '" y2="' + my(0) + '" class="asymptote-line"/>';
       markup += '<line x1="' + mx(0) + '" y1="' + my(YMIN) + '" x2="' + mx(0) + '" y2="' + my(YMAX) + '" class="axis-line"/>';
 
       curves.forEach(function (c, i) {
         var colorIdx = (i % 3) + 1;
-        markup += '<path d="' + buildFnCurvePath(c.fn, mx, my, XMIN, XMAX, YMIN, YMAX) + '" class="multi-curve curve-q' + colorIdx + '"/>';
-        var lp = findMidVisiblePoint(c.fn, XMIN, XMAX, YMIN, YMAX);
+        markup += '<path d="' + buildFullCurvePath(c.value, mx, my, XMIN, XMAX, YMAX) + '" class="multi-curve curve-q' + colorIdx + '"/>';
+        var lp = findCurveLabelPoint(c.value, XMIN, XMAX, YMAX);
         markup += '<text x="' + mx(lp.x) + '" y="' + (my(lp.y) - 8) + '" class="curve-q-label curve-q' + colorIdx + '-label">' + c.roman + '</text>';
       });
+
+      markup += '<circle cx="' + mx(0) + '" cy="' + my(1) + '" r="6" class="point-marker"/>';
+      markup += '<text x="' + (mx(0) + 10) + '" y="' + (my(1) - 10) + '" class="point-label">(0,1)</text>';
 
       return markup;
     }
 
-    var MULTIGRAPH_COLOR_NAMES = { 'I': 'כחול', 'II': 'כתום', 'III': 'סגול' };
+    /* ---------- Step 3: quiz question bank ---------- */
+
+    function generateTypeA() {
+      var chosen = randChoice(['exp', 'lin']);
+      var b = randInt(2, 9);
+      var c = randInt(2, 9);
+      var displayLatex, correctLabel, explainWhy;
+      if (chosen === 'exp') {
+        displayLatex = b + '^x';
+        correctLabel = 'גדילה מעריכית';
+        explainWhy = 'זוהי גדילה מעריכית: המשתנה $x$ נמצא בחזקה, ולכן כל הגדלה של $x$ ביחידה אחת מכפילה את הערך באותו גורם קבוע.';
+      } else {
+        displayLatex = c + 'x';
+        correctLabel = 'גדילה ליניארית';
+        explainWhy = 'זוהי גדילה ליניארית: $x$ מוכפל במקדם קבוע בחזקה ראשונה, ולכן כל הגדלה של $x$ ביחידה אחת מוסיפה לערך את אותו מספר קבוע.';
+      }
+      var options = shuffle(['גדילה מעריכית', 'גדילה ליניארית']);
+      return {
+        type: 'A', kind: 'choice',
+        promptText: 'איזה סוג גדילה מתאר הביטוי הבא?',
+        promptLatex: 'f(x) = ' + displayLatex,
+        options: options,
+        correctIndex: options.indexOf(correctLabel),
+        explain: explainWhy
+      };
+    }
+
+    function generateTypeB() {
+      var mode = randChoice(['int', 'dec', 'frac']);
+      var base, displayLatex;
+      if (mode === 'int') {
+        base = randInt(2, 9);
+        displayLatex = String(base);
+      } else if (mode === 'dec') {
+        base = randChoice([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.2, 1.5, 1.8]);
+        displayLatex = String(base);
+      } else {
+        var pairs = [[1, 2], [1, 3], [2, 3], [3, 4], [2, 5], [3, 2], [4, 3], [5, 2], [5, 3]];
+        var pair = randChoice(pairs);
+        base = pair[0] / pair[1];
+        displayLatex = '\\tfrac{' + pair[0] + '}{' + pair[1] + '}';
+      }
+      var trend = base > 1 ? 'עולה' : 'יורדת';
+      var options = shuffle(['עולה', 'יורדת']);
+      return {
+        type: 'B', kind: 'choice',
+        promptText: 'האם הפונקציה הבאה עולה או יורדת?',
+        promptLatex: 'f(x) = \\left(' + displayLatex + '\\right)^x',
+        options: options,
+        correctIndex: options.indexOf(trend),
+        explain: 'מכיוון שהבסיס ' + (base > 1 ? 'גדול מ-1' : 'נמצא בין 0 ל-1') + ', הפונקציה ' + trend + ' לאורך כל תחום ההגדרה שלה.'
+      };
+    }
+
+    function formatBaseX(label) {
+      if (label.indexOf('frac') !== -1) {
+        return '\\left(' + label + '\\right)^x';
+      }
+      return label + '^x';
+    }
 
     function formatNiceDecimal(v) {
       var rounded = Math.round(v * 100) / 100;
       return String(rounded);
     }
 
-    function generateTypeD() {
+    var GROWTH_POOL = [
+      { label: '1.5', value: 1.5 }, { label: '2', value: 2 }, { label: '2.5', value: 2.5 },
+      { label: '3', value: 3 }, { label: '4', value: 4 }, { label: '5', value: 5 },
+      { label: '7', value: 7 }, { label: 'e', value: Math.E }
+    ];
+    var DECAY_POOL = [
+      { label: '\\frac{1}{2}', value: 1 / 2 }, { label: '\\frac{1}{3}', value: 1 / 3 },
+      { label: '\\frac{1}{4}', value: 1 / 4 }, { label: '\\frac{1}{5}', value: 1 / 5 },
+      { label: '\\frac{2}{3}', value: 2 / 3 }, { label: '\\frac{3}{4}', value: 3 / 4 },
+      { label: '\\frac{2}{5}', value: 2 / 5 }
+    ];
+
+    var MULTIGRAPH_COLOR_NAMES = { 'I': 'כחול', 'II': 'כתום', 'III': 'סגול' };
+
+    function generateTypeC() {
+      var mode = randChoice(['growth', 'decay']);
+      var pool = mode === 'growth' ? GROWTH_POOL : DECAY_POOL;
       var count = randChoice([2, 3]);
-      var chosenVariants = shuffle(TRANSFORM_VARIANTS).slice(0, count);
+      var chosenBases = shuffle(pool).slice(0, count);
       var fnNames = ['f', 'g', 'h'];
       var romanLabels = ['I', 'II', 'III'];
       var romanOrder = shuffle(romanLabels.slice(0, count));
-      var curves = chosenVariants.map(function (v, i) {
-        return { fn: v.fn, label: v.label, roman: romanOrder[i], fnName: fnNames[i] };
+      var curves = chosenBases.map(function (b, i) {
+        return { value: b.value, label: b.label, roman: romanOrder[i], fnName: fnNames[i] };
       });
 
       var target = curves[randInt(0, curves.length - 1)];
@@ -1328,20 +1330,21 @@
 
       var colorListText = romanSorted.map(function (r) { return r + ' (' + MULTIGRAPH_COLOR_NAMES[r] + ')'; }).join(' ו-');
       var promptText = 'נתונות ' + (count === 2 ? 'שתי' : 'שלוש') + ' הפונקציות:';
-      var promptLatex = '\\begin{aligned} ' + curves.map(function (c) { return c.fnName + '(x) &= ' + c.label; }).join(' \\\\ ') + ' \\end{aligned}';
+      var promptLatex = '\\begin{aligned} ' + curves.map(function (c) { return c.fnName + '(x) &= ' + formatBaseX(c.label); }).join(' \\\\ ') + ' \\end{aligned}';
       var promptTextAfter = 'במערכת הצירים שלפניכם משורטטים הגרפים ' + colorListText + '. איזה מהגרפים מתאים לפונקציה ' + target.fnName + '(x)?';
 
-      var evalX = pickDistinguishingX(curves);
-      var vals = curves.map(function (c) { return { fnName: c.fnName, value: c.fn(evalX) }; });
+      var evalX = mode === 'growth' ? 1 : -1;
+      var vals = curves.map(function (c) { return { fnName: c.fnName, roman: c.roman, value: Math.pow(c.value, evalX) }; });
       var valueLines = vals.map(function (v) { return v.fnName + '(' + evalX + ') = ' + formatNiceDecimal(v.value); }).join('\\,,\\ ');
       var sortedDesc = vals.slice().sort(function (a, b) { return b.value - a.value; });
       var rank = -1;
       for (var ri = 0; ri < sortedDesc.length; ri++) if (sortedDesc[ri].fnName === target.fnName) rank = ri;
       var rankText = rank === 0 ? 'הגבוה מביניהם' : (rank === sortedDesc.length - 1 ? 'הנמוך מביניהם' : 'באמצע, מבין הערכים');
-      var explain = 'עבור $x=' + evalX + '$ מתקיים: $' + valueLines + '$. הערך ' + rankText + ' הוא של $' + target.fnName + '(x)$, ולכן גרף ' + target.roman + ' מתאים לה.';
+      var sideText = evalX < 0 ? 'משמאל לציר ה-y' : 'מימין לציר ה-y';
+      var explain = 'עבור $x=' + evalX + '$ מתקיים: $' + valueLines + '$. הערך ' + rankText + ' ' + sideText + ' הוא של $' + target.fnName + '(x)$, ולכן גרף ' + target.roman + ' מתאים לה.';
 
       return {
-        type: 'D', kind: 'multigraph',
+        type: 'C', kind: 'multigraph',
         promptText: promptText,
         promptLatex: promptLatex,
         promptTextAfter: promptTextAfter,
@@ -1352,56 +1355,132 @@
       };
     }
 
-    function generateTypeE() {
-      var kPool = [-3, -2, -1, 1, 2, 3];
-      var dPool = [-5, -4, -3, -2, -1, 1, 2, 3, 4, 5];
-      var k = randChoice(kPool);
-      var d = randChoice(dPool);
-      var kPart = formatCoef(k);
-      var dPart = d > 0 ? ('+' + d) : ('-' + Math.abs(d));
-      var promptLatex = 'g(x) = ' + kPart + 'e^{x}' + dPart;
-      var correctValue = k + d;
+    var TYPE_D_BANK = [
+      { baseDisplay: '4', expDisplay: '-0.5', correctValue: 0.5 },
+      { baseDisplay: '9', expDisplay: '0.5', correctValue: 3 },
+      { baseDisplay: '8', expDisplay: '\\tfrac{1}{3}', correctValue: 2 },
+      { baseDisplay: '27', expDisplay: '-\\tfrac{1}{3}', correctValue: 1 / 3 },
+      { baseDisplay: '2', expDisplay: '-3', correctValue: 0.125 },
+      { baseDisplay: '16', expDisplay: '0.25', correctValue: 2 },
+      { baseDisplay: '3', expDisplay: '-2', correctValue: 1 / 9 },
+      { baseDisplay: '4', expDisplay: '1.5', correctValue: 8 },
+      { baseDisplay: '25', expDisplay: '-0.5', correctValue: 0.2 },
+      { baseDisplay: '8', expDisplay: '-\\tfrac{2}{3}', correctValue: 0.25 }
+    ];
+
+    function formatNiceNumber(v) {
+      var known = [
+        [0.5, '\\tfrac{1}{2}'], [0.25, '\\tfrac{1}{4}'], [0.125, '\\tfrac{1}{8}'],
+        [1 / 3, '\\tfrac{1}{3}'], [1 / 9, '\\tfrac{1}{9}'], [0.2, '\\tfrac{1}{5}']
+      ];
+      for (var i = 0; i < known.length; i++) {
+        if (Math.abs(v - known[i][0]) < 1e-9) return known[i][1];
+      }
+      return String(v);
+    }
+
+    var TYPE_E_BANK = [
+      { answer: false, text: function (a) { return 'הגרף של $f(x)=' + a + '^x$ חותך את ציר ה-$x$ בנקודה כלשהי.'; }, explain: 'הגרף של פונקציה מעריכית לעולם אינו מתאפס — $f(x)>0$ לכל $x$, ולכן אין חיתוך עם ציר ה-$x$.' },
+      { answer: true, text: function (a) { return 'האסימפטוטה האופקית של $f(x)=' + a + '^x$ היא הישר $y=0$.'; }, explain: 'ציר ה-$x$ ($y=0$) הוא תמיד האסימפטוטה האופקית של כל פונקציה מעריכית.' },
+      { answer: true, text: function (a) { return 'מתקיים $f(0)=1$ עבור $f(x)=' + a + '^x$.'; }, explain: 'לכל בסיס $a$ מתקיים $a^0=1$, ולכן הגרף תמיד עובר דרך הנקודה $(0,1)$.' },
+      { answer: false, text: function (a) { return 'הפונקציה $f(x)=' + a + '^x$ יכולה לקבל ערכים שליליים.'; }, explain: 'פונקציה מעריכית עם בסיס חיובי היא תמיד חיובית — $f(x)>0$ לכל $x$ בתחום ההגדרה.' },
+      { answer: false, text: function (a) { return 'הפונקציה $f(x)=1^x$ נחשבת לפונקציה מעריכית לכל דבר ועניין.'; }, explain: 'כאשר $a=1$ מתקבלת הפונקציה הקבועה $y=1$ — היא אינה עולה ואינה יורדת, ולכן אינה מוגדרת כפונקציה מעריכית.' }
+    ];
+
+    function generateTypeE(usedIndices) {
+      var idx;
+      do { idx = randInt(0, TYPE_E_BANK.length - 1); } while (usedIndices.indexOf(idx) !== -1);
+      usedIndices.push(idx);
+      var item = TYPE_E_BANK[idx];
+      var a = randInt(2, 9);
+      var options = shuffle(['נכון', 'לא נכון']);
+      var correctLabel = item.answer ? 'נכון' : 'לא נכון';
       return {
-        type: 'E', kind: 'input',
-        promptText: 'מצאו את נקודת החיתוך עם ציר y, כלומר את הערך g(0), והזינו אותו במקלדת המתמטית:',
-        promptLatex: promptLatex,
-        correctValue: correctValue,
-        explain: '$g(0) = ' + kPart + 'e^{0}' + dPart + '$. מכיוון ש-$e^{0}=1$, מתקבל $g(0) = ' + correctValue + '$.'
+        type: 'E', kind: 'choice',
+        promptText: item.text(a),
+        promptLatex: null,
+        options: options,
+        correctIndex: options.indexOf(correctLabel),
+        explain: item.explain
       };
     }
 
     function generateTypeF() {
-      var c = randInt(2, 6);
-      var baseLabel = randChoice(['e', '2', '3']);
-      var lessCase = randChoice([true, false]);
-      var mVal = lessCase ? randInt(1, c - 1) : randInt(c + 1, c + 5);
-      var promptLatex = '\\left|' + baseLabel + '^x - ' + c + '\\right| = ' + mVal;
-      var correctCount = lessCase ? '2' : '1';
-      var options = shuffle(['0', '1', '2', 'אינסוף']);
-      var explain;
-      if (lessCase) {
-        explain = 'מכיוון ש-' + mVal + ' < ' + c + ', שני הענפים $' + baseLabel + '^x=' + (c - mVal) + '$ וגם $' + baseLabel + '^x=' + (c + mVal) + '$ נותנים ערך חיובי, ושניהם פתירים — 2 פתרונות.';
+      var mode = randChoice(['sameFn', 'sameX']);
+      var options = shuffle(['$<$', '$=$', '$>$']);
+
+      if (mode === 'sameFn') {
+        var chosenBase = randChoice(GROWTH_POOL.concat(DECAY_POOL));
+        var x1 = randInt(-4, 4);
+        var x2;
+        do { x2 = randInt(-4, 4); } while (x2 === x1);
+        var v1 = Math.pow(chosenBase.value, x1);
+        var v2 = Math.pow(chosenBase.value, x2);
+        var symbol = v1 < v2 ? '<' : (v1 > v2 ? '>' : '=');
+        var isGrowth = chosenBase.value > 1;
+        return {
+          type: 'F', kind: 'choice',
+          promptText: 'ללא חישוב מדויק, קבעו לפי מונוטוניות הפונקציה איזה סימן מתאים:',
+          promptLatex: 'f(x) = ' + formatBaseX(chosenBase.label) + ' \\quad:\\quad f(' + x1 + ')\\ \\square\\ f(' + x2 + ')',
+          options: options,
+          correctIndex: options.indexOf('$' + symbol + '$'),
+          explain: 'הבסיס ' + (isGrowth ? 'גדול מ-1, ולכן $f$ עולה' : 'נמצא בין 0 ל-1, ולכן $f$ יורדת') + '. מכיוון ש-$' + x1 + (x1 < x2 ? '<' : '>') + x2 + '$, מתקיים $f(' + x1 + ')' + symbol + 'f(' + x2 + ')$.'
+        };
       } else {
-        explain = 'מכיוון ש-' + mVal + ' > ' + c + ', הענף $' + baseLabel + '^x=' + (c - mVal) + '$ נותן ערך שלילי ואינו פתיר (בסיס בחזקת $x$ תמיד חיובי) — רק הענף $' + baseLabel + '^x=' + (c + mVal) + '$ פתיר, כלומר פתרון יחיד.';
+        var pool = shuffle(GROWTH_POOL.concat(DECAY_POOL));
+        var baseA = pool[0], baseB = pool[1];
+        var xVal = randChoice([-2, -1, 0, 1, 2, 3]);
+        var symbol2;
+        if (xVal === 0) symbol2 = '=';
+        else if (xVal > 0) symbol2 = baseA.value > baseB.value ? '>' : '<';
+        else symbol2 = baseA.value > baseB.value ? '<' : '>';
+
+        var explainText;
+        if (xVal === 0) {
+          explainText = 'עבור $x=0$ מתקיים תמיד $a^0=1$ לכל בסיס $a$, ולכן $f(0)=g(0)=1$.';
+        } else if (xVal > 0) {
+          explainText = 'עבור $x>0$, ככל שהבסיס גדול יותר כך הערך גדול יותר.';
+        } else {
+          explainText = 'עבור $x<0$, ככל שהבסיס גדול יותר כך הערך קטן יותר (הסדר מתהפך).';
+        }
+
+        return {
+          type: 'F', kind: 'choice',
+          promptText: 'ללא חישוב מדויק, קבעו לפי מונוטוניות הפונקציות איזה סימן מתאים:',
+          promptLatex: 'f(x) = ' + formatBaseX(baseA.label) + ',\\ g(x) = ' + formatBaseX(baseB.label) + ' \\quad:\\quad f(' + xVal + ')\\ \\square\\ g(' + xVal + ')',
+          options: options,
+          correctIndex: options.indexOf('$' + symbol2 + '$'),
+          explain: explainText
+        };
       }
-      return {
-        type: 'F', kind: 'choice',
-        promptText: 'כמה פתרונות יש למשוואה הבאה?',
-        promptLatex: promptLatex,
-        options: options,
-        correctIndex: options.indexOf(correctCount),
-        explain: explain
-      };
     }
 
     function generateQuizQuestions() {
       var qs = [];
       qs.push(generateTypeA()); qs.push(generateTypeA());
       qs.push(generateTypeB()); qs.push(generateTypeB());
-      qs.push(generateTypeC()); qs.push(generateTypeC());
-      qs.push(generateTypeD());
-      qs.push(generateTypeE());
+      qs.push(generateTypeC());
+
+      var usedD = [];
+      for (var i = 0; i < 2; i++) {
+        var idx;
+        do { idx = randInt(0, TYPE_D_BANK.length - 1); } while (usedD.indexOf(idx) !== -1);
+        usedD.push(idx);
+        var item = TYPE_D_BANK[idx];
+        qs.push({
+          type: 'D', kind: 'input',
+          promptText: 'חשבו את הערך של הביטוי, והזינו את התשובה במקלדת המתמטית:',
+          promptLatex: item.baseDisplay + '^{' + item.expDisplay + '} = \\ ?',
+          correctValue: item.correctValue,
+          explain: '$' + item.baseDisplay + '^{' + item.expDisplay + '} = ' + formatNiceNumber(item.correctValue) + '$'
+        });
+      }
+
+      var usedE = [];
+      qs.push(generateTypeE(usedE));
+
       qs.push(generateTypeF()); qs.push(generateTypeF());
+
       return shuffle(qs);
     }
 
@@ -1482,11 +1561,12 @@
       document.getElementById('quizBody').innerHTML = html;
 
       if (q.kind === 'choice' || q.kind === 'multigraph') {
-        document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {
+        var selector = '.quiz-option-btn';
+        document.querySelectorAll('#quizBody ' + selector).forEach(function (btn) {
           btn.addEventListener('click', function () {
             if (state.quiz.locked) return;
             var idx = parseInt(this.dataset.index, 10);
-            submitAnswer(q.options[idx] === q.options[q.correctIndex], this, '.quiz-option-btn');
+            submitAnswer(q.options[idx] === q.options[q.correctIndex], this, selector);
           });
         });
       }
@@ -1534,7 +1614,7 @@
       renderQuizQuestion();
     }
 
-    /* ---------- Step 4: results & certificate ---------- */
+    /* ---------- Step 4: results ---------- */
 
     function renderResults() {
       var total = 10;
@@ -1621,6 +1701,23 @@
       if (currentStep > 1) goToStep(currentStep - 1);
     });
 
+    var slider = document.getElementById('baseSlider');
+    var baseValueEl = document.getElementById('baseValue');
+    var showEToggle = document.getElementById('showEToggle');
+
+    slider.addEventListener('input', function () {
+      state.a = parseFloat(slider.value);
+      baseValueEl.textContent = state.a.toFixed(1);
+      drawGraph(state.a, state.showE);
+      updateMessage(state.a);
+    });
+
+    showEToggle.addEventListener('change', function () {
+      state.showE = showEToggle.checked;
+      document.getElementById('legendE').hidden = !state.showE;
+      drawGraph(state.a, state.showE);
+    });
+
     document.getElementById('btnCheckAnswer').addEventListener('click', function () {
       var q = state.quiz.questions[state.quiz.index];
       if (q.kind !== 'input' || state.quiz.locked) return;
@@ -1632,7 +1729,7 @@
       submitAnswer(isCorrect, null, null);
       if (unparseable) {
         var explainEl = document.querySelector('#quizFeedback .feedback-explain');
-        if (explainEl) explainEl.insertAdjacentHTML('afterbegin', '<p>לא זיהינו את הפורמט של התשובה — הזינו מספר שלם (חיובי או שלילי).</p>');
+        if (explainEl) explainEl.insertAdjacentHTML('afterbegin', '<p>לא זיהינו את הפורמט של התשובה — נסו להזין מספר או שבר בעזרת כפתור a/b.</p>');
       }
     });
 
@@ -1701,7 +1798,10 @@
       });
     });
 
-    drawExplorerGraph();
+    drawGraph(state.a, state.showE);
+    updateMessage(state.a);
+    slider.value = state.a;
+    baseValueEl.textContent = state.a.toFixed(1);
     updateNavButtons();
     renderMathInElement(document.body, katexOptions);
   </script>

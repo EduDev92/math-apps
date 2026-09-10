@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>מרחב לומדות אינטראקטיביות במתמטיקה | 5 יח"ל</title>
+  <title>מרחב לומדות אינטראקטיביות במתמטיקה</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -28,14 +28,14 @@
       font-size: 1.1rem;
       color: var(--text-muted);
     }
-    .topic-section {
+    .grade-section {
       background: var(--card-bg);
       border-radius: var(--radius-lg);
       padding: 28px;
       box-shadow: var(--shadow-card);
       margin-bottom: 30px;
     }
-    .topic-title {
+    .grade-title {
       font-size: 1.4rem;
       font-weight: 700;
       color: var(--blue-primary);
@@ -43,12 +43,12 @@
       border-bottom: 2px solid var(--border-subtle);
       padding-bottom: 12px;
     }
-    .apps-grid {
+    .courses-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 18px;
     }
-    .app-card {
+    .course-card {
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       padding: 20px;
@@ -58,12 +58,12 @@
       justify-content: space-between;
       gap: 14px;
     }
-    .app-card h3 {
+    .course-card h3 {
       font-size: 1.15rem;
       font-weight: 700;
       color: var(--text-main);
     }
-    .app-card p {
+    .course-card p {
       font-size: 0.92rem;
       color: var(--text-muted);
       flex-grow: 1;
@@ -82,13 +82,13 @@
       background: var(--green-soft);
       color: #1f7a41;
     }
-    .app-card-link {
+    .course-card-link {
       text-decoration: none;
       color: inherit;
       cursor: pointer;
       transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
     }
-    .app-card-link:hover {
+    .course-card-link:hover {
       border-color: var(--blue-primary);
       box-shadow: var(--shadow-card);
       transform: translateY(-2px);
@@ -99,63 +99,28 @@
   <div class="portal-container">
     <header class="header">
       <h1>מרחב לומדות אינטראקטיביות במתמטיקה</h1>
-      <p>שאלון 572 (5 יח"ל) – למידה, חקירה ותרגול אינטראקטיבי</p>
+      <p>בחרו כיתה כדי להתחיל</p>
     </header>
 
     <main>
-      <section class="topic-section">
-        <h2 class="topic-title">נושא 4: הפונקציה המעריכית</h2>
-        <div class="apps-grid">
-          <a class="app-card app-card-link" href="topics/01-exponential-basic/index.html">
+      <section class="grade-section">
+        <h2 class="grade-title">כיתה י'</h2>
+        <div class="courses-grid">
+          <a class="course-card course-card-link" href="grade10/level4/index.html">
             <span class="badge badge-available">זמין לתרגול</span>
-            <h3>1. מבוא ומאפייני הפונקציה המעריכית</h3>
-            <p>גדילה ודעיכה מעריכית, קצב שינוי, אסימפטוטה אופקית, והבסיס e.</p>
-          </a>
-          <a class="app-card app-card-link" href="topics/02-exponential-e/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>2. פלא המספר e ופונקציית האקספוננט</h3>
-            <p>סיפור הריבית דריבית, גילוי המספר e, והתכונה הייחודית: שיפוע המשיק שווה לערך הפונקציה.</p>
-          </a>
-          <a class="app-card app-card-link" href="topics/03-exponential-transformations/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>3. טרנספורמציות בפונקציה מעריכית</h3>
-            <p>הזזות, שיקופים ביחס לצירים, מתיחה אנכית וטרנספורמציית ערך מוחלט.</p>
-          </a>
-          <a class="app-card app-card-link" href="topics/04-exponential-equations/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>4. משוואות מעריכיות</h3>
-            <p>השוואת בסיסים, הוצאת גורם משותף ופתרון בעזרת הצבת משתנה עזר t.</p>
-          </a>
-          <a class="app-card app-card-link" href="topics/05-exponential-inequalities/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>5. אי-שוויונות מעריכיים</h3>
-            <p>פתרון אלגברי וגרפי, דגש על היפוך סימן בבסיס שברי, ואי-שוויונות ריבועיים.</p>
+            <h3>גיאומטריה — 4 יח"ל</h3>
+            <p>תכונות מרובעים ועוד נושאים בגיאומטריה במישור.</p>
           </a>
         </div>
       </section>
 
-      <section class="topic-section">
-        <h2 class="topic-title">קדם אנליזה וחקירת פונקציה מעריכית</h2>
-        <div class="apps-grid">
-          <a class="app-card app-card-link" href="topics/06-exponential-domain-intersections/index.html">
+      <section class="grade-section">
+        <h2 class="grade-title">כיתה יב'</h2>
+        <div class="courses-grid">
+          <a class="course-card course-card-link" href="grade12/level5/index.html">
             <span class="badge badge-available">זמין לתרגול</span>
-            <h3>6. תחום הגדרה ונקודות חיתוך</h3>
-            <p>מגבלות על תחום ההגדרה ממכנים ומשורשים, והתזכורת ש-e בחזקת כל דבר הוא חיובי.</p>
-          </a>
-          <a class="app-card app-card-link" href="topics/07-exponential-parity-positivity/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>7. זוגיות, אי-זוגיות וסימן הפונקציה</h3>
-            <p>סימטריה סביב ציר y וסביב הראשית, ואיפה הפונקציה חיובית ואיפה שלילית.</p>
-          </a>
-          <a class="app-card app-card-link" href="topics/08-exponential-asymptotes/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>8. התנהגות בקצוות: אסימפטוטות ו"חורים"</h3>
-            <p>אסימפטוטה אנכית מול "חור" בגרף, ובדיקת גבולות בנפרד כש-x שואף לאינסוף ולמינוס אינסוף.</p>
-          </a>
-          <a class="app-card app-card-link" href="topics/09-exponential-graph-matching/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>9. קדם אנליזה והתאמת גרפים</h3>
-            <p>סינתזה של כל שלבי החקירה כדי לבחור את הגרף הנכון מבין כמה שרטוטים מוצעים.</p>
+            <h3>הפונקציה המעריכית — 5 יח"ל</h3>
+            <p>שאלון 572: מבוא, טרנספורמציות, משוואות, אי-שוויונות וקדם אנליזה.</p>
           </a>
         </div>
       </section>

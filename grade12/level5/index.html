@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מרחב לומדות אינטראקטיביות במתמטיקה | 5 יח"ל</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/css/common.css">
+  <style>
+    .portal-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .back-link {
+      display: inline-block;
+      color: var(--blue-primary);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      margin-bottom: 20px;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--blue-deep);
+      margin-bottom: 8px;
+    }
+    .header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+    .topic-section {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-card);
+      margin-bottom: 30px;
+    }
+    .topic-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    .app-card {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .app-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .app-card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      flex-grow: 1;
+    }
+    .badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: #e2e8f0;
+      color: #64748b;
+    }
+    .badge-available {
+      background: var(--green-soft);
+      color: #1f7a41;
+    }
+    .app-card-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+    }
+    .app-card-link:hover {
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-card);
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="portal-container">
+    <a href="../../index.html" class="back-link">→ כל הכיתות</a>
+    <header class="header">
+      <h1>מרחב לומדות אינטראקטיביות במתמטיקה</h1>
+      <p>כיתה יב' · שאלון 572 (5 יח"ל) – למידה, חקירה ותרגול אינטראקטיבי</p>
+    </header>
+
+    <main>
+      <section class="topic-section">
+        <h2 class="topic-title">נושא 4: הפונקציה המעריכית</h2>
+        <div class="apps-grid">
+          <a class="app-card app-card-link" href="topics/01-exponential-basic/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>1. מבוא ומאפייני הפונקציה המעריכית</h3>
+            <p>גדילה ודעיכה מעריכית, קצב שינוי, אסימפטוטה אופקית, והבסיס e.</p>
+          </a>
+          <a class="app-card app-card-link" href="topics/02-exponential-e/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>2. פלא המספר e ופונקציית האקספוננט</h3>
+            <p>סיפור הריבית דריבית, גילוי המספר e, והתכונה הייחודית: שיפוע המשיק שווה לערך הפונקציה.</p>
+          </a>
+          <a class="app-card app-card-link" href="topics/03-exponential-transformations/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>3. טרנספורמציות בפונקציה מעריכית</h3>
+            <p>הזזות, שיקופים ביחס לצירים, מתיחה אנכית וטרנספורמציית ערך מוחלט.</p>
+          </a>
+          <a class="app-card app-card-link" href="topics/04-exponential-equations/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>4. משוואות מעריכיות</h3>
+            <p>השוואת בסיסים, הוצאת גורם משותף ופתרון בעזרת הצבת משתנה עזר t.</p>
+          </a>
+          <a class="app-card app-card-link" href="topics/05-exponential-inequalities/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>5. אי-שוויונות מעריכיים</h3>
+            <p>פתרון אלגברי וגרפי, דגש על היפוך סימן בבסיס שברי, ואי-שוויונות ריבועיים.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="topic-section">
+        <h2 class="topic-title">קדם אנליזה וחקירת פונקציה מעריכית</h2>
+        <div class="apps-grid">
+          <a class="app-card app-card-link" href="topics/06-exponential-domain-intersections/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>6. תחום הגדרה ונקודות חיתוך</h3>
+            <p>מגבלות על תחום ההגדרה ממכנים ומשורשים, והתזכורת ש-e בחזקת כל דבר הוא חיובי.</p>
+          </a>
+          <a class="app-card app-card-link" href="topics/07-exponential-parity-positivity/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>7. זוגיות, אי-זוגיות וסימן הפונקציה</h3>
+            <p>סימטריה סביב ציר y וסביב הראשית, ואיפה הפונקציה חיובית ואיפה שלילית.</p>
+          </a>
+          <a class="app-card app-card-link" href="topics/08-exponential-asymptotes/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>8. התנהגות בקצוות: אסימפטוטות ו"חורים"</h3>
+            <p>אסימפטוטה אנכית מול "חור" בגרף, ובדיקת גבולות בנפרד כש-x שואף לאינסוף ולמינוס אינסוף.</p>
+          </a>
+          <a class="app-card app-card-link" href="topics/09-exponential-graph-matching/index.html">
+            <span class="badge badge-available">זמין לתרגול</span>
+            <h3>9. קדם אנליזה והתאמת גרפים</h3>
+            <p>סינתזה של כל שלבי החקירה כדי לבחור את הגרף הנכון מבין כמה שרטוטים מוצעים.</p>
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
