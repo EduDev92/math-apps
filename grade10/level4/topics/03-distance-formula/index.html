@@ -274,10 +274,10 @@
             <table class="data-table">
               <thead><tr><th>שלב</th><th>חישוב</th></tr></thead>
               <tbody>
-                <tr><td>1. הפרש ה-x</td><td>Δx = x₂ − x₁</td></tr>
-                <tr><td>2. הפרש ה-y</td><td>Δy = y₂ − y₁</td></tr>
-                <tr><td>3. משפט פיתגורס</td><td>d² = (Δx)² + (Δy)²</td></tr>
-                <tr><td>4. המרחק</td><td>d = √((Δx)² + (Δy)²)</td></tr>
+                <tr><td>1. הפרש ה-x</td><td>x₂ − x₁</td></tr>
+                <tr><td>2. הפרש ה-y</td><td>y₂ − y₁</td></tr>
+                <tr><td>3. משפט פיתגורס</td><td>d² = (x₂−x₁)² + (y₂−y₁)²</td></tr>
+                <tr><td>4. המרחק</td><td>d = √((x₂−x₁)² + (y₂−y₁)²)</td></tr>
               </tbody>
             </table>
           </div>
@@ -419,7 +419,7 @@
       var dDisplay = (Number.isInteger(d)) ? String(d) : d.toFixed(2);
       var readout = document.getElementById('distReadout');
       readout.innerHTML = '<span class="coord-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span>' +
-        '$$\\Delta x = ' + dx + ',\\quad \\Delta y = ' + dy + '$$' +
+        '$$x_2-x_1 = ' + dx + ',\\quad y_2-y_1 = ' + dy + '$$' +
         '$$d = \\sqrt{(' + dx + ')^2+(' + dy + ')^2} = \\sqrt{' + sq + '} \\approx ' + dDisplay + '$$';
       renderMathInElement(readout, katexOptions);
     }
@@ -545,7 +545,7 @@
       var numericOptions = shuffle([g.correctD].concat(distractors));
       var correctIndex = numericOptions.indexOf(g.correctD);
       var sqSum = g.dx * g.dx + g.dy * g.dy;
-      var explain = '<span class="coord-ltr">Δx = ' + g.dx + ', Δy = ' + g.dy + '</span><br>' +
+      var explain = '$$x_2-x_1 = ' + g.dx + ',\\quad y_2-y_1 = ' + g.dy + '$$' +
         '$$d = \\sqrt{(' + g.dx + ')^2+(' + g.dy + ')^2} = \\sqrt{' + sqSum + '} = ' + g.correctD + '$$';
       return {
         kind: 'choice',
