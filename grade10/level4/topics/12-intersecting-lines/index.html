@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>חיתוך ישרים | לומדה 12</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../shared/css/common.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <style>
+    :root {
+      --orange-strong: #c2650b;
+      --orange-soft: #fdecd2;
+      --purple-strong: #7c3aed;
+      --purple-soft: #ede9fe;
+    }
+
+    body { background: var(--bg-main); }
+
+    .topbar { background: #ffffff; border-bottom: 1px solid var(--border-subtle); padding: 14px 20px; }
+    .back-link { color: var(--blue-primary); font-weight: 700; font-size: 0.95rem; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+
+    .lesson-container { max-width: 1020px; margin: 0 auto; padding: 24px 20px 60px; }
+    .lesson-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 32px; overflow-x: hidden; }
+    .step-panel[hidden] { display: none; }
+
+    .step-heading { font-size: 1.6rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
+    .step-intro { color: var(--text-muted); margin-bottom: 20px; font-size: 0.98rem; }
+
+    .content-block { margin-bottom: 26px; }
+    .content-block h3 { font-size: 1.15rem; font-weight: 700; color: var(--blue-primary); margin-bottom: 10px; }
+    .content-block p { margin-bottom: 8px; }
+
+    .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
+    .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
+
+    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
+    .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
+    .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; }
+    .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
+
+    .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 10px; }
+    .method-card { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; }
+    .method-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; color: var(--blue-deep); }
+
+    /* Step 2 lab */
+    .lab-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; }
+    .lab-block h3 { font-size: 1.2rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
+
+    .calc-inputs { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 16px; }
+    .calc-line-group { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--radius-md); }
+    .calc-line-group.line1 { background: var(--blue-soft); }
+    .calc-line-group.line2 { background: var(--orange-soft); }
+    .calc-line-group .grp-label { font-weight: 800; font-size: 0.9rem; }
+    .calc-inline-row { display: flex; align-items: center; gap: 6px; direction: ltr; }
+    .calc-inline-row input {
+      width: 60px; padding: 6px 8px; border: 2px solid var(--border-subtle); border-radius: var(--radius-sm);
+      font-family: var(--font-family); font-size: 0.95rem; text-align: center; direction: ltr;
+    }
+    .calc-inline-row input:focus { outline: none; border-color: var(--blue-primary); }
+    .calc-inline-row span { font-weight: 700; }
+
+    .lab-layout { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .lab-readout {
+      background: #fff; border: 2px solid var(--blue-soft); border-radius: var(--radius-md);
+      padding: 14px 16px; font-size: 0.96rem; text-align: center; min-height: 24px; max-width: 460px; width: 100%; line-height: 1.8;
+    }
+    .lab-readout.status-none { border-color: var(--red-error); background: var(--red-soft); }
+    .grid-svg-wrap { max-width: 380px; width: 100%; }
+    .graph-svg {
+      width: 100%; height: auto; display: block; background: #fff;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr;
+    }
+    .graph-svg text { font-family: var(--font-family); }
+
+    .grid-line { stroke: var(--border-subtle); stroke-width: 1; }
+    .axis-line { stroke: #94a3b8; stroke-width: 1.5; }
+    .axis-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; }
+    .axis-label-y { text-anchor: end; }
+
+    .line1-svg { stroke: var(--blue-primary); stroke-width: 3; }
+    .line2-svg { stroke: var(--orange-strong); stroke-width: 3; }
+    .intersect-marker { fill: var(--purple-strong); stroke: #fff; stroke-width: 2; }
+
+    /* Step 3 quiz */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; font-size: 0.95rem; color: var(--text-muted); }
+    .quiz-dots { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+    .quiz-dot { width: 12px; height: 12px; border-radius: 50%; background: #dbe3ee; transition: all 0.2s; }
+    .quiz-dot.dot-current { box-shadow: 0 0 0 3px var(--blue-soft); background: var(--blue-primary); }
+    .quiz-dot.dot-correct { background: var(--green-success); }
+    .quiz-dot.dot-incorrect { background: var(--red-error); }
+
+    .quiz-body { min-height: 140px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
+    .quiz-instruction { font-weight: 700; margin-bottom: 12px; text-align: center; }
+
+    .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+    .quiz-option-btn {
+      padding: 12px 20px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
+      background: #fff; font-family: var(--font-family); font-size: 1rem; font-weight: 700;
+      cursor: pointer; min-width: 100px; direction: ltr; transition: all 0.15s;
+    }
+    .quiz-option-btn:hover:not(:disabled) { border-color: var(--blue-primary); background: var(--blue-soft); }
+    .quiz-option-btn:disabled { cursor: default; }
+    .option-correct { background: var(--green-soft) !important; border-color: var(--green-success) !important; color: #1f7a41; }
+    .option-incorrect { background: var(--red-soft) !important; border-color: var(--red-error) !important; color: #8f2323; }
+
+    .quiz-complete-msg { text-align: center; font-weight: 700; color: var(--blue-deep); padding: 30px 10px; }
+
+    .quiz-feedback { margin-top: 16px; padding: 14px 18px; border-radius: var(--radius-sm); font-size: 0.95rem; }
+    .feedback-correct { background: var(--green-soft); border: 1px solid var(--green-success); color: #1f7a41; }
+    .feedback-incorrect { background: var(--red-soft); border: 1px solid var(--red-error); color: #8f2323; }
+    .feedback-explain { margin-top: 6px; font-weight: 400; }
+
+    .quiz-actions { display: flex; justify-content: center; margin-top: 18px; }
+
+    .btn { padding: 12px 26px; border-radius: var(--radius-sm); border: none; font-family: var(--font-family); font-weight: 700; font-size: 0.98rem; cursor: pointer; transition: all 0.15s; }
+    .btn-primary { background: var(--blue-primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--blue-deep); }
+    .btn-primary:disabled { background: #a9bcd8; cursor: not-allowed; }
+    .btn-secondary { background: #eef2f9; color: var(--blue-primary); border: 1px solid var(--border-subtle); }
+    .btn-secondary:hover { background: var(--blue-soft); }
+
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-subtle); }
+
+    .results-card { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 26px; text-align: center; margin-bottom: 26px; transition: all 0.2s; }
+    .results-good { border-color: var(--green-success); background: var(--green-soft); }
+    .results-mid { border-color: var(--orange-strong); background: var(--orange-soft); }
+    .results-low { border-color: var(--red-error); background: var(--red-soft); }
+    .results-number { font-size: 3rem; font-weight: 800; color: var(--blue-deep); }
+    .results-label { color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
+    .results-percent-row { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .results-verdict { font-size: 1.05rem; font-weight: 700; color: var(--blue-deep); }
+
+    .table-wrap { overflow-x: auto; margin-bottom: 10px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .data-table th, .data-table td { border: 1px solid var(--border-subtle); padding: 10px 12px; text-align: center; }
+    .data-table th { background: var(--blue-soft); color: var(--blue-deep); font-weight: 700; }
+    .data-table td:first-child { background: #f8fafc; font-weight: 700; color: var(--text-muted); }
+
+    .name-gate {
+      max-width: 480px; margin: 30px auto; text-align: center; background: #f8fafc;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 28px 22px;
+    }
+    .name-gate-text { font-weight: 700; margin-bottom: 16px; color: var(--blue-deep); }
+    .name-gate-input {
+      width: 100%; padding: 12px 14px; border: 2px solid var(--border-subtle); border-radius: var(--radius-sm);
+      font-family: var(--font-family); font-size: 1rem; margin-bottom: 14px; text-align: center; box-sizing: border-box;
+    }
+    .name-gate-input:focus { outline: none; border-color: var(--blue-primary); }
+
+    .certificate-card {
+      position: relative; background: linear-gradient(135deg, #fffbea 0%, #ffffff 60%);
+      border: 3px solid #d4af37; border-radius: var(--radius-lg); padding: 34px 26px 26px;
+      text-align: center; max-width: 560px; margin: 10px auto 0; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+    }
+    .certificate-card::before {
+      content: ''; position: absolute; inset: 8px; border: 1px solid #e9d38a;
+      border-radius: calc(var(--radius-lg) - 6px); pointer-events: none;
+    }
+    .certificate-trophy { font-size: 48px; line-height: 1; margin: 0 auto 10px; text-align: center; }
+    .certificate-title { font-size: 1.2rem; font-weight: 800; color: #92660b; margin-bottom: 16px; }
+    .certificate-line { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 2px; }
+    .certificate-student-name { font-size: 1.55rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 12px; }
+    .certificate-lesson-name { font-size: 0.92rem; color: var(--text-main); margin-bottom: 8px; font-weight: 600; }
+    .certificate-score { font-size: 1.1rem; font-weight: 800; color: #1f7a41; margin-bottom: 18px; }
+    .certificate-quote { font-style: italic; font-size: 0.96rem; color: var(--blue-primary); padding: 0 10px; margin-bottom: 16px; line-height: 1.6; }
+    .certificate-ref { position: absolute; bottom: 8px; left: 14px; font-size: 0.68rem; color: #b8b8b8; direction: ltr; }
+    .btn-download-cert { max-width: 420px; }
+
+    .encouragement-card { background: var(--orange-soft); border: 2px dashed var(--orange-strong); border-radius: var(--radius-lg); padding: 32px 24px; text-align: center; max-width: 480px; margin: 10px auto 0; }
+    .encouragement-icon { font-size: 44px; margin-bottom: 12px; }
+    .encouragement-text { font-size: 1.02rem; color: var(--text-main); font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
+    .btn-retry-fail { font-size: 1.05rem; padding: 14px 32px; }
+    .summary-actions[hidden] { display: none; }
+
+    .summary-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 780px) {
+      .lesson-card { padding: 18px 14px; }
+      .certificate-card { padding: 26px 16px 20px; }
+      .certificate-title { font-size: 1.05rem; }
+      .certificate-student-name { font-size: 1.3rem; }
+      .summary-actions { flex-direction: column; align-items: stretch; }
+      .summary-actions .btn { width: 100%; }
+    }
+
+    @media print {
+      .topbar, .nav-buttons, step-progress, #step-1, #step-2, #step-3, .summary-actions { display: none !important; }
+      body { background: #fff; }
+      .lesson-card { box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../../index.html" class="back-link">→ חזרה לעץ הנושאים</a>
+  </div>
+
+  <div class="lesson-container">
+    <step-progress id="stepProgress" current-step="1"></step-progress>
+
+    <div class="lesson-card">
+
+      <section class="step-panel" id="step-1" data-step="1">
+        <h2 class="step-heading">שלב 1: מכירים</h2>
+        <p class="step-intro">איך מוצאים את הנקודה שבה ישר חותך את הצירים, ואת הנקודה שבה שני ישרים נפגשים?</p>
+
+        <div class="method-grid">
+          <div class="method-card">
+            <h4>חיתוך עם ציר ה-y</h4>
+            <p>מציבים <span class="coord-ltr">x=0</span> במשוואת הישר.</p>
+          </div>
+          <div class="method-card">
+            <h4>חיתוך עם ציר ה-x</h4>
+            <p>מציבים <span class="coord-ltr">y=0</span> במשוואת הישר ופותרים עבור <span class="coord-ltr">x</span>.</p>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>דוגמה: חיתוך <span class="coord-ltr">y=2x-8</span> עם הצירים</h3>
+          <div class="derivation-block" id="axisExample"></div>
+        </div>
+
+        <div class="content-block">
+          <h3>חיתוך בין שני ישרים</h3>
+          <p>משווים בין שתי המשוואות (שתיהן שוות ל-<span class="coord-ltr">y</span>), פותרים עבור <span class="coord-ltr">x</span>, ואז מציבים באחת המשוואות כדי למצוא את <span class="coord-ltr">y</span>.</p>
+          <div class="derivation-block" id="twoLineExample"></div>
+        </div>
+
+        <div class="content-block highlight-block">
+          <h4>שימו לב</h4>
+          <p>אחרי שמוצאים את <span class="coord-ltr">x</span>, אפשר להציב אותו <strong>בכל אחת</strong> משתי המשוואות — שתיהן ייתנו אותו <span class="coord-ltr">y</span>, כי בנקודת החיתוך שני הישרים "נפגשים".</p>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-2" data-step="2" hidden>
+        <h2 class="step-heading">שלב 2: חוקרים</h2>
+        <p class="step-intro">שנו את משוואות שני הישרים, וצפו כיצד נקודת החיתוך ביניהם מתעדכנת בזמן אמת יחד עם הפתרון האלגברי המלא.</p>
+
+        <div class="lab-block">
+          <h3>הזינו את משוואות הישרים</h3>
+          <div class="calc-inputs">
+            <div class="calc-line-group line1">
+              <span class="grp-label">ישר 1 (כחול)</span>
+              <div class="calc-inline-row">
+                <span>y =</span>
+                <input type="number" id="line1M" value="1" step="1">
+                <span>x +</span>
+                <input type="number" id="line1B" value="2" step="1">
+              </div>
+            </div>
+            <div class="calc-line-group line2">
+              <span class="grp-label">ישר 2 (כתום)</span>
+              <div class="calc-inline-row">
+                <span>y =</span>
+                <input type="number" id="line2M" value="-1" step="1">
+                <span>x +</span>
+                <input type="number" id="line2B" value="6" step="1">
+              </div>
+            </div>
+          </div>
+          <div class="lab-layout">
+            <div class="lab-readout" id="intersectReadout"></div>
+            <div class="grid-svg-wrap">
+              <svg id="intersectSvg" viewBox="0 0 460 460" class="graph-svg"></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-3" data-step="3" hidden>
+        <h2 class="step-heading">שלב 3: מתרגלים</h2>
+
+        <div class="name-gate" id="nameGate">
+          <p class="name-gate-text">הקלידו את שמכם המלא כדי להתחיל בתרגול ולקבל תעודת סיום אישית</p>
+          <input type="text" id="studentNameInput" class="name-gate-input" placeholder="לדוגמה: ישראל ישראלי" autocomplete="name">
+          <button type="button" id="btnStartQuiz" class="btn btn-primary" disabled>בואו נתחיל</button>
+        </div>
+
+        <div id="quizContent" hidden>
+          <div class="quiz-header">
+            <div>שאלה <span id="qIndex">1</span> מתוך 10</div>
+            <div>ציון מצטבר: <span id="qScore">0</span>/10</div>
+          </div>
+          <div class="quiz-dots" id="quizDots"></div>
+          <div class="quiz-body" id="quizBody"></div>
+          <div class="quiz-feedback" id="quizFeedback" hidden></div>
+          <div class="quiz-actions">
+            <button id="btnNextQuestion" class="btn btn-primary" type="button" hidden>לשאלה הבאה ←</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-4" data-step="4" hidden>
+        <h2 class="step-heading">שלב 4: מסכמים</h2>
+
+        <div class="printable-area">
+          <div class="results-card" id="resultsCard">
+            <div class="results-number" id="resultsCorrect">0</div>
+            <div class="results-label">תשובות נכונות מתוך 10</div>
+            <div class="results-percent-row">אחוז הצלחה: <span id="resultsPercent">0%</span></div>
+            <div class="results-verdict" id="resultsVerdict"></div>
+          </div>
+
+          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: חיתוך ישרים</h3>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>סוג חיתוך</th><th>שיטה</th></tr></thead>
+              <tbody>
+                <tr><td>עם ציר y</td><td>מציבים x=0</td></tr>
+                <tr><td>עם ציר x</td><td>מציבים y=0</td></tr>
+                <tr><td>בין שני ישרים</td><td>משווים משוואות, פותרים x, מציבים למציאת y</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="certificate-card" id="certificateCard">
+            <div class="certificate-trophy" id="certIcon" aria-hidden="true">🏆</div>
+            <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות</h3>
+            <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
+            <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
+            <p class="certificate-lesson-name" id="certLessonName">לומדה: חיתוך ישרים</p>
+            <p class="certificate-score" id="certScore">ציון סופי: 0 (0/10)</p>
+            <p class="certificate-quote" id="certQuote"></p>
+            <div class="certificate-ref" id="certTime">Time: 0s</div>
+          </div>
+
+          <div class="encouragement-card" id="encouragementCard" hidden>
+            <div class="encouragement-icon" aria-hidden="true">💪</div>
+            <p class="encouragement-text">לא נורא! כדי להרוויח את התעודה, יש לקבל ציון עובר (60 ומעלה). חזרו לתרגל ונסו שוב.</p>
+            <button id="btnRetryFail" class="btn btn-primary btn-retry-fail" type="button">נסה שוב</button>
+          </div>
+        </div>
+
+        <div class="summary-actions" id="summaryActions">
+          <button id="btnRestart" class="btn btn-secondary" type="button">התחל מחדש</button>
+          <button id="btnDownloadCert" class="btn btn-primary btn-download-cert" type="button">שמירת התעודה כתמונה (לשליחה בוואטסאפ / קלאסרום)</button>
+        </div>
+      </section>
+
+      <div class="nav-buttons">
+        <button id="btnPrev" class="btn btn-secondary" type="button">→ הקודם</button>
+        <button id="btnNext" class="btn btn-primary" type="button">הבא ←</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../../../shared/components/step-progress.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    var katexOptions = {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    };
+
+    var LESSON_NAME = 'חיתוך ישרים';
+
+    var currentStep = 1;
+    var studentName = '';
+    var quizStarted = false;
+    var quizTiming = { startTime: null, totalSeconds: null };
+    var state = {
+      quiz: { questions: [], index: 0, score: 0, answers: [], locked: false }
+    };
+
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function randChoice(arr) { return arr[randInt(0, arr.length - 1)]; }
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = randInt(0, i);
+        var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+      }
+      return a;
+    }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+    function pointLabel(p) { return '(' + p.x + ', ' + p.y + ')'; }
+    function pointKey(p) { return p.x + ',' + p.y; }
+
+    /* ---------- Exact-fraction helpers (for the free-input lab) ---------- */
+
+    function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = b; b = a % b; a = t; } return a || 1; }
+    function reduceFraction(num, den) {
+      var g = gcd(num, den) || 1;
+      var n = num / g, d = den / g;
+      if (d < 0) { n = -n; d = -d; }
+      return { num: n, den: d };
+    }
+    function fracSub(f1, f2) { return reduceFraction(f1.num * f2.den - f2.num * f1.den, f1.den * f2.den); }
+    function fracAdd(f1, f2) { return reduceFraction(f1.num * f2.den + f2.num * f1.den, f1.den * f2.den); }
+    function fracMul(f1, f2) { return reduceFraction(f1.num * f2.num, f1.den * f2.den); }
+    function fracDiv(f1, f2) { return reduceFraction(f1.num * f2.den, f1.den * f2.num); }
+    function intFrac(n) { return { num: n, den: 1 }; }
+    function fracToLatex(f) {
+      if (f.den === 1) return String(f.num);
+      var sign = f.num < 0 ? '-' : '';
+      return sign + '\\dfrac{' + Math.abs(f.num) + '}{' + f.den + '}';
+    }
+
+    /* ---------- Shared grid helper ---------- */
+
+    function buildGridMarkup(mx, my, xmin, xmax, ymin, ymax) {
+      var markup = '';
+      for (var gx = Math.ceil(xmin); gx <= Math.floor(xmax); gx++) {
+        markup += '<line x1="' + mx(gx) + '" y1="' + my(ymin) + '" x2="' + mx(gx) + '" y2="' + my(ymax) + '" class="grid-line"/>';
+        if (gx !== 0) markup += '<text x="' + mx(gx) + '" y="' + (my(0) + 16) + '" class="axis-label">' + gx + '</text>';
+      }
+      for (var gy = Math.ceil(ymin); gy <= Math.floor(ymax); gy++) {
+        markup += '<line x1="' + mx(xmin) + '" y1="' + my(gy) + '" x2="' + mx(xmax) + '" y2="' + my(gy) + '" class="grid-line"/>';
+        if (gy !== 0) markup += '<text x="' + (mx(0) - 8) + '" y="' + (my(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
+      }
+      markup += '<line x1="' + mx(xmin) + '" y1="' + my(0) + '" x2="' + mx(xmax) + '" y2="' + my(0) + '" class="axis-line"/>';
+      markup += '<line x1="' + mx(0) + '" y1="' + my(ymin) + '" x2="' + mx(0) + '" y2="' + my(ymax) + '" class="axis-line"/>';
+      markup += '<text x="' + (mx(xmax) - 6) + '" y="' + (my(0) - 8) + '" class="axis-label" style="font-weight:800;">x</text>';
+      markup += '<text x="' + (mx(0) + 12) + '" y="' + (my(ymax) + 12) + '" class="axis-label" style="font-weight:800;">y</text>';
+      return markup;
+    }
+
+    function clipLineToGrid(anchor, dir, xmin, xmax, ymin, ymax) {
+      if (dir.x === 0) return [{ x: anchor.x, y: ymin }, { x: anchor.x, y: ymax }];
+      if (dir.y === 0) return [{ x: xmin, y: anchor.y }, { x: xmax, y: anchor.y }];
+      var tX1 = (xmin - anchor.x) / dir.x, tX2 = (xmax - anchor.x) / dir.x;
+      var tY1 = (ymin - anchor.y) / dir.y, tY2 = (ymax - anchor.y) / dir.y;
+      var tXlo = Math.min(tX1, tX2), tXhi = Math.max(tX1, tX2);
+      var tYlo = Math.min(tY1, tY2), tYhi = Math.max(tY1, tY2);
+      var tlo = Math.max(tXlo, tYlo), thi = Math.min(tXhi, tYhi);
+      return [
+        { x: anchor.x + tlo * dir.x, y: anchor.y + tlo * dir.y },
+        { x: anchor.x + thi * dir.x, y: anchor.y + thi * dir.y }
+      ];
+    }
+
+    /* ---------- Step 1: worked examples ---------- */
+
+    (function buildAxisExample() {
+      var m = 2, b = -8;
+      var xIntercept = -b / m;
+      var el = document.getElementById('axisExample');
+      el.innerHTML =
+        '<p class="stage-label">חיתוך עם ציר y (מציבים x=0)</p>' +
+        '<p class="derivation-line">$y = ' + m + '\\cdot 0 ' + (b >= 0 ? '+' : '-') + ' ' + Math.abs(b) + ' = ' + b + '$</p>' +
+        '<p class="derivation-line">נקודת החיתוך: $(0, ' + b + ')$</p>' +
+        '<p class="stage-label">חיתוך עם ציר x (מציבים y=0)</p>' +
+        '<p class="derivation-line">$0 = ' + m + 'x ' + (b >= 0 ? '+' : '-') + ' ' + Math.abs(b) + ' \\Rightarrow x = ' + xIntercept + '$</p>' +
+        '<p class="derivation-line">נקודת החיתוך: $(' + xIntercept + ', 0)$</p>';
+      renderMathInElement(el, katexOptions);
+    })();
+
+    (function buildTwoLineExample() {
+      var m1 = 1, b1 = 2, m2 = -1, b2 = 6;
+      var mxTerm = function (m) { return m === 1 ? 'x' : m === -1 ? '-x' : m + 'x'; };
+      var xi = (b2 - b1) / (m1 - m2);
+      var yi = m1 * xi + b1;
+      var el = document.getElementById('twoLineExample');
+      el.innerHTML =
+        '<p class="derivation-line">$y=' + mxTerm(m1) + '+' + b1 + ' \\quad , \\quad y=' + mxTerm(m2) + '+' + b2 + '$</p>' +
+        '<p class="derivation-line">$' + mxTerm(m1) + '+' + b1 + ' = ' + mxTerm(m2) + '+' + b2 + '$</p>' +
+        '<p class="derivation-line">$' + (m1 - m2) + 'x = ' + (b2 - b1) + ' \\Rightarrow x = ' + xi + '$</p>' +
+        '<p class="derivation-line">$y = ' + m1 + '\\cdot(' + xi + ')+' + b1 + ' = ' + yi + '$</p>' +
+        '<p class="derivation-line"><strong>נקודת החיתוך: $(' + xi + ', ' + yi + ')$</strong></p>';
+      renderMathInElement(el, katexOptions);
+    })();
+
+    /* ---------- Step 2: two-line intersection lab ---------- */
+
+    var CW = 460, CH = 460, CPAD = 34, CXMIN = -8, CXMAX = 8, CYMIN = -8, CYMAX = 8;
+    var cmx = function (x) { return CPAD + (x - CXMIN) / (CXMAX - CXMIN) * (CW - 2 * CPAD); };
+    var cmy = function (y) { return CH - CPAD - (y - CYMIN) / (CYMAX - CYMIN) * (CH - 2 * CPAD); };
+
+    function updateIntersectLab() {
+      var m1 = parseFloat(document.getElementById('line1M').value);
+      var b1 = parseFloat(document.getElementById('line1B').value);
+      var m2 = parseFloat(document.getElementById('line2M').value);
+      var b2 = parseFloat(document.getElementById('line2B').value);
+      if (isNaN(m1) || isNaN(b1) || isNaN(m2) || isNaN(b2)) return;
+
+      var markup = buildGridMarkup(cmx, cmy, CXMIN, CXMAX, CYMIN, CYMAX);
+      var pts1 = clipLineToGrid({ x: 0, y: b1 }, { x: 1, y: m1 }, CXMIN, CXMAX, CYMIN, CYMAX);
+      var pts2 = clipLineToGrid({ x: 0, y: b2 }, { x: 1, y: m2 }, CXMIN, CXMAX, CYMIN, CYMAX);
+      markup += '<line x1="' + cmx(pts1[0].x) + '" y1="' + cmy(pts1[0].y) + '" x2="' + cmx(pts1[1].x) + '" y2="' + cmy(pts1[1].y) + '" class="line1-svg"/>';
+      markup += '<line x1="' + cmx(pts2[0].x) + '" y1="' + cmy(pts2[0].y) + '" x2="' + cmx(pts2[1].x) + '" y2="' + cmy(pts2[1].y) + '" class="line2-svg"/>';
+
+      var readout = document.getElementById('intersectReadout');
+      readout.classList.remove('status-none');
+
+      if (m1 === m2) {
+        if (b1 === b2) {
+          readout.innerHTML = 'שני הישרים <strong>זהים</strong> — אינסוף נקודות חיתוך!';
+        } else {
+          readout.classList.add('status-none');
+          readout.innerHTML = 'הישרים <strong>מקבילים</strong> (אותו שיפוע) — אין נקודת חיתוך.';
+        }
+      } else {
+        var xiFrac = fracDiv(reduceFraction(b2 - b1, 1), reduceFraction(m1 - m2, 1));
+        var yiFrac = fracAdd(fracMul(reduceFraction(m1, 1), xiFrac), reduceFraction(b1, 1));
+        var xi = xiFrac.num / xiFrac.den;
+        var yi = yiFrac.num / yiFrac.den; /* pixel placement only - not displayed/compared as float */
+        markup += '<circle cx="' + cmx(xi) + '" cy="' + cmy(yi) + '" r="8" class="intersect-marker"/>';
+        var mxT = function (m) { return m === 1 ? 'x' : m === -1 ? '-x' : m + 'x'; };
+        readout.innerHTML =
+          '<div class="stage-label">השוואת המשוואות</div>' +
+          '$$' + mxT(m1) + (b1 >= 0 ? '+' : '') + b1 + ' = ' + mxT(m2) + (b2 >= 0 ? '+' : '') + b2 + '$$' +
+          '<div class="stage-label">בידוד x</div>' +
+          '$$x = ' + fracToLatex(xiFrac) + '$$' +
+          '<div class="stage-label">נקודת החיתוך</div>' +
+          '<strong>$(' + fracToLatex(xiFrac) + ',\\ ' + fracToLatex(yiFrac) + ')$</strong>';
+      }
+      document.getElementById('intersectSvg').innerHTML = markup;
+      renderMathInElement(readout, katexOptions);
+    }
+
+    ['line1M', 'line1B', 'line2M', 'line2B'].forEach(function (id) {
+      document.getElementById(id).addEventListener('input', updateIntersectLab);
+    });
+    updateIntersectLab();
+
+    /* ---------- Step 3: quiz ---------- */
+
+    function randomAxisProblem() {
+      var m = randChoice([1, -1, 2, -2, 3, -3, 4, -4]);
+      var xRoot = randInt(-6, 6);
+      var b = -m * xRoot;
+      var askAxis = Math.random() < 0.5 ? 'y' : 'x';
+      return { m: m, b: b, xRoot: xRoot, askAxis: askAxis };
+    }
+
+    function buildAxisDistractors(g, correctPoint, n) {
+      var used = {};
+      used[pointKey(correctPoint)] = true;
+      var otherAxisPoint = g.askAxis === 'y' ? { x: g.xRoot, y: 0 } : { x: 0, y: g.b };
+      var swapped = { x: correctPoint.y, y: correctPoint.x };
+      var candidates = [otherAxisPoint, swapped];
+      var result = [];
+      candidates.forEach(function (p) {
+        var k = pointKey(p);
+        if (!used[k] && result.length < n) { used[k] = true; result.push(p); }
+      });
+      var offset = 1;
+      while (result.length < n) {
+        var p = { x: correctPoint.x + offset, y: correctPoint.y };
+        var k = pointKey(p);
+        if (!used[k]) { used[k] = true; result.push(p); }
+        offset = offset > 0 ? -offset : -offset + 1;
+      }
+      return result;
+    }
+
+    function makeAxisQuestion() {
+      var g = randomAxisProblem();
+      var correctPoint = g.askAxis === 'y' ? { x: 0, y: g.b } : { x: g.xRoot, y: 0 };
+      var distractors = buildAxisDistractors(g, correctPoint, 3);
+      var options = shuffle([correctPoint].concat(distractors));
+      var correctIndex = -1;
+      options.forEach(function (p, i) { if (pointKey(p) === pointKey(correctPoint)) correctIndex = i; });
+
+      var eqText = 'y = ' + (g.m === 1 ? 'x' : g.m === -1 ? '-x' : g.m + 'x') + (g.b === 0 ? '' : (g.b >= 0 ? ' + ' + g.b : ' - ' + Math.abs(g.b)));
+      var explain, promptText;
+      if (g.askAxis === 'y') {
+        promptText = 'הישר <span class="coord-ltr">' + eqText + '</span> — היכן הוא חותך את <strong>ציר ה-y</strong>?';
+        explain = 'מציבים $x=0$: $y = ' + g.m + '\\cdot 0' + (g.b >= 0 ? '+' : '') + g.b + ' = ' + g.b + '$<br><strong>' + pointLabel(correctPoint) + '</strong>';
+      } else {
+        promptText = 'הישר <span class="coord-ltr">' + eqText + '</span> — היכן הוא חותך את <strong>ציר ה-x</strong>?';
+        explain = 'מציבים $y=0$: $0 = ' + g.m + 'x' + (g.b >= 0 ? '+' : '') + g.b + ' \\Rightarrow x = ' + g.xRoot + '$<br><strong>' + pointLabel(correctPoint) + '</strong>';
+      }
+
+      return {
+        kind: 'choice',
+        promptText: promptText,
+        options: options.map(pointLabel),
+        correctIndex: correctIndex,
+        explain: explain
+      };
+    }
+
+    function randomTwoLineProblem() {
+      var xi = randInt(-5, 5), yi = randInt(-5, 5);
+      var pool = [1, -1, 2, -2, 3, -3];
+      var m1 = randChoice(pool);
+      var m2 = randChoice(pool.filter(function (v) { return v !== m1; }));
+      var b1 = yi - m1 * xi;
+      var b2 = yi - m2 * xi;
+      return { m1: m1, b1: b1, m2: m2, b2: b2, xi: xi, yi: yi };
+    }
+
+    function buildTwoLineDistractors(g, n) {
+      var correctPoint = { x: g.xi, y: g.yi };
+      var used = {};
+      used[pointKey(correctPoint)] = true;
+      var swapped = { x: g.yi, y: g.xi };
+      var yIntercept1 = { x: 0, y: g.b1 };
+      var yIntercept2 = { x: 0, y: g.b2 };
+      var candidates = [swapped, yIntercept1, yIntercept2];
+      var result = [];
+      candidates.forEach(function (p) {
+        var k = pointKey(p);
+        if (!used[k] && result.length < n) { used[k] = true; result.push(p); }
+      });
+      var offset = 1;
+      while (result.length < n) {
+        var p = { x: g.xi + offset, y: g.yi };
+        var k = pointKey(p);
+        if (!used[k]) { used[k] = true; result.push(p); }
+        offset = offset > 0 ? -offset : -offset + 1;
+      }
+      return result;
+    }
+
+    function eqLabel(m, b) {
+      return 'y = ' + (m === 1 ? 'x' : m === -1 ? '-x' : m + 'x') + (b === 0 ? '' : (b >= 0 ? ' + ' + b : ' - ' + Math.abs(b)));
+    }
+
+    function makeTwoLineQuestion() {
+      var g = randomTwoLineProblem();
+      var correctPoint = { x: g.xi, y: g.yi };
+      var distractors = buildTwoLineDistractors(g, 3);
+      var options = shuffle([correctPoint].concat(distractors));
+      var correctIndex = -1;
+      options.forEach(function (p, i) { if (pointKey(p) === pointKey(correctPoint)) correctIndex = i; });
+
+      var explain = '$$' + g.m1 + 'x' + (g.b1 >= 0 ? '+' : '') + g.b1 + ' = ' + g.m2 + 'x' + (g.b2 >= 0 ? '+' : '') + g.b2 + '$$' +
+        '$$x = ' + g.xi + ' \\Rightarrow y = ' + g.yi + '$$' +
+        '<strong>' + pointLabel(correctPoint) + '</strong>';
+
+      return {
+        kind: 'choice',
+        promptText: 'מהי נקודת החיתוך של הישרים <span class="coord-ltr">' + eqLabel(g.m1, g.b1) + '</span> ו-<span class="coord-ltr">' + eqLabel(g.m2, g.b2) + '</span>?',
+        options: options.map(pointLabel),
+        correctIndex: correctIndex,
+        explain: explain
+      };
+    }
+
+    function generateQuizQuestions() {
+      var qs = [];
+      for (var i = 0; i < 5; i++) qs.push(makeAxisQuestion());
+      for (var i = 0; i < 5; i++) qs.push(makeTwoLineQuestion());
+      return shuffle(qs);
+    }
+
+    function buildQuizDotsSkeleton() {
+      var wrap = document.getElementById('quizDots');
+      wrap.innerHTML = '';
+      for (var i = 0; i < 10; i++) {
+        var dot = document.createElement('span');
+        dot.className = 'quiz-dot';
+        wrap.appendChild(dot);
+      }
+      updateQuizDots();
+    }
+
+    function updateQuizDots() {
+      var dots = document.querySelectorAll('#quizDots .quiz-dot');
+      dots.forEach(function (dot, i) {
+        dot.classList.remove('dot-current', 'dot-correct', 'dot-incorrect');
+        if (i === state.quiz.index) dot.classList.add('dot-current');
+        if (state.quiz.answers[i] === true) dot.classList.add('dot-correct');
+        else if (state.quiz.answers[i] === false) dot.classList.add('dot-incorrect');
+      });
+    }
+
+    function renderQuizQuestion() {
+      var q = state.quiz.questions[state.quiz.index];
+      document.getElementById('qIndex').textContent = state.quiz.index + 1;
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+
+      var feedbackEl = document.getElementById('quizFeedback');
+      feedbackEl.hidden = true;
+      feedbackEl.innerHTML = '';
+      document.getElementById('btnNextQuestion').hidden = true;
+
+      var html = '<p class="quiz-instruction">' + q.promptText + '</p>';
+      html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
+        return '<button type="button" class="quiz-option-btn" data-index="' + i + '">' + opt + '</button>';
+      }).join('') + '</div>';
+
+      document.getElementById('quizBody').innerHTML = html;
+
+      document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (state.quiz.locked) return;
+          var idx = parseInt(this.dataset.index, 10);
+          submitAnswer(q.options[idx] === q.options[q.correctIndex], this);
+        });
+      });
+
+      renderMathInElement(document.getElementById('quizBody'), katexOptions);
+    }
+
+    function showFeedback(isCorrect, explain) {
+      var el = document.getElementById('quizFeedback');
+      el.hidden = false;
+      el.className = 'quiz-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+      el.innerHTML = '<strong>' + (isCorrect ? 'תשובה נכונה!' : 'לא נכון.') + '</strong><div class="feedback-explain">' + (explain || '') + '</div>';
+      renderMathInElement(el, katexOptions);
+    }
+
+    function submitAnswer(isCorrect, clickedBtn) {
+      state.quiz.locked = true;
+      var q = state.quiz.questions[state.quiz.index];
+      state.quiz.answers[state.quiz.index] = isCorrect;
+      if (isCorrect) state.quiz.score++;
+
+      document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (b) {
+        b.disabled = true;
+        var idx = parseInt(b.dataset.index, 10);
+        if (q.options[idx] === q.options[q.correctIndex]) b.classList.add('option-correct');
+        else if (b === clickedBtn) b.classList.add('option-incorrect');
+      });
+
+      showFeedback(isCorrect, q.explain);
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+      document.getElementById('btnNextQuestion').hidden = false;
+    }
+
+    function startQuiz() {
+      state.quiz.questions = generateQuizQuestions();
+      state.quiz.index = 0;
+      state.quiz.score = 0;
+      state.quiz.answers = [];
+      state.quiz.locked = false;
+      buildQuizDotsSkeleton();
+      renderQuizQuestion();
+    }
+
+    /* ---------- Step 4: results & certificate ---------- */
+
+    function renderResults() {
+      var total = 10;
+      var correct = state.quiz.score;
+      var pct = Math.round((correct / total) * 100);
+      document.getElementById('resultsCorrect').textContent = correct;
+      document.getElementById('resultsPercent').textContent = pct + '%';
+      var verdict, cardClass;
+      if (pct >= 90) { verdict = 'מצוין! שליטה מלאה בחומר.'; cardClass = 'results-good'; }
+      else if (pct >= 60) { verdict = 'כל הכבוד, עברתם בהצלחה!'; cardClass = 'results-mid'; }
+      else { verdict = 'עדיין לא עברתם את סף המעבר (60). חזרו לתרגל ונסו שוב.'; cardClass = 'results-low'; }
+      document.getElementById('resultsVerdict').textContent = verdict;
+      document.getElementById('resultsCard').className = 'results-card ' + cardClass;
+
+      var passed = pct >= 60;
+      document.getElementById('certificateCard').hidden = !passed;
+      document.getElementById('encouragementCard').hidden = passed;
+      document.getElementById('summaryActions').hidden = !passed;
+
+      if (passed) renderCertificate(pct, correct, total);
+    }
+
+    function renderCertificate(pct, correct, total) {
+      document.getElementById('certStudentName').textContent = studentName || 'תלמיד/ה';
+      document.getElementById('certLessonName').textContent = 'לומדה: ' + LESSON_NAME;
+      document.getElementById('certScore').textContent = 'ציון סופי: ' + pct + ' (' + correct + '/' + total + ')';
+      var icon, title, quote;
+      if (pct >= 90) {
+        icon = '🏆'; title = 'תעודת הצטיינות';
+        quote = '"ההצלחה היא סך כל המאמצים הקטנים שנעשים יום אחרי יום."';
+      } else {
+        icon = '🏅'; title = 'תעודת סיום בהצלחה';
+        quote = '"טעויות הן שכר הלימוד של ההצלחה הבאה שלך. המשיכו לחקור!"';
+      }
+      document.getElementById('certIcon').textContent = icon;
+      document.getElementById('certTitleText').textContent = title;
+      document.getElementById('certQuote').textContent = quote;
+      var timeText = (typeof quizTiming.totalSeconds === 'number') ? 'Time: ' + quizTiming.totalSeconds + 's' : '';
+      document.getElementById('certTime').textContent = timeText;
+    }
+
+    /* ---------- Navigation ---------- */
+
+    function updateNavButtons() {
+      var btnPrev = document.getElementById('btnPrev');
+      var btnNext = document.getElementById('btnNext');
+      var navRow = document.querySelector('.nav-buttons');
+      btnPrev.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+      navRow.style.display = currentStep === 4 ? 'none' : 'flex';
+
+      if (currentStep === 3) {
+        var quizDone = state.quiz.questions.length > 0 && state.quiz.index >= state.quiz.questions.length;
+        btnNext.disabled = !quizDone;
+        btnNext.title = quizDone ? '' : 'השלימו את כל 10 השאלות כדי להמשיך';
+      } else {
+        btnNext.disabled = false;
+        btnNext.title = '';
+      }
+    }
+
+    function goToStep(n) {
+      document.querySelectorAll('.step-panel').forEach(function (panel) {
+        panel.hidden = (parseInt(panel.dataset.step, 10) !== n);
+      });
+      currentStep = n;
+      document.getElementById('stepProgress').setAttribute('current-step', n);
+
+      if (n === 3) {
+        document.getElementById('nameGate').hidden = quizStarted;
+        document.getElementById('quizContent').hidden = !quizStarted;
+      }
+      if (n === 4) renderResults();
+
+      updateNavButtons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ---------- Init & event wiring ---------- */
+
+    document.getElementById('btnNext').addEventListener('click', function () {
+      if (currentStep < 4) goToStep(currentStep + 1);
+    });
+    document.getElementById('btnPrev').addEventListener('click', function () {
+      if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    document.getElementById('btnNextQuestion').addEventListener('click', function () {
+      state.quiz.index++;
+      state.quiz.locked = false;
+      if (state.quiz.index < state.quiz.questions.length) {
+        renderQuizQuestion();
+      } else {
+        document.getElementById('quizBody').innerHTML = '<p class="quiz-complete-msg">כל הכבוד! סיימתם את כל 10 השאלות. לחצו על "הבא" כדי לראות את הסיכום שלכם.</p>';
+        document.getElementById('quizFeedback').hidden = true;
+        document.getElementById('btnNextQuestion').hidden = true;
+        if (quizTiming.startTime) {
+          quizTiming.totalSeconds = Math.round((Date.now() - quizTiming.startTime) / 1000);
+        }
+        updateNavButtons();
+      }
+    });
+
+    document.getElementById('studentNameInput').addEventListener('input', function () {
+      document.getElementById('btnStartQuiz').disabled = this.value.trim().length < 2;
+    });
+
+    document.getElementById('btnStartQuiz').addEventListener('click', function () {
+      studentName = document.getElementById('studentNameInput').value.trim();
+      if (studentName.length < 2) return;
+      quizStarted = true;
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      document.getElementById('nameGate').hidden = true;
+      document.getElementById('quizContent').hidden = false;
+      startQuiz();
+    });
+
+    function restartQuiz() {
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      startQuiz();
+      goToStep(3);
+    }
+    document.getElementById('btnRestart').addEventListener('click', restartQuiz);
+    var btnRetryFail = document.getElementById('btnRetryFail');
+    if (btnRetryFail) btnRetryFail.addEventListener('click', restartQuiz);
+
+    document.getElementById('btnDownloadCert').addEventListener('click', function () {
+      var btn = this;
+      var originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'מכינים תמונה...';
+      html2canvas(document.getElementById('certificateCard'), { backgroundColor: '#ffffff', scale: 2 }).then(function (canvas) {
+        var safeStudent = (studentName || 'תלמיד').replace(/[\\/:*?"<>|]/g, '').trim();
+        var link = document.createElement('a');
+        link.download = 'תעודה_' + safeStudent + '_' + LESSON_NAME + '.png';
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }).catch(function (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        alert('אירעה שגיאה ביצירת התמונה. נסו שוב.');
+      });
+    });
+
+    updateNavButtons();
+  </script>
+</body>
+</html>
