@@ -95,6 +95,8 @@
     .axis-label-y { text-anchor: end; }
 
     .tri-poly { fill: var(--blue-primary); fill-opacity: 0.12; stroke: var(--blue-primary); stroke-width: 2.5; }
+    .tri-poly-fill { fill: var(--blue-primary); fill-opacity: 0.08; stroke: none; }
+    .tri-edge { stroke-width: 3; }
     .vertex-label { font-size: 14px; font-weight: 800; fill: var(--blue-deep); }
     .vertex-label-sm { font-size: 12px; font-weight: 800; fill: var(--blue-deep); }
     .point-marker { fill: var(--orange-strong); stroke: #fff; stroke-width: 1.5; }
@@ -432,6 +434,12 @@
       var sign = f.num < 0 ? '-' : '';
       return sign + '\\dfrac{' + Math.abs(f.num) + '}{' + f.den + '}';
     }
+    function fracMul(f1, f2) { return reduceFraction(f1.num * f2.num, f1.den * f2.den); }
+    function fracLatexMaybeParen(f) {
+      var s = fracToLatex(f);
+      return f.num < 0 ? '\\left(' + s + '\\right)' : s;
+    }
+
     /* ---------- Triangle geometry core (exact integer arithmetic - no floating point in classification) ---------- */
 
     function sq(n) { return n * n; }
@@ -457,8 +465,10 @@
 
     /* ---------- Step 1: worked example ---------- */
 
-    var EXAMPLE_COLOR_AB = '#2e5fa3';
-    var EXAMPLE_COLOR_AC = '#2e9e5b';
+    var COLOR_LEG_RED = '#dc2626';
+    var COLOR_LEG_GREEN = '#2e9e5b';
+    var EXAMPLE_COLOR_AB = COLOR_LEG_RED;
+    var EXAMPLE_COLOR_AC = COLOR_LEG_GREEN;
 
     function renderExampleSVG(A, B, C, rightKey, colorAB, colorAC) {
       var W = 260, H = 260, PAD = 30;
@@ -521,8 +531,8 @@
         '<p class="stage-label">שיפוע הצלע <span style="color:' + EXAMPLE_COLOR_AC + ';">AC</span></p>' +
         '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AC + '}{m_{AC} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + C.y + ' - (' + A.y + ')}{' + C.x + ' - (' + A.x + ')} = \\dfrac{' + (C.y - A.y) + '}{' + (C.x - A.x) + '} = ' + fracToLatex(mAC) + '}$</p>' +
         '<p class="stage-label">מכפלת השיפועים</p>' +
-        '<p class="derivation-line">$m_{AB} \\cdot m_{AC} = ' + fracToLatex(mAB) + ' \\cdot ' + fracToLatex(mAC) + ' = ' + (mAB.num * mAC.num) / (mAB.den * mAC.den) + '$</p>' +
-        '<p class="derivation-line"><strong>' + (vertex === 'A' ? 'מכפלת השיפועים שווה ל-1- ⇒ זווית A ישרה!' : 'הזווית אינה ישרה') + '</strong></p>' +
+        '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AB + '}{' + fracLatexMaybeParen(mAB) + '} \\cdot \\textcolor{' + EXAMPLE_COLOR_AC + '}{' + fracLatexMaybeParen(mAC) + '} = ' + fracToLatex(fracMul(mAB, mAC)) + '$</p>' +
+        '<p class="derivation-line"><strong>' + (vertex ? 'מכפלת השיפועים שווה ל-<span class="coord-ltr">(-1)</span>, ולכן זווית $' + vertex + '$ היא זווית ישרה!' : 'הזווית אינה ישרה') + '</strong></p>' +
         '</div>' +
         '</div>';
       renderMathInElement(el, katexOptions);
@@ -654,13 +664,44 @@
       updateTriangleVisual();
     }
 
-    function slopeSubstitutionHTML(labelPair, fromLabel, toLabel, P1, P2) {
+    function slopeSubstitutionHTML(labelPair, fromLabel, toLabel, P1, P2, color) {
       var dx = P2.x - P1.x, dy = P2.y - P1.y;
       if (dx === 0) {
         return '<p class="slope-line">' + fromLabel + ' ו-' + toLabel + ' חולקות אותו שיעור x - <strong>m(' + labelPair + ') לא מוגדר</strong> (חילוק באפס)</p>';
       }
       var f = reduceFraction(dy, dx);
-      return '<p class="slope-line">$$m_{' + labelPair + '} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + P2.y + ' - (' + P1.y + ')}{' + P2.x + ' - (' + P1.x + ')} = \\dfrac{' + dy + '}{' + dx + '} = ' + fracToLatex(f) + '$$</p>';
+      var body = 'm_{' + labelPair + '} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + P2.y + ' - (' + P1.y + ')}{' + P2.x + ' - (' + P1.x + ')} = \\dfrac{' + dy + '}{' + dx + '} = ' + fracToLatex(f);
+      if (color) body = '\\textcolor{' + color + '}{' + body + '}';
+      return '<p class="slope-line">$$' + body + '$$</p>';
+    }
+
+    function computeEdgeColors(vertex) {
+      var colors = { AB: null, BC: null, CA: null };
+      if (vertex === 'A') { colors.AB = COLOR_LEG_RED; colors.CA = COLOR_LEG_GREEN; }
+      else if (vertex === 'B') { colors.AB = COLOR_LEG_RED; colors.BC = COLOR_LEG_GREEN; }
+      else if (vertex === 'C') { colors.CA = COLOR_LEG_RED; colors.BC = COLOR_LEG_GREEN; }
+      return colors;
+    }
+
+    function legPairForVertex(vertex, mAB, mBC, mCA) {
+      if (vertex === 'A') return { red: mAB, redLabel: 'AB', green: mCA, greenLabel: 'AC' };
+      if (vertex === 'B') return { red: mAB, redLabel: 'AB', green: mBC, greenLabel: 'BC' };
+      if (vertex === 'C') return { red: mCA, redLabel: 'AC', green: mBC, greenLabel: 'BC' };
+      return null;
+    }
+
+    function pairProductHTML(vertexLabel, pair, isRightAngle) {
+      if (pair.red === null || pair.green === null) {
+        if (isRightAngle) {
+          var vertLabel = pair.red === null ? pair.redLabel : pair.greenLabel;
+          var horizLabel = pair.red === null ? pair.greenLabel : pair.redLabel;
+          return '<p class="slope-line">בקודקוד ' + vertexLabel + ': צלע ' + vertLabel + ' אנכית וצלע ' + horizLabel + ' אופקית - צלע אנכית תמיד ניצבת לצלע אופקית, ולכן הזווית ישרה!</p>';
+        }
+        return '<p class="slope-line">בקודקוד ' + vertexLabel + ': אחת הצלעות אנכית (שיפוע לא מוגדר) - הזווית בקודקוד זה אינה ישרה.</p>';
+      }
+      var product = fracMul(pair.red, pair.green);
+      var body = '\\text{בקודקוד ' + vertexLabel + ':}\\quad \\textcolor{' + COLOR_LEG_RED + '}{' + fracLatexMaybeParen(pair.red) + '} \\cdot \\textcolor{' + COLOR_LEG_GREEN + '}{' + fracLatexMaybeParen(pair.green) + '} = ' + fracToLatex(product);
+      return '<p class="slope-line">$$' + body + '$$</p>';
     }
 
     function updateTriangleReadout() {
@@ -675,14 +716,27 @@
       }
 
       var vertex = rightAngleVertex(A, B, C);
-      if (vertex) readout.classList.add('status-success');
-      readout.innerHTML =
-        slopeSubstitutionHTML('AB', 'A', 'B', A, B) +
-        slopeSubstitutionHTML('BC', 'B', 'C', B, C) +
-        slopeSubstitutionHTML('CA', 'C', 'A', C, A) +
-        '<div class="tri-badges">' +
-        (vertex ? '<span class="tri-badge badge-right">✓ מצאתם זווית ישרה בקודקוד ' + vertex + '!</span>' : '<span class="tri-badge">אינו ישר-זווית</span>') +
-        '</div>';
+      var mAB = slopeFrac(A, B), mBC = slopeFrac(B, C), mCA = slopeFrac(C, A);
+      var edgeColors = computeEdgeColors(vertex);
+
+      var html =
+        slopeSubstitutionHTML('AB', 'A', 'B', A, B, edgeColors.AB) +
+        slopeSubstitutionHTML('BC', 'B', 'C', B, C, edgeColors.BC) +
+        slopeSubstitutionHTML('CA', 'C', 'A', C, A, edgeColors.CA) +
+        '<p class="stage-label">בדיקת מכפלות שיפועים</p>';
+
+      if (vertex) {
+        readout.classList.add('status-success');
+        html += pairProductHTML(vertex, legPairForVertex(vertex, mAB, mBC, mCA), true);
+        html += '<div class="tri-badges"><span class="tri-badge badge-right">✓ זווית ' + vertex + ' ישרה!</span></div>';
+      } else {
+        ['A', 'B', 'C'].forEach(function (v) {
+          html += pairProductHTML(v, legPairForVertex(v, mAB, mBC, mCA), false);
+        });
+        html += '<div class="tri-badges"><span class="tri-badge">אף מכפלה אינה שווה ל-<span class="coord-ltr">(-1)</span> - אינו ישר-זווית</span></div>';
+      }
+
+      readout.innerHTML = html;
       renderMathInElement(readout, katexOptions);
     }
 
@@ -719,13 +773,30 @@
       document.getElementById('labelC').setAttribute('x', lmx(C.x) + 13); document.getElementById('labelC').setAttribute('y', lmy(C.y) - 10);
       document.getElementById('triPoly').setAttribute('points',
         lmx(A.x) + ',' + lmy(A.y) + ' ' + lmx(B.x) + ',' + lmy(B.y) + ' ' + lmx(C.x) + ',' + lmy(C.y));
-      updateRightAngleMarker(!isDegenerate(A, B, C) ? rightAngleVertex(A, B, C) : null);
+
+      document.getElementById('edgeAB').setAttribute('x1', lmx(A.x)); document.getElementById('edgeAB').setAttribute('y1', lmy(A.y));
+      document.getElementById('edgeAB').setAttribute('x2', lmx(B.x)); document.getElementById('edgeAB').setAttribute('y2', lmy(B.y));
+      document.getElementById('edgeBC').setAttribute('x1', lmx(B.x)); document.getElementById('edgeBC').setAttribute('y1', lmy(B.y));
+      document.getElementById('edgeBC').setAttribute('x2', lmx(C.x)); document.getElementById('edgeBC').setAttribute('y2', lmy(C.y));
+      document.getElementById('edgeCA').setAttribute('x1', lmx(C.x)); document.getElementById('edgeCA').setAttribute('y1', lmy(C.y));
+      document.getElementById('edgeCA').setAttribute('x2', lmx(A.x)); document.getElementById('edgeCA').setAttribute('y2', lmy(A.y));
+
+      var vertex = !isDegenerate(A, B, C) ? rightAngleVertex(A, B, C) : null;
+      var edgeColors = computeEdgeColors(vertex);
+      document.getElementById('edgeAB').setAttribute('stroke', edgeColors.AB || '#94a3b8');
+      document.getElementById('edgeBC').setAttribute('stroke', edgeColors.BC || '#94a3b8');
+      document.getElementById('edgeCA').setAttribute('stroke', edgeColors.CA || '#94a3b8');
+
+      updateRightAngleMarker(vertex);
       updateTriangleReadout();
     }
 
     function buildTriangleSkeleton() {
       var markup = buildGridMarkup(lmx, lmy, LXMIN, LXMAX, LYMIN, LYMAX);
-      markup += '<polygon id="triPoly" points="" class="tri-poly"/>';
+      markup += '<polygon id="triPoly" points="" class="tri-poly-fill"/>';
+      markup += '<line id="edgeAB" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<line id="edgeBC" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<line id="edgeCA" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
       markup += '<polyline id="rightAngleMark" class="right-angle-mark" style="display:none;"/>';
       markup += '<text id="labelA" class="vertex-label">A</text>';
       markup += '<text id="labelB" class="vertex-label">B</text>';
