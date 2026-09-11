@@ -95,6 +95,7 @@
     .axis-label-y { text-anchor: end; }
 
     .tri-poly { fill: var(--blue-primary); fill-opacity: 0.12; stroke: var(--blue-primary); stroke-width: 2.5; }
+    .schematic-connector { fill: none; stroke: #b8c2d1; stroke-width: 1.5; stroke-dasharray: 5, 4; }
     .tri-poly-fill { fill: var(--blue-primary); fill-opacity: 0.08; stroke: none; }
     .tri-edge { stroke-width: 3; }
     .vertex-label { font-size: 14px; font-weight: 800; fill: var(--blue-deep); }
@@ -624,7 +625,9 @@
       var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
       var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
       var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, XMIN, XMAX, YMIN, YMAX);
-      markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly"/>';
+      /* Faint dashed connectors only - a filled/solid triangle would let students see the
+         90-degree angle by eye instead of proving it algebraically via slopes. */
+      markup += '<polyline points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + ' ' + mx(A.x) + ',' + my(A.y) + '" class="schematic-connector"/>';
       markup += '<circle cx="' + mx(A.x) + '" cy="' + my(A.y) + '" r="4" class="point-marker"/>';
       markup += '<circle cx="' + mx(B.x) + '" cy="' + my(B.y) + '" r="4" class="point-marker"/>';
       markup += '<circle cx="' + mx(C.x) + '" cy="' + my(C.y) + '" r="4" class="point-marker"/>';
@@ -909,7 +912,7 @@
 
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות <span class="coord-ltr">A' + pointLabel(A) + '</span>, <span class="coord-ltr">B' + pointLabel(B) + '</span>, <span class="coord-ltr">C' + pointLabel(C) + '</span>. באיזה קודקוד (אם בכלל) נמצאת הזווית הישרה?',
+        promptText: 'נתונות הנקודות $A' + pointLabel(A) + '$, $B' + pointLabel(B) + '$, $C' + pointLabel(C) + '$. באיזה קודקוד (אם בכלל) נמצאת הזווית הישרה?',
         svg: renderTriangleQuestionSVG(A, B, C),
         options: options,
         correctIndex: correctIndex,
