@@ -24,10 +24,22 @@ const MODULE_REGISTRY = {
     level: '4 יח"ל',
     mainTopic: 'גיאומטריה אנליטית - צורות גיאומטריות',
     basePath: 'grade10/level4/topics/',
+    /* Full planned sequence for this topic - positions are fixed so lesson numbering stays stable
+       as content is built. A `null` slot is a lesson that doesn't exist yet; resolveExamConfig()
+       refuses to resolve any sourceModules entry that lands on one.
+       1: סוגי משולשים (זיהוי לפי מרחקים ושיפועים) - not yet built
+       2: תיכונים וגבהים במשולש במערכת הצירים - not yet built
+       3: שטחים והיקפים של משולשים במערכת הצירים - not yet built
+       4: לומדת סיכום: תכונות מרובעים - existing lesson (folder kept as "01-quadrilaterals",
+          its original build-order name, to avoid breaking any existing links)
+       5: מרובעים במערכת הצירים (הוכחה וחישובים אנליטיים) - not yet built; this cluster may grow
+          past a single lesson once scoped */
     modules: [
-      '01-quadrilaterals'
-      /* triangle-classification lessons (עפ תכנית הלימודים) are planned but not yet built -
-         append their topic-folder slugs here once created, keeping this array in module order */
+      null,
+      null,
+      null,
+      '01-quadrilaterals',
+      null
     ]
   },
   'grade12-level5': {
@@ -67,9 +79,12 @@ function resolveExamConfig(code) {
   if (!cfg) return null;
   var course = MODULE_REGISTRY[cfg.course];
   if (!course) return null;
-  var modulePaths = cfg.sourceModules.map(function (n) {
-    return course.basePath + course.modules[n - 1] + '/index.html';
-  });
+  var modulePaths = [];
+  for (var i = 0; i < cfg.sourceModules.length; i++) {
+    var slug = course.modules[cfg.sourceModules[i] - 1];
+    if (!slug) return null; /* referenced module isn't built yet */
+    modulePaths.push(course.basePath + slug + '/index.html');
+  }
   return {
     code: code,
     title: cfg.title,
