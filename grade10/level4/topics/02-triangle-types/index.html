@@ -69,8 +69,7 @@
     }
     .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
     .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
-    .tri-readout-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin: 8px 0; font-size: 0.88rem; }
-    .tri-readout-grid .cell-label { color: var(--text-muted); font-weight: 600; }
+    .slope-line { margin: 10px 0; font-size: 0.92rem; }
     .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
     .tri-badge {
       display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
@@ -200,7 +199,6 @@
       .certificate-student-name { font-size: 1.3rem; }
       .summary-actions { flex-direction: column; align-items: stretch; }
       .summary-actions .btn { width: 100%; }
-      .tri-readout-grid { grid-template-columns: 1fr; }
     }
 
     @media print {
@@ -246,6 +244,14 @@
               <div id="miniTri3"></div>
               <p class="mini-tri-caption">"נטוי" בכיוון אחר</p>
             </div>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>תזכורת: נוסחת השיפוע</h3>
+          <p>השיפוע של צלע בין שתי נקודות <span class="coord-ltr">$(x_1,y_1)$</span> ו-<span class="coord-ltr">$(x_2,y_2)$</span> מחושב לפי הנוסחה:</p>
+          <div class="derivation-block">
+            <p class="derivation-line">$$m = \dfrac{y_2-y_1}{x_2-x_1}$$</p>
           </div>
         </div>
 
@@ -421,16 +427,10 @@
       var sign = f.num < 0 ? '-' : '';
       return sign + '\\dfrac{' + Math.abs(f.num) + '}{' + f.den + '}';
     }
-    function fracToPlain(f) {
-      if (f.den === 1) return String(f.num);
-      return f.num + '/' + f.den;
-    }
-
     /* ---------- Triangle geometry core (exact integer arithmetic - no floating point in classification) ---------- */
 
     function sq(n) { return n * n; }
     function sqDist(A, B) { return sq(B.x - A.x) + sq(B.y - A.y); }
-    function dist(A, B) { var d = Math.sqrt(sqDist(A, B)); return Number.isInteger(d) ? d : Math.round(d * 100) / 100; }
     function dotProduct(ux, uy, vx, vy) { return ux * vx + uy * vy; }
 
     function isDegenerate(A, B, C) {
@@ -459,8 +459,10 @@
       var el = document.getElementById('exampleDerivation');
       el.innerHTML =
         '<p class="derivation-line">$A' + pointLabel(A) + ',\\ B' + pointLabel(B) + ',\\ C' + pointLabel(C) + '$</p>' +
-        '<p class="stage-label">שיפועי שתי הצלעות הנפגשות בקודקוד A</p>' +
-        '<p class="derivation-line">$m_{AB} = ' + fracToLatex(mAB) + ' \\qquad m_{AC} = ' + fracToLatex(mAC) + '$</p>' +
+        '<p class="stage-label">שיפוע הצלע AB</p>' +
+        '<p class="derivation-line">$m_{AB} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + B.y + ' - (' + A.y + ')}{' + B.x + ' - (' + A.x + ')} = \\dfrac{' + (B.y - A.y) + '}{' + (B.x - A.x) + '} = ' + fracToLatex(mAB) + '$</p>' +
+        '<p class="stage-label">שיפוע הצלע AC</p>' +
+        '<p class="derivation-line">$m_{AC} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + C.y + ' - (' + A.y + ')}{' + C.x + ' - (' + A.x + ')} = \\dfrac{' + (C.y - A.y) + '}{' + (C.x - A.x) + '} = ' + fracToLatex(mAC) + '$</p>' +
         '<p class="stage-label">מכפלת השיפועים</p>' +
         '<p class="derivation-line">$m_{AB} \\cdot m_{AC} = ' + fracToLatex(mAB) + ' \\cdot ' + fracToLatex(mAC) + ' = ' + (mAB.num * mAC.num) / (mAB.den * mAC.den) + '$</p>' +
         '<p class="derivation-line"><strong>' + (vertex === 'A' ? 'מכפלת השיפועים שווה ל-1- ⇒ זווית A ישרה!' : 'הזווית אינה ישרה') + '</strong></p>';
@@ -593,9 +595,13 @@
       updateTriangleVisual();
     }
 
-    function slopeText(A, B) {
-      var f = slopeFrac(A, B);
-      return f === null ? 'לא מוגדר' : fracToPlain(f);
+    function slopeSubstitutionHTML(labelPair, fromLabel, toLabel, P1, P2) {
+      var dx = P2.x - P1.x, dy = P2.y - P1.y;
+      if (dx === 0) {
+        return '<p class="slope-line">' + fromLabel + ' ו-' + toLabel + ' חולקות אותו שיעור x - <strong>m(' + labelPair + ') לא מוגדר</strong> (חילוק באפס)</p>';
+      }
+      var f = reduceFraction(dy, dx);
+      return '<p class="slope-line">$$m_{' + labelPair + '} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + P2.y + ' - (' + P1.y + ')}{' + P2.x + ' - (' + P1.x + ')} = \\dfrac{' + dy + '}{' + dx + '} = ' + fracToLatex(f) + '$$</p>';
     }
 
     function updateTriangleReadout() {
@@ -612,17 +618,13 @@
       var vertex = rightAngleVertex(A, B, C);
       if (vertex) readout.classList.add('status-success');
       readout.innerHTML =
-        '<div class="tri-readout-grid">' +
-        '<div><span class="cell-label">m(AB):</span> ' + slopeText(A, B) + '</div>' +
-        '<div><span class="cell-label">m(BC):</span> ' + slopeText(B, C) + '</div>' +
-        '<div><span class="cell-label">m(CA):</span> ' + slopeText(C, A) + '</div>' +
-        '<div><span class="cell-label">AB:</span> ' + dist(A, B) + '</div>' +
-        '<div><span class="cell-label">BC:</span> ' + dist(B, C) + '</div>' +
-        '<div><span class="cell-label">CA:</span> ' + dist(C, A) + '</div>' +
-        '</div>' +
+        slopeSubstitutionHTML('AB', 'A', 'B', A, B) +
+        slopeSubstitutionHTML('BC', 'B', 'C', B, C) +
+        slopeSubstitutionHTML('CA', 'C', 'A', C, A) +
         '<div class="tri-badges">' +
         (vertex ? '<span class="tri-badge badge-right">✓ מצאתם זווית ישרה בקודקוד ' + vertex + '!</span>' : '<span class="tri-badge">אינו ישר-זווית</span>') +
         '</div>';
+      renderMathInElement(readout, katexOptions);
     }
 
     function updateRightAngleMarker(vertexKey) {
