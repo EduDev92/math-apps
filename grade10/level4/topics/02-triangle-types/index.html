@@ -37,6 +37,14 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
+    .mini-tri-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 10px; }
+    .mini-tri-card { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px; text-align: center; }
+    .mini-tri-card svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
+    .mini-tri-caption { font-size: 0.85rem; font-weight: 700; color: var(--blue-deep); margin-top: 8px; }
+    .right-angle-mark { stroke: var(--orange-strong); stroke-width: 2; fill: none; }
+    .leg-label-sm { font-size: 10px; font-weight: 700; fill: var(--blue-primary); }
+    .hyp-label-sm { font-size: 10px; font-weight: 700; fill: var(--orange-strong); }
+
     .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
     .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; }
@@ -52,6 +60,15 @@
       padding: 14px 16px; font-size: 0.95rem; text-align: center; min-height: 24px; max-width: 460px; width: 100%; line-height: 1.85;
     }
     .lab-readout.status-none { border-color: var(--red-error); background: var(--red-soft); }
+    .lab-readout.status-success { border-color: var(--green-success); background: var(--green-soft); }
+    .preset-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .preset-btn {
+      padding: 9px 16px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
+      background: #fff; font-family: var(--font-family); font-weight: 700; font-size: 0.88rem; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
+    .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
     .tri-readout-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin: 8px 0; font-size: 0.88rem; }
     .tri-readout-grid .cell-label { color: var(--text-muted); font-weight: 600; }
     .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
@@ -59,7 +76,7 @@
       display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
       background: var(--blue-soft); color: var(--blue-deep);
     }
-    .tri-badge.badge-right { background: var(--orange-soft); color: var(--orange-strong); }
+    .tri-badge.badge-right { background: var(--green-soft); color: #1f7a41; }
 
     .grid-svg-wrap { max-width: 380px; width: 100%; }
     .graph-svg {
@@ -205,10 +222,35 @@
 
       <section class="step-panel" id="step-1" data-step="1">
         <h2 class="step-heading">שלב 1: מכירים</h2>
-        <p class="step-intro">איך מזהים, רק מתוך שיעורי הקודקודים, אם משולש הוא ישר-זווית - ובאיזה קודקוד נמצאת הזווית הישרה?</p>
+        <p class="step-intro">מהו משולש ישר-זווית, ואיך מזהים ומוכיחים זאת רק מתוך שיעורי הקודקודים במערכת צירים?</p>
 
         <div class="content-block">
-          <h3>תנאי הניצבות בין שתי צלעות</h3>
+          <h3>הגדרה: משולש ישר-זווית</h3>
+          <p><strong>משולש ישר-זווית</strong> הוא משולש שבו אחת הזוויות שווה בדיוק ל-<span class="coord-ltr">90°</span>.</p>
+          <p>שתי הצלעות היוצרות את הזווית הישרה נקראות <strong>ניצבים</strong>. הצלע השלישית, הנמצאת מול הזווית הישרה, נקראת <strong>יתר</strong> - והיא תמיד הצלע הארוכה ביותר במשולש.</p>
+        </div>
+
+        <div class="content-block">
+          <h3>דוגמאות חזותיות</h3>
+          <p>משולש ישר-זווית יכול להופיע בכל כיוון ואוריינטציה במישור. בשלוש הדוגמאות הבאות מסומנת הזווית הישרה בריבוע קטן:</p>
+          <div class="mini-tri-grid">
+            <div class="mini-tri-card">
+              <div id="miniTri1"></div>
+              <p class="mini-tri-caption">מיושר לצירים</p>
+            </div>
+            <div class="mini-tri-card">
+              <div id="miniTri2"></div>
+              <p class="mini-tri-caption">"נטוי"</p>
+            </div>
+            <div class="mini-tri-card">
+              <div id="miniTri3"></div>
+              <p class="mini-tri-caption">"נטוי" בכיוון אחר</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>איך מוכיחים זאת אנליטית? תנאי הניצבות בין שתי צלעות</h3>
           <p>כדי לבדוק אם קודקוד מסוים הוא זווית ישרה, מחשבים את <strong>שיפועי</strong> שתי הצלעות הנפגשות באותו קודקוד. אם מכפלת השיפועים שווה ל-<span class="coord-ltr">-1</span>, הצלעות מאונכות - והזווית ביניהן ישרה.</p>
           <div class="content-block highlight-block" style="margin-top:14px;">
             <h4>שיטת העבודה</h4>
@@ -231,6 +273,12 @@
 
         <div class="lab-block">
           <h3>בנו משולש ובדקו אם הוא ישר-זווית</h3>
+          <p class="lab-hint">לא בטוחים מאיפה להתחיל? נסו אחת הדוגמאות המוכנות, או גררו קודקוד לפי בחירתכם:</p>
+          <div class="preset-btn-row">
+            <button type="button" class="preset-btn" id="presetAligned">דוגמה 1: מיושר לצירים</button>
+            <button type="button" class="preset-btn" id="presetTilted">דוגמה 2: "נטוי"</button>
+            <button type="button" class="preset-btn" id="presetAlmost">דוגמה 3: כמעט ישר-זווית</button>
+          </div>
           <div class="lab-layout">
             <div class="lab-readout" id="triReadout"></div>
             <div class="grid-svg-wrap">
@@ -438,6 +486,60 @@
       return markup;
     }
 
+    function unitVec(from, to) {
+      var dx = to.x - from.x, dy = to.y - from.y;
+      var len = Math.sqrt(dx * dx + dy * dy);
+      return { x: dx / len, y: dy / len };
+    }
+
+    function renderMiniRightTriangleSVG(A, B, C, rightKey) {
+      var pts = { A: A, B: B, C: C };
+      var vertex = pts[rightKey];
+      var others = ['A', 'B', 'C'].filter(function (k) { return k !== rightKey; });
+      var legEnd1 = pts[others[0]], legEnd2 = pts[others[1]];
+
+      var W = 200, H = 200, PAD = 26;
+      var xs = [A.x, B.x, C.x], ys = [A.y, B.y, C.y];
+      var xLo = Math.min.apply(null, xs), xHi = Math.max.apply(null, xs);
+      var yLo = Math.min.apply(null, ys), yHi = Math.max.apply(null, ys);
+      var span = Math.max(xHi - xLo, yHi - yLo) + 2.4;
+      var cx = (xLo + xHi) / 2, cy = (yLo + yHi) / 2;
+      var XMIN = cx - span / 2, XMAX = cx + span / 2, YMIN = cy - span / 2, YMAX = cy + span / 2;
+      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
+      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
+
+      var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, XMIN, XMAX, YMIN, YMAX);
+      markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly"/>';
+
+      var u1 = unitVec(vertex, legEnd1), u2 = unitVec(vertex, legEnd2);
+      var s = 16;
+      var vx = mx(vertex.x), vy = my(vertex.y);
+      var p1x = vx + u1.x * s, p1y = vy - u1.y * s;
+      var p2x = p1x + u2.x * s, p2y = p1y - u2.y * s;
+      var p3x = vx + u2.x * s, p3y = vy - u2.y * s;
+      markup += '<polyline points="' + p1x + ',' + p1y + ' ' + p2x + ',' + p2y + ' ' + p3x + ',' + p3y + '" class="right-angle-mark"/>';
+
+      markup += '<circle cx="' + mx(A.x) + '" cy="' + my(A.y) + '" r="4" class="point-marker"/>';
+      markup += '<circle cx="' + mx(B.x) + '" cy="' + my(B.y) + '" r="4" class="point-marker"/>';
+      markup += '<circle cx="' + mx(C.x) + '" cy="' + my(C.y) + '" r="4" class="point-marker"/>';
+
+      var mid1 = { x: (vertex.x + legEnd1.x) / 2, y: (vertex.y + legEnd1.y) / 2 };
+      var mid2 = { x: (vertex.x + legEnd2.x) / 2, y: (vertex.y + legEnd2.y) / 2 };
+      var midHyp = { x: (legEnd1.x + legEnd2.x) / 2, y: (legEnd1.y + legEnd2.y) / 2 };
+      markup += '<text x="' + mx(mid1.x) + '" y="' + (my(mid1.y) - 6) + '" class="leg-label-sm" text-anchor="middle">ניצב</text>';
+      markup += '<text x="' + mx(mid2.x) + '" y="' + (my(mid2.y) - 6) + '" class="leg-label-sm" text-anchor="middle">ניצב</text>';
+      markup += '<text x="' + mx(midHyp.x) + '" y="' + (my(midHyp.y) - 6) + '" class="hyp-label-sm" text-anchor="middle">יתר</text>';
+
+      markup += '</svg>';
+      return markup;
+    }
+
+    (function buildMiniTriangleGallery() {
+      document.getElementById('miniTri1').innerHTML = renderMiniRightTriangleSVG({ x: -3, y: -2 }, { x: 1, y: -2 }, { x: -3, y: 1 }, 'A');
+      document.getElementById('miniTri2').innerHTML = renderMiniRightTriangleSVG({ x: -2, y: -3 }, { x: 2, y: -1 }, { x: -4, y: 1 }, 'A');
+      document.getElementById('miniTri3').innerHTML = renderMiniRightTriangleSVG({ x: 1, y: -3 }, { x: 3, y: 1 }, { x: -3, y: -1 }, 'A');
+    })();
+
     function renderTriangleQuestionSVG(A, B, C) {
       var W = 240, H = 240, PAD = 28;
       var xs = [A.x, B.x, C.x], ys = [A.y, B.y, C.y];
@@ -477,6 +579,20 @@
     };
     var draggingKey = null;
 
+    var TRIANGLE_PRESETS = {
+      aligned: { A: { x: -4, y: -3 }, B: { x: 0, y: -3 }, C: { x: -4, y: 0 } },
+      tilted: { A: { x: -2, y: -3 }, B: { x: 2, y: -1 }, C: { x: -4, y: 1 } },
+      almost: { A: { x: -4, y: -3 }, B: { x: 2, y: -3 }, C: { x: -3, y: 0 } }
+    };
+
+    function applyPreset(name) {
+      var preset = TRIANGLE_PRESETS[name];
+      trianglePoints.A = { x: preset.A.x, y: preset.A.y };
+      trianglePoints.B = { x: preset.B.x, y: preset.B.y };
+      trianglePoints.C = { x: preset.C.x, y: preset.C.y };
+      updateTriangleVisual();
+    }
+
     function slopeText(A, B) {
       var f = slopeFrac(A, B);
       return f === null ? 'לא מוגדר' : fracToPlain(f);
@@ -485,7 +601,7 @@
     function updateTriangleReadout() {
       var A = trianglePoints.A, B = trianglePoints.B, C = trianglePoints.C;
       var readout = document.getElementById('triReadout');
-      readout.classList.remove('status-none');
+      readout.classList.remove('status-none', 'status-success');
 
       if (isDegenerate(A, B, C)) {
         readout.classList.add('status-none');
@@ -494,6 +610,7 @@
       }
 
       var vertex = rightAngleVertex(A, B, C);
+      if (vertex) readout.classList.add('status-success');
       readout.innerHTML =
         '<div class="tri-readout-grid">' +
         '<div><span class="cell-label">m(AB):</span> ' + slopeText(A, B) + '</div>' +
@@ -504,8 +621,31 @@
         '<div><span class="cell-label">CA:</span> ' + dist(C, A) + '</div>' +
         '</div>' +
         '<div class="tri-badges">' +
-        (vertex ? '<span class="tri-badge badge-right">ישר-זווית בקודקוד ' + vertex + '</span>' : '<span class="tri-badge">אינו ישר-זווית</span>') +
+        (vertex ? '<span class="tri-badge badge-right">✓ מצאתם זווית ישרה בקודקוד ' + vertex + '!</span>' : '<span class="tri-badge">אינו ישר-זווית</span>') +
         '</div>';
+    }
+
+    function updateRightAngleMarker(vertexKey) {
+      var mark = document.getElementById('rightAngleMark');
+      if (!vertexKey) { mark.style.display = 'none'; return; }
+      var pts = trianglePoints;
+      var others = ['A', 'B', 'C'].filter(function (k) { return k !== vertexKey; });
+      var vertex = pts[vertexKey], legEnd1 = pts[others[0]], legEnd2 = pts[others[1]];
+      var scaleX = (LW - 2 * LPAD) / (LXMAX - LXMIN);
+      var scaleY = (LH - 2 * LPAD) / (LYMAX - LYMIN);
+      function pixelDir(from, to) {
+        var dx = (to.x - from.x) * scaleX, dy = -(to.y - from.y) * scaleY;
+        var len = Math.sqrt(dx * dx + dy * dy) || 1;
+        return { x: dx / len, y: dy / len };
+      }
+      var u1 = pixelDir(vertex, legEnd1), u2 = pixelDir(vertex, legEnd2);
+      var s = 14;
+      var vx = lmx(vertex.x), vy = lmy(vertex.y);
+      var p1x = vx + u1.x * s, p1y = vy + u1.y * s;
+      var p2x = p1x + u2.x * s, p2y = p1y + u2.y * s;
+      var p3x = vx + u2.x * s, p3y = vy + u2.y * s;
+      mark.setAttribute('points', p1x + ',' + p1y + ' ' + p2x + ',' + p2y + ' ' + p3x + ',' + p3y);
+      mark.style.display = '';
     }
 
     function updateTriangleVisual() {
@@ -518,12 +658,14 @@
       document.getElementById('labelC').setAttribute('x', lmx(C.x) + 13); document.getElementById('labelC').setAttribute('y', lmy(C.y) - 10);
       document.getElementById('triPoly').setAttribute('points',
         lmx(A.x) + ',' + lmy(A.y) + ' ' + lmx(B.x) + ',' + lmy(B.y) + ' ' + lmx(C.x) + ',' + lmy(C.y));
+      updateRightAngleMarker(!isDegenerate(A, B, C) ? rightAngleVertex(A, B, C) : null);
       updateTriangleReadout();
     }
 
     function buildTriangleSkeleton() {
       var markup = buildGridMarkup(lmx, lmy, LXMIN, LXMAX, LYMIN, LYMAX);
       markup += '<polygon id="triPoly" points="" class="tri-poly"/>';
+      markup += '<polyline id="rightAngleMark" class="right-angle-mark" style="display:none;"/>';
       markup += '<text id="labelA" class="vertex-label">A</text>';
       markup += '<text id="labelB" class="vertex-label">B</text>';
       markup += '<text id="labelC" class="vertex-label">C</text>';
@@ -560,6 +702,10 @@
     }
 
     buildTriangleSkeleton();
+
+    document.getElementById('presetAligned').addEventListener('click', function () { applyPreset('aligned'); });
+    document.getElementById('presetTilted').addEventListener('click', function () { applyPreset('tilted'); });
+    document.getElementById('presetAlmost').addEventListener('click', function () { applyPreset('almost'); });
 
     /* ---------- Step 3: quiz (5 questions, every question renders its own triangle SVG) ---------- */
 
@@ -910,6 +1056,7 @@
 
     populateTeacherDatalist();
     updateNavButtons();
+    renderMathInElement(document.body, katexOptions);
   </script>
 </body>
 </html>
