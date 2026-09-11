@@ -45,7 +45,7 @@
     }
     .courses-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 18px;
     }
     .course-card {
@@ -82,6 +82,10 @@
       background: var(--green-soft);
       color: #1f7a41;
     }
+    .badge-soon {
+      background: #e2e8f0;
+      color: #64748b;
+    }
     .course-card-link {
       text-decoration: none;
       color: inherit;
@@ -93,23 +97,60 @@
       box-shadow: var(--shadow-card);
       transform: translateY(-2px);
     }
+    .course-card-soon {
+      text-decoration: none;
+      color: inherit;
+      cursor: default;
+      opacity: 0.65;
+    }
   </style>
 </head>
 <body>
   <div class="portal-container">
     <header class="header">
       <h1>מרחב לומדות אינטראקטיביות במתמטיקה</h1>
-      <p>בחרו כיתה כדי להתחיל</p>
+      <p>בחרו כיתה ורמת לימוד כדי להתחיל</p>
     </header>
 
     <main>
       <section class="grade-section">
         <h2 class="grade-title">כיתה י'</h2>
         <div class="courses-grid">
+          <a class="course-card course-card-soon" href="#">
+            <span class="badge badge-soon">בקרוב</span>
+            <h3>3 יח"ל</h3>
+            <p>התוכן בהכנה ויעלה בקרוב.</p>
+          </a>
           <a class="course-card course-card-link" href="grade10/level4/index.html">
             <span class="badge badge-available">זמין לתרגול</span>
-            <h3>גיאומטריה — 4 יח"ל</h3>
-            <p>תכונות מרובעים ועוד נושאים בגיאומטריה במישור.</p>
+            <h3>4 יח"ל</h3>
+            <p>מרחב למידה לתלמידי 4 יחידות לימוד.</p>
+          </a>
+          <a class="course-card course-card-soon" href="#">
+            <span class="badge badge-soon">בקרוב</span>
+            <h3>5 יח"ל</h3>
+            <p>התוכן בהכנה ויעלה בקרוב.</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="grade-section">
+        <h2 class="grade-title">כיתה יא'</h2>
+        <div class="courses-grid">
+          <a class="course-card course-card-soon" href="#">
+            <span class="badge badge-soon">בקרוב</span>
+            <h3>3 יח"ל (שאלון 371)</h3>
+            <p>התוכן בהכנה ויעלה בקרוב.</p>
+          </a>
+          <a class="course-card course-card-soon" href="#">
+            <span class="badge badge-soon">בקרוב</span>
+            <h3>4 יח"ל (שאלון 471)</h3>
+            <p>התוכן בהכנה ויעלה בקרוב.</p>
+          </a>
+          <a class="course-card course-card-soon" href="#">
+            <span class="badge badge-soon">בקרוב</span>
+            <h3>5 יח"ל (שאלון 571)</h3>
+            <p>התוכן בהכנה ויעלה בקרוב.</p>
           </a>
         </div>
       </section>
@@ -117,10 +158,20 @@
       <section class="grade-section">
         <h2 class="grade-title">כיתה יב'</h2>
         <div class="courses-grid">
+          <a class="course-card course-card-soon" href="#">
+            <span class="badge badge-soon">בקרוב</span>
+            <h3>3 יח"ל (שאלון 372)</h3>
+            <p>התוכן בהכנה ויעלה בקרוב.</p>
+          </a>
+          <a class="course-card course-card-soon" href="#">
+            <span class="badge badge-soon">בקרוב</span>
+            <h3>4 יח"ל (שאלון 472)</h3>
+            <p>התוכן בהכנה ויעלה בקרוב.</p>
+          </a>
           <a class="course-card course-card-link" href="grade12/level5/index.html">
             <span class="badge badge-available">זמין לתרגול</span>
-            <h3>הפונקציה המעריכית — 5 יח"ל</h3>
-            <p>שאלון 572: מבוא, טרנספורמציות, משוואות, אי-שוויונות וקדם אנליזה.</p>
+            <h3>5 יח"ל (שאלון 572)</h3>
+            <p>מרחב למידה והכנה לבגרות.</p>
           </a>
         </div>
       </section>
