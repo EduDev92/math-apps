@@ -157,6 +157,7 @@
       font-family: var(--font-family); font-size: 1rem; margin-bottom: 14px; text-align: center; box-sizing: border-box;
     }
     .name-gate-input:focus { outline: none; border-color: var(--blue-primary); }
+    .name-gate-error { color: var(--red-error); background: var(--red-soft); border: 1px solid var(--red-error); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; font-weight: 700; margin: -6px 0 14px; }
 
     .certificate-card {
       position: relative; background: linear-gradient(135deg, #fffbea 0%, #ffffff 60%);
@@ -255,6 +256,9 @@
         <div class="name-gate" id="nameGate">
           <p class="name-gate-text">הקלידו את שמכם המלא כדי להתחיל בתרגול ולקבל תעודת סיום אישית</p>
           <input type="text" id="studentNameInput" class="name-gate-input" placeholder="לדוגמה: ישראל ישראלי" autocomplete="name">
+          <input type="text" id="teacherNameInput" class="name-gate-input" list="teachers-list" placeholder="שם המורה" autocomplete="off">
+          <datalist id="teachers-list"></datalist>
+          <p class="name-gate-error" id="teacherNameError" hidden>אנא בחר שם מורה תקין מתוך הרשימה</p>
           <button type="button" id="btnStartQuiz" class="btn btn-primary" disabled>בואו נתחיל</button>
         </div>
 
@@ -330,6 +334,7 @@
 
     var currentStep = 1;
     var studentName = '';
+    var teacherName = '';
     var quizStarted = false;
     var quizTiming = { startTime: null, totalSeconds: null };
     var state = {
@@ -814,7 +819,7 @@
       document.getElementById('summaryActions').hidden = !passed;
 
       if (passed) renderCertificate(pct, correct, total);
-      sendScoreToSheet(studentName, "כיתה י' 4 יח\"ל", pct, quizTiming.totalSeconds);
+      sendScoreToSheet(studentName, teacherName, "כיתה י' 4 יח\"ל", pct, quizTiming.totalSeconds);
     }
 
     function renderCertificate(pct, correct, total) {
@@ -904,6 +909,13 @@
     document.getElementById('btnStartQuiz').addEventListener('click', function () {
       studentName = document.getElementById('studentNameInput').value.trim();
       if (studentName.length < 2) return;
+      var teacherInputVal = document.getElementById('teacherNameInput').value.trim();
+      if (!isValidTeacherName(teacherInputVal)) {
+        document.getElementById('teacherNameError').hidden = false;
+        return;
+      }
+      document.getElementById('teacherNameError').hidden = true;
+      teacherName = teacherInputVal;
       quizStarted = true;
       quizTiming.startTime = Date.now();
       quizTiming.totalSeconds = null;
@@ -945,6 +957,7 @@
       });
     });
 
+    populateTeacherDatalist();
     updateNavButtons();
   </script>
 </body>
