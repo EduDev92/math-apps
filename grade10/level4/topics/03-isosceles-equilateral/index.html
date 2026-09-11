@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>משולש שווה-שוקיים ושווה-צלעות | לומדה 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../../../shared/css/common.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <style>
+    :root {
+      --orange-strong: #c2650b;
+      --orange-soft: #fdecd2;
+      --purple-strong: #7c3aed;
+      --purple-soft: #ede9fe;
+    }
+
+    body { background: var(--bg-main); }
+
+    .topbar { background: #ffffff; border-bottom: 1px solid var(--border-subtle); padding: 14px 20px; }
+    .back-link { color: var(--blue-primary); font-weight: 700; font-size: 0.95rem; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+
+    .lesson-container { max-width: 1020px; margin: 0 auto; padding: 24px 20px 60px; }
+    .lesson-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 32px; overflow-x: hidden; }
+    .step-panel[hidden] { display: none; }
+
+    .step-heading { font-size: 1.6rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
+    .step-intro { color: var(--text-muted); margin-bottom: 20px; font-size: 0.98rem; }
+
+    .content-block { margin-bottom: 26px; }
+    .content-block h3 { font-size: 1.15rem; font-weight: 700; color: var(--blue-primary); margin-bottom: 10px; }
+    .content-block p { margin-bottom: 8px; }
+
+    .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
+    .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
+
+    .mini-tri-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-top: 10px; max-width: 420px; }
+    .mini-tri-card { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 12px; text-align: center; }
+    .mini-tri-card svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
+    .mini-tri-caption { font-size: 0.85rem; font-weight: 700; color: var(--blue-deep); margin-top: 8px; }
+    .leg-label-sm { font-size: 10px; font-weight: 700; fill: var(--blue-primary); }
+    .hyp-label-sm { font-size: 10px; font-weight: 700; fill: var(--orange-strong); }
+
+    .example-layout { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .example-svg-wrap { flex: 0 0 260px; max-width: 260px; }
+    .example-svg-wrap svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
+    .example-calc-wrap { flex: 1; min-width: 220px; }
+
+    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
+    .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
+    .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+    .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
+
+    /* Step 2 lab */
+    .lab-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; }
+    .lab-block h3 { font-size: 1.2rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
+
+    .lab-layout { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .lab-readout {
+      background: #fff; border: 2px solid var(--blue-soft); border-radius: var(--radius-md);
+      padding: 14px 16px; font-size: 0.95rem; text-align: center; min-height: 24px; max-width: 460px; width: 100%; line-height: 1.85;
+    }
+    .lab-readout.status-none { border-color: var(--red-error); background: var(--red-soft); }
+    .lab-readout.status-success { border-color: var(--green-success); background: var(--green-soft); }
+    .preset-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .preset-btn {
+      padding: 9px 16px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
+      background: #fff; font-family: var(--font-family); font-weight: 700; font-size: 0.88rem; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
+    .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
+    .dist-line { margin: 10px 0; font-size: 0.92rem; }
+    .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
+    .tri-badge {
+      display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+      background: var(--blue-soft); color: var(--blue-deep);
+    }
+    .tri-badge.badge-right { background: var(--green-soft); color: #1f7a41; }
+
+    .grid-svg-wrap { max-width: 380px; width: 100%; }
+    .graph-svg {
+      width: 100%; height: auto; display: block; background: #fff;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr;
+    }
+    .graph-svg text { font-family: var(--font-family); }
+
+    .grid-line { stroke: var(--border-subtle); stroke-width: 1; }
+    .axis-line { stroke: #94a3b8; stroke-width: 1.5; }
+    .axis-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; }
+    .axis-label-y { text-anchor: end; }
+
+    .tri-poly { fill: var(--blue-primary); fill-opacity: 0.12; stroke: var(--blue-primary); stroke-width: 2.5; }
+    .tri-poly-fill { fill: var(--blue-primary); fill-opacity: 0.08; stroke: none; }
+    .tri-edge { stroke-width: 3; }
+    .vertex-label { font-size: 14px; font-weight: 800; fill: var(--blue-deep); }
+    .vertex-label-sm { font-size: 12px; font-weight: 800; fill: var(--blue-deep); }
+    .point-marker { fill: var(--orange-strong); stroke: #fff; stroke-width: 1.5; }
+    .drag-marker { fill: var(--orange-strong); stroke: #fff; stroke-width: 2; cursor: grab; touch-action: none; }
+
+    /* Step 3 quiz */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; font-size: 0.95rem; color: var(--text-muted); }
+    .quiz-dots { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+    .quiz-dot { width: 12px; height: 12px; border-radius: 50%; background: #dbe3ee; transition: all 0.2s; }
+    .quiz-dot.dot-current { box-shadow: 0 0 0 3px var(--blue-soft); background: var(--blue-primary); }
+    .quiz-dot.dot-correct { background: var(--green-success); }
+    .quiz-dot.dot-incorrect { background: var(--red-error); }
+
+    .quiz-body { min-height: 140px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
+    .quiz-instruction { font-weight: 700; margin-bottom: 12px; text-align: center; }
+    .quiz-id-tag { margin-top: 14px; text-align: center; font-size: 0.72rem; color: #b8c2d1; font-family: monospace; direction: ltr; }
+
+    .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+    .quiz-option-btn {
+      padding: 12px 20px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
+      background: #fff; font-family: var(--font-family); font-size: 1rem; font-weight: 700;
+      cursor: pointer; min-width: 120px; transition: all 0.15s;
+    }
+    .quiz-option-btn:hover:not(:disabled) { border-color: var(--blue-primary); background: var(--blue-soft); }
+    .quiz-option-btn:disabled { cursor: default; }
+    .option-correct { background: var(--green-soft) !important; border-color: var(--green-success) !important; color: #1f7a41; }
+    .option-incorrect { background: var(--red-soft) !important; border-color: var(--red-error) !important; color: #8f2323; }
+
+    .quiz-complete-msg { text-align: center; font-weight: 700; color: var(--blue-deep); padding: 30px 10px; }
+
+    .quiz-feedback { margin-top: 16px; padding: 14px 18px; border-radius: var(--radius-sm); font-size: 0.95rem; }
+    .feedback-correct { background: var(--green-soft); border: 1px solid var(--green-success); color: #1f7a41; }
+    .feedback-incorrect { background: var(--red-soft); border: 1px solid var(--red-error); color: #8f2323; }
+    .feedback-explain { margin-top: 6px; font-weight: 400; }
+
+    .quiz-actions { display: flex; justify-content: center; margin-top: 18px; }
+
+    .btn { padding: 12px 26px; border-radius: var(--radius-sm); border: none; font-family: var(--font-family); font-weight: 700; font-size: 0.98rem; cursor: pointer; transition: all 0.15s; }
+    .btn-primary { background: var(--blue-primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--blue-deep); }
+    .btn-primary:disabled { background: #a9bcd8; cursor: not-allowed; }
+    .btn-secondary { background: #eef2f9; color: var(--blue-primary); border: 1px solid var(--border-subtle); }
+    .btn-secondary:hover { background: var(--blue-soft); }
+
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-subtle); }
+
+    .results-card { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 26px; text-align: center; margin-bottom: 26px; transition: all 0.2s; }
+    .results-good { border-color: var(--green-success); background: var(--green-soft); }
+    .results-mid { border-color: var(--orange-strong); background: var(--orange-soft); }
+    .results-low { border-color: var(--red-error); background: var(--red-soft); }
+    .results-number { font-size: 3rem; font-weight: 800; color: var(--blue-deep); }
+    .results-label { color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
+    .results-percent-row { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .results-verdict { font-size: 1.05rem; font-weight: 700; color: var(--blue-deep); }
+
+    .table-wrap { overflow-x: auto; margin-bottom: 10px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .data-table th, .data-table td { border: 1px solid var(--border-subtle); padding: 10px 12px; text-align: center; }
+    .data-table th { background: var(--blue-soft); color: var(--blue-deep); font-weight: 700; }
+    .data-table td:first-child { background: #f8fafc; font-weight: 700; color: var(--text-muted); }
+
+    .name-gate {
+      max-width: 480px; margin: 30px auto; text-align: center; background: #f8fafc;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 28px 22px;
+    }
+    .name-gate-text { font-weight: 700; margin-bottom: 16px; color: var(--blue-deep); }
+    .name-gate-input {
+      width: 100%; padding: 12px 14px; border: 2px solid var(--border-subtle); border-radius: var(--radius-sm);
+      font-family: var(--font-family); font-size: 1rem; margin-bottom: 14px; text-align: center; box-sizing: border-box;
+    }
+    .name-gate-input:focus { outline: none; border-color: var(--blue-primary); }
+    .name-gate-error { color: var(--red-error); background: var(--red-soft); border: 1px solid var(--red-error); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; font-weight: 700; margin: -6px 0 14px; }
+
+    .certificate-card {
+      position: relative; background: linear-gradient(135deg, #fffbea 0%, #ffffff 60%);
+      border: 3px solid #d4af37; border-radius: var(--radius-lg); padding: 34px 26px 26px;
+      text-align: center; max-width: 560px; margin: 10px auto 0; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+    }
+    .certificate-card::before {
+      content: ''; position: absolute; inset: 8px; border: 1px solid #e9d38a;
+      border-radius: calc(var(--radius-lg) - 6px); pointer-events: none;
+    }
+    .certificate-trophy { font-size: 48px; line-height: 1; margin: 0 auto 10px; text-align: center; }
+    .certificate-title { font-size: 1.2rem; font-weight: 800; color: #92660b; margin-bottom: 16px; }
+    .certificate-line { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 2px; }
+    .certificate-student-name { font-size: 1.55rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 12px; }
+    .certificate-lesson-name { font-size: 0.92rem; color: var(--text-main); margin-bottom: 8px; font-weight: 600; }
+    .certificate-score { font-size: 1.1rem; font-weight: 800; color: #1f7a41; margin-bottom: 18px; }
+    .certificate-quote { font-style: italic; font-size: 0.96rem; color: var(--blue-primary); padding: 0 10px; margin-bottom: 16px; line-height: 1.6; }
+    .certificate-ref { position: absolute; bottom: 8px; left: 14px; font-size: 0.68rem; color: #b8b8b8; direction: ltr; }
+    .btn-download-cert { max-width: 420px; }
+
+    .encouragement-card { background: var(--orange-soft); border: 2px dashed var(--orange-strong); border-radius: var(--radius-lg); padding: 32px 24px; text-align: center; max-width: 480px; margin: 10px auto 0; }
+    .encouragement-icon { font-size: 44px; margin-bottom: 12px; }
+    .encouragement-text { font-size: 1.02rem; color: var(--text-main); font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
+    .btn-retry-fail { font-size: 1.05rem; padding: 14px 32px; }
+    .summary-actions[hidden] { display: none; }
+
+    .summary-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 780px) {
+      .lesson-card { padding: 18px 14px; }
+      .certificate-card { padding: 26px 16px 20px; }
+      .certificate-title { font-size: 1.05rem; }
+      .certificate-student-name { font-size: 1.3rem; }
+      .summary-actions { flex-direction: column; align-items: stretch; }
+      .summary-actions .btn { width: 100%; }
+    }
+
+    @media print {
+      .topbar, .nav-buttons, step-progress, #step-1, #step-2, #step-3, .summary-actions { display: none !important; }
+      body { background: #fff; }
+      .lesson-card { box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../../index.html" class="back-link">→ חזרה לעץ הנושאים</a>
+  </div>
+
+  <div class="lesson-container">
+    <step-progress id="stepProgress" current-step="1"></step-progress>
+
+    <div class="lesson-card">
+
+      <section class="step-panel" id="step-1" data-step="1">
+        <h2 class="step-heading">שלב 1: מכירים</h2>
+        <p class="step-intro">איך מזהים ומוכיחים שמשולש הוא שווה-שוקיים או שווה-צלעות, רק מתוך שיעורי הקודקודים במערכת צירים?</p>
+
+        <div class="content-block">
+          <h3>הגדרות: שוקיים, בסיס ומשולש שווה-צלעות</h3>
+          <p><strong>משולש שווה-שוקיים</strong> הוא משולש שבו שתי צלעות שוות זו לזו באורכן. שתי הצלעות השוות נקראות <strong>שוקיים</strong>, והקודקוד המשותף להן נקרא <strong>קודקוד הראש</strong>. הצלע השלישית, שאורכה (בדרך כלל) שונה, נקראת <strong>בסיס</strong>.</p>
+          <p><strong>משולש שווה-צלעות</strong> הוא מקרה פרטי ומיוחד של משולש שווה-שוקיים: כל שלוש הצלעות שוות זו לזו באורכן.</p>
+          <p>אם שלושת אורכי הצלעות שונים זה מזה - המשולש נקרא <strong>שונה-צלעות</strong>.</p>
+        </div>
+
+        <div class="content-block">
+          <h3>דוגמאות חזותיות</h3>
+          <p>בשתי הדוגמאות הבאות מסומנות הצלעות השוות בירוק, עם סימון קווים קטנים - הסימון המקובל לציון צלעות שוות באורכן:</p>
+          <div class="mini-tri-grid">
+            <div class="mini-tri-card">
+              <div id="miniTriIso"></div>
+              <p class="mini-tri-caption">משולש שווה-שוקיים</p>
+            </div>
+            <div class="mini-tri-card">
+              <div id="miniTriEqui"></div>
+              <p class="mini-tri-caption">משולש שווה-צלעות</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>תזכורת: נוסחת המרחק בין שתי נקודות</h3>
+          <p>המרחק בין שתי נקודות <span class="coord-ltr">$(x_1,y_1)$</span> ו-<span class="coord-ltr">$(x_2,y_2)$</span> מחושב לפי הנוסחה:</p>
+          <div class="derivation-block">
+            <p class="derivation-line">$$d = \sqrt{(x_2-x_1)^2+(y_2-y_1)^2}$$</p>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>איך מוכיחים זאת אנליטית? שיטת העבודה</h3>
+          <div class="content-block highlight-block" style="margin-top:14px;">
+            <h4>שיטת העבודה</h4>
+            <p>1. מחשבים את אורך כל אחת משלוש הצלעות <span class="coord-ltr">AB, BC, CA</span> לפי נוסחת המרחק.<br>
+            2. משווים בין שלושת האורכים שהתקבלו.<br>
+            3. שלוש הצלעות שוות &larr; <strong>משולש שווה-צלעות</strong>.<br>
+            4. רק שתי צלעות שוות &larr; <strong>משולש שווה-שוקיים</strong> (הצלע השלישית היא הבסיס).<br>
+            5. כל הצלעות שונות &larr; <strong>משולש שונה-צלעות</strong>.</p>
+          </div>
+        </div>
+
+        <div class="content-block">
+          <h3>דוגמה מלאה</h3>
+          <div class="derivation-block" id="exampleDerivation"></div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-2" data-step="2" hidden>
+        <h2 class="step-heading">שלב 2: חוקרים</h2>
+        <p class="step-intro">גררו כל אחד משלושת הקודקודים של המשולש. עקבו אחרי אורכי הצלעות, ובידקו אם מתקבל משולש שווה-שוקיים, שווה-צלעות, או שונה-צלעות.</p>
+
+        <div class="lab-block">
+          <h3>בנו משולש ובדקו את סוגו לפי אורכי הצלעות</h3>
+          <p class="lab-hint">לא בטוחים מאיפה להתחיל? נסו אחת הדוגמאות המוכנות, או גררו קודקוד לפי בחירתכם:</p>
+          <div class="preset-btn-row">
+            <button type="button" class="preset-btn" id="presetIsosceles">משולש שווה-שוקיים</button>
+            <button type="button" class="preset-btn" id="presetEquilateral">משולש שווה-צלעות</button>
+            <button type="button" class="preset-btn" id="presetScalene">שונה-צלעות</button>
+          </div>
+          <div class="lab-layout">
+            <div class="lab-readout" id="triReadout"></div>
+            <div class="grid-svg-wrap">
+              <svg id="triSvg" viewBox="0 0 460 460" class="graph-svg"></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-3" data-step="3" hidden>
+        <h2 class="step-heading">שלב 3: מתרגלים</h2>
+
+        <div class="name-gate" id="nameGate">
+          <p class="name-gate-text">הקלידו את שמכם המלא כדי להתחיל בתרגול ולקבל תעודת סיום אישית</p>
+          <input type="text" id="studentNameInput" class="name-gate-input" placeholder="לדוגמה: ישראל ישראלי" autocomplete="name">
+          <input type="text" id="teacherNameInput" class="name-gate-input" list="teachers-list" placeholder="שם המורה" autocomplete="off">
+          <datalist id="teachers-list"></datalist>
+          <p class="name-gate-error" id="teacherNameError" hidden>אנא בחר שם מורה תקין מתוך הרשימה</p>
+          <button type="button" id="btnStartQuiz" class="btn btn-primary" disabled>בואו נתחיל</button>
+        </div>
+
+        <div id="quizContent" hidden>
+          <div class="quiz-header">
+            <div>שאלה <span id="qIndex">1</span> מתוך 5</div>
+            <div>ציון מצטבר: <span id="qScore">0</span>/5</div>
+          </div>
+          <div class="quiz-dots" id="quizDots"></div>
+          <div class="quiz-body" id="quizBody"></div>
+          <div class="quiz-feedback" id="quizFeedback" hidden></div>
+          <div class="quiz-actions">
+            <button id="btnNextQuestion" class="btn btn-primary" type="button" hidden>לשאלה הבאה ←</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-4" data-step="4" hidden>
+        <h2 class="step-heading">שלב 4: מסכמים</h2>
+
+        <div class="printable-area">
+          <div class="results-card" id="resultsCard">
+            <div class="results-number" id="resultsCorrect">0</div>
+            <div class="results-label">תשובות נכונות מתוך 5</div>
+            <div class="results-percent-row">אחוז הצלחה: <span id="resultsPercent">0%</span></div>
+            <div class="results-verdict" id="resultsVerdict"></div>
+          </div>
+
+          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: משולש שווה-שוקיים ושווה-צלעות</h3>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>תנאי על אורכי הצלעות</th><th>סוג המשולש</th></tr></thead>
+              <tbody>
+                <tr><td>שלוש הצלעות שוות</td><td>משולש שווה-צלעות</td></tr>
+                <tr><td>רק שתי צלעות שוות</td><td>משולש שווה-שוקיים (הצלע השלישית - בסיס)</td></tr>
+                <tr><td>כל הצלעות שונות</td><td>משולש שונה-צלעות</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="certificate-card" id="certificateCard">
+            <div class="certificate-trophy" id="certIcon" aria-hidden="true">🏆</div>
+            <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות</h3>
+            <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
+            <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
+            <p class="certificate-lesson-name" id="certLessonName">לומדה: משולש שווה-שוקיים ושווה-צלעות</p>
+            <p class="certificate-score" id="certScore">ציון סופי: 0 (0/5)</p>
+            <p class="certificate-quote" id="certQuote"></p>
+            <div class="certificate-ref" id="certTime">Time: 0s</div>
+          </div>
+
+          <div class="encouragement-card" id="encouragementCard" hidden>
+            <div class="encouragement-icon" aria-hidden="true">💪</div>
+            <p class="encouragement-text">לא נורא! כדי להרוויח את התעודה, יש לקבל ציון עובר (60 ומעלה). חזרו לתרגל ונסו שוב.</p>
+            <button id="btnRetryFail" class="btn btn-primary btn-retry-fail" type="button">נסה שוב</button>
+          </div>
+        </div>
+
+        <div class="summary-actions" id="summaryActions">
+          <button id="btnRestart" class="btn btn-secondary" type="button">התחל מחדש</button>
+          <button id="btnDownloadCert" class="btn btn-primary btn-download-cert" type="button">שמירת התעודה כתמונה (לשליחה בוואטסאפ / קלאסרום)</button>
+        </div>
+      </section>
+
+      <div class="nav-buttons">
+        <button id="btnPrev" class="btn btn-secondary" type="button">→ הקודם</button>
+        <button id="btnNext" class="btn btn-primary" type="button">הבא ←</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../../../shared/components/step-progress.js"></script>
+  <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    var katexOptions = {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    };
+
+    var LESSON_NAME = 'משולש שווה-שוקיים ושווה-צלעות';
+    var QUIZ_SIZE = 5;
+    var VERTEX_KEYS = ['A', 'B', 'C'];
+
+    var currentStep = 1;
+    var studentName = '';
+    var teacherName = '';
+    var quizStarted = false;
+    var quizTiming = { startTime: null, totalSeconds: null };
+    var state = {
+      quiz: { questions: [], index: 0, score: 0, answers: [], locked: false }
+    };
+
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function randChoice(arr) { return arr[randInt(0, arr.length - 1)]; }
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = randInt(0, i);
+        var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+      }
+      return a;
+    }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    /* Coordinates are always either plain integers or of the exact form (a + b*sqrt(3))
+       (the only irrational form this lesson ever produces, needed for exact equilateral
+       triangles - see buildEquilateralTriangle). This renders that exactly, in LaTeX. */
+    function fmtCoord(v) {
+      for (var b = -6; b <= 6; b++) {
+        var a = v - b * Math.sqrt(3);
+        var ar = Math.round(a);
+        if (Math.abs(a - ar) < 1e-7) {
+          if (b === 0) return String(ar);
+          var bTerm = (Math.abs(b) === 1 ? '' : Math.abs(b)) + '\\sqrt{3}';
+          if (ar === 0) return (b < 0 ? '-' : '') + bTerm;
+          return ar + (b < 0 ? '-' : '+') + bTerm;
+        }
+      }
+      return v.toFixed(2);
+    }
+    function pointLabel(p) { return '(' + fmtCoord(p.x) + ', ' + fmtCoord(p.y) + ')'; }
+
+    /* ---------- Exact-radical helpers (for distance display) ---------- */
+
+    function simplifySqrt(n) {
+      var coeff = 1, rad = n;
+      for (var i = 2; i * i <= rad; i++) {
+        while (rad % (i * i) === 0) { rad = rad / (i * i); coeff *= i; }
+      }
+      return { coeff: coeff, rad: rad };
+    }
+    function sqrtToLatex(n) {
+      var s = simplifySqrt(n);
+      if (s.rad === 1) return String(s.coeff);
+      if (s.coeff === 1) return '\\sqrt{' + s.rad + '}';
+      return s.coeff + '\\sqrt{' + s.rad + '}';
+    }
+
+    /* ---------- Triangle geometry core ---------- */
+
+    function sq(n) { return n * n; }
+    function sqDist(A, B) { return sq(B.x - A.x) + sq(B.y - A.y); }
+    function isDegenerate(A, B, C) {
+      return sqDist(A, B) === 0 || sqDist(B, C) === 0 || sqDist(C, A) === 0;
+    }
+
+    var COLOR_LEG = '#2e9e5b';
+    var COLOR_BASE = '#64748b';
+
+    function classifyAndColor(A, B, C) {
+      var dAB = Math.round(sqDist(A, B)), dBC = Math.round(sqDist(B, C)), dCA = Math.round(sqDist(C, A));
+      var colors = { AB: null, BC: null, CA: null };
+      var type, apex = null, baseLabel = null;
+      if (dAB === dBC && dBC === dCA) {
+        type = 'equilateral'; colors.AB = COLOR_LEG; colors.BC = COLOR_LEG; colors.CA = COLOR_LEG;
+      } else if (dAB === dCA) {
+        type = 'isosceles'; apex = 'A'; baseLabel = 'BC'; colors.AB = COLOR_LEG; colors.CA = COLOR_LEG;
+      } else if (dAB === dBC) {
+        type = 'isosceles'; apex = 'B'; baseLabel = 'CA'; colors.AB = COLOR_LEG; colors.BC = COLOR_LEG;
+      } else if (dBC === dCA) {
+        type = 'isosceles'; apex = 'C'; baseLabel = 'AB'; colors.BC = COLOR_LEG; colors.CA = COLOR_LEG;
+      } else {
+        type = 'scalene';
+      }
+      return { type: type, apex: apex, baseLabel: baseLabel, colors: colors, dAB: dAB, dBC: dBC, dCA: dCA };
+    }
+
+    function legNamesForApex(apex) {
+      if (apex === 'A') return 'AB ו-AC';
+      if (apex === 'B') return 'AB ו-BC';
+      return 'BC ו-CA';
+    }
+
+    function distanceSubstitutionHTML(labelPair, fromLabel, toLabel, P1, P2, color) {
+      var dx = P2.x - P1.x, dy = P2.y - P1.y;
+      var dxSq = Math.round(dx * dx), dySq = Math.round(dy * dy);
+      var sumSq = dxSq + dySq;
+      var body = 'd_{' + labelPair + '} = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2} = ' +
+        '\\sqrt{\\left(' + fmtCoord(P2.x) + '-(' + fmtCoord(P1.x) + ')\\right)^2+\\left(' + fmtCoord(P2.y) + '-(' + fmtCoord(P1.y) + ')\\right)^2} = ' +
+        '\\sqrt{' + dxSq + '+' + dySq + '} = \\sqrt{' + sumSq + '} = ' + sqrtToLatex(sumSq);
+      if (color) body = '\\textcolor{' + color + '}{' + body + '}';
+      return '<p class="dist-line">$$' + body + '$$</p>';
+    }
+
+    function explainBlock(A, B, C) {
+      var info = classifyAndColor(A, B, C);
+      var html = distanceSubstitutionHTML('AB', 'A', 'B', A, B, info.colors.AB) +
+        distanceSubstitutionHTML('BC', 'B', 'C', B, C, info.colors.BC) +
+        distanceSubstitutionHTML('CA', 'C', 'A', C, A, info.colors.CA);
+      var concl;
+      if (info.type === 'equilateral') {
+        concl = 'שלוש הצלעות שוות זו לזו באורכן - <strong>משולש שווה-צלעות</strong>.';
+      } else if (info.type === 'isosceles') {
+        concl = 'הצלעות <span class="coord-ltr">' + legNamesForApex(info.apex) + '</span> שוות זו לזו באורכן - <strong>משולש שווה-שוקיים</strong> (ראש בקודקוד ' + info.apex + ', בסיס ' + info.baseLabel + ').';
+      } else {
+        concl = 'שלוש הצלעות שונות זו מזו באורכן - <strong>משולש שונה-צלעות</strong>.';
+      }
+      html += '<p class="dist-line">' + concl + '</p>';
+      return { html: html, info: info };
+    }
+
+    /* ---------- Shared grid + SVG helpers ---------- */
+
+    function buildGridMarkup(mx, my, xmin, xmax, ymin, ymax) {
+      var markup = '';
+      for (var gx = Math.ceil(xmin); gx <= Math.floor(xmax); gx++) {
+        markup += '<line x1="' + mx(gx) + '" y1="' + my(ymin) + '" x2="' + mx(gx) + '" y2="' + my(ymax) + '" class="grid-line"/>';
+        if (gx !== 0) markup += '<text x="' + mx(gx) + '" y="' + (my(0) + 16) + '" class="axis-label">' + gx + '</text>';
+      }
+      for (var gy = Math.ceil(ymin); gy <= Math.floor(ymax); gy++) {
+        markup += '<line x1="' + mx(xmin) + '" y1="' + my(gy) + '" x2="' + mx(xmax) + '" y2="' + my(gy) + '" class="grid-line"/>';
+        if (gy !== 0) markup += '<text x="' + (mx(0) - 8) + '" y="' + (my(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
+      }
+      markup += '<line x1="' + mx(xmin) + '" y1="' + my(0) + '" x2="' + mx(xmax) + '" y2="' + my(0) + '" class="axis-line"/>';
+      markup += '<line x1="' + mx(0) + '" y1="' + my(ymin) + '" x2="' + mx(0) + '" y2="' + my(ymax) + '" class="axis-line"/>';
+      markup += '<text x="' + (mx(xmax) - 6) + '" y="' + (my(0) - 8) + '" class="axis-label" style="font-weight:800;">x</text>';
+      markup += '<text x="' + (mx(0) + 12) + '" y="' + (my(ymax) + 12) + '" class="axis-label" style="font-weight:800;">y</text>';
+      return markup;
+    }
+
+    function tickMarkSVG(mx, my, P1, P2, color) {
+      var x1 = mx(P1.x), y1 = my(P1.y), x2 = mx(P2.x), y2 = my(P2.y);
+      var midx = (x1 + x2) / 2, midy = (y1 + y2) / 2;
+      var ang = Math.atan2(y2 - y1, x2 - x1);
+      var perp = ang + Math.PI / 2;
+      var half = 6;
+      var ax = midx + Math.cos(perp) * half, ay = midy + Math.sin(perp) * half;
+      var bx = midx - Math.cos(perp) * half, by = midy - Math.sin(perp) * half;
+      return '<line x1="' + ax + '" y1="' + ay + '" x2="' + bx + '" y2="' + by + '" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round"/>';
+    }
+
+    /* ---------- Step 1: worked example + mini gallery ---------- */
+
+    function renderExampleSVG(A, B, C, apexKey, legColor, baseColor) {
+      var W = 260, H = 260, PAD = 30;
+      var xs = [A.x, B.x, C.x], ys = [A.y, B.y, C.y];
+      var xLo = Math.min.apply(null, xs), xHi = Math.max.apply(null, xs);
+      var yLo = Math.min.apply(null, ys), yHi = Math.max.apply(null, ys);
+      var span = Math.max(xHi - xLo, yHi - yLo) + 2.4;
+      var cx = (xLo + xHi) / 2, cy = (yLo + yHi) / 2;
+      var XMIN = cx - span / 2, XMAX = cx + span / 2, YMIN = cy - span / 2, YMAX = cy + span / 2;
+      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
+      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
+
+      var pts = { A: A, B: B, C: C };
+      var others = VERTEX_KEYS.filter(function (k) { return k !== apexKey; });
+      var apex = pts[apexKey], legEnd1 = pts[others[0]], legEnd2 = pts[others[1]];
+
+      var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, XMIN, XMAX, YMIN, YMAX);
+
+      markup += '<line x1="' + mx(legEnd1.x) + '" y1="' + my(legEnd1.y) + '" x2="' + mx(legEnd2.x) + '" y2="' + my(legEnd2.y) + '" stroke="' + baseColor + '" stroke-width="3"/>';
+      markup += '<line x1="' + mx(apex.x) + '" y1="' + my(apex.y) + '" x2="' + mx(legEnd1.x) + '" y2="' + my(legEnd1.y) + '" stroke="' + legColor + '" stroke-width="3.5"/>';
+      markup += '<line x1="' + mx(apex.x) + '" y1="' + my(apex.y) + '" x2="' + mx(legEnd2.x) + '" y2="' + my(legEnd2.y) + '" stroke="' + legColor + '" stroke-width="3.5"/>';
+
+      markup += tickMarkSVG(mx, my, apex, legEnd1, legColor);
+      markup += tickMarkSVG(mx, my, apex, legEnd2, legColor);
+
+      markup += '<circle cx="' + mx(A.x) + '" cy="' + my(A.y) + '" r="4.5" class="point-marker"/>';
+      markup += '<circle cx="' + mx(B.x) + '" cy="' + my(B.y) + '" r="4.5" class="point-marker"/>';
+      markup += '<circle cx="' + mx(C.x) + '" cy="' + my(C.y) + '" r="4.5" class="point-marker"/>';
+
+      var centroid = { x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 };
+      VERTEX_KEYS.forEach(function (k) {
+        var P = pts[k];
+        var dx = P.x - centroid.x, dy = P.y - centroid.y;
+        var len = Math.sqrt(dx * dx + dy * dy) || 1;
+        var lx = mx(P.x) + (dx / len) * 14, ly = my(P.y) - (dy / len) * 14;
+        markup += '<text x="' + lx + '" y="' + ly + '" class="vertex-label-sm" text-anchor="middle">' + k + '</text>';
+      });
+
+      markup += '</svg>';
+      return markup;
+    }
+
+    (function buildExample() {
+      var A = { x: -4, y: -2 }, B = { x: -1, y: -1 }, C = { x: -3, y: 1 };
+      var info = classifyAndColor(A, B, C);
+      var el = document.getElementById('exampleDerivation');
+      el.innerHTML =
+        '<div class="example-layout">' +
+        '<div class="example-svg-wrap">' + renderExampleSVG(A, B, C, info.apex, COLOR_LEG, COLOR_BASE) + '</div>' +
+        '<div class="example-calc-wrap">' +
+        '<p class="derivation-line">$A' + pointLabel(A) + ',\\ B' + pointLabel(B) + ',\\ C' + pointLabel(C) + '$</p>' +
+        '<p class="stage-label">אורך הצלע <span style="color:' + COLOR_LEG + ';">AB</span> (שוק)</p>' +
+        distanceSubstitutionHTML('AB', 'A', 'B', A, B, COLOR_LEG) +
+        '<p class="stage-label">אורך הצלע <span style="color:' + COLOR_LEG + ';">AC</span> (שוק)</p>' +
+        distanceSubstitutionHTML('AC', 'A', 'C', A, C, COLOR_LEG) +
+        '<p class="stage-label">אורך הצלע <span style="color:' + COLOR_BASE + ';">BC</span> (בסיס)</p>' +
+        distanceSubstitutionHTML('BC', 'B', 'C', B, C, COLOR_BASE) +
+        '<p class="derivation-line"><strong>מכיוון ש-<span class="coord-ltr">AB = AC</span>, מתקבל משולש שווה-שוקיים שראשו בקודקוד A ובסיסו הצלע BC!</strong></p>' +
+        '</div>' +
+        '</div>';
+      renderMathInElement(el, katexOptions);
+    })();
+
+    function renderMiniTriangleSVG(A, B, C, edges) {
+      var W = 200, H = 180, PAD = 26;
+      var xs = [A.x, B.x, C.x], ys = [A.y, B.y, C.y];
+      var xLo = Math.min.apply(null, xs), xHi = Math.max.apply(null, xs);
+      var yLo = Math.min.apply(null, ys), yHi = Math.max.apply(null, ys);
+      var span = Math.max(xHi - xLo, yHi - yLo) + 2.4;
+      var cx = (xLo + xHi) / 2, cy = (yLo + yHi) / 2;
+      var XMIN = cx - span / 2, XMAX = cx + span / 2, YMIN = cy - span / 2, YMAX = cy + span / 2;
+      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
+      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
+
+      var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, XMIN, XMAX, YMIN, YMAX);
+      markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly"/>';
+
+      edges.forEach(function (e) {
+        if (e.tick) markup += tickMarkSVG(mx, my, e.P1, e.P2, COLOR_LEG);
+      });
+
+      markup += '<circle cx="' + mx(A.x) + '" cy="' + my(A.y) + '" r="4" class="point-marker"/>';
+      markup += '<circle cx="' + mx(B.x) + '" cy="' + my(B.y) + '" r="4" class="point-marker"/>';
+      markup += '<circle cx="' + mx(C.x) + '" cy="' + my(C.y) + '" r="4" class="point-marker"/>';
+
+      edges.forEach(function (e) {
+        if (e.label) {
+          var midx = (e.P1.x + e.P2.x) / 2, midy = (e.P1.y + e.P2.y) / 2;
+          markup += '<text x="' + mx(midx) + '" y="' + (my(midy) - 6) + '" class="' + (e.tick ? 'leg-label-sm' : 'hyp-label-sm') + '" text-anchor="middle">' + e.label + '</text>';
+        }
+      });
+
+      markup += '</svg>';
+      return markup;
+    }
+
+    (function buildMiniTriangleGallery() {
+      var isoA = { x: 0, y: 2 }, isoB = { x: -2, y: -1 }, isoC = { x: 2, y: -1 };
+      document.getElementById('miniTriIso').innerHTML = renderMiniTriangleSVG(isoA, isoB, isoC, [
+        { P1: isoA, P2: isoB, tick: true, label: 'שוק' },
+        { P1: isoA, P2: isoC, tick: true, label: 'שוק' },
+        { P1: isoB, P2: isoC, tick: false, label: 'בסיס' }
+      ]);
+      var eqA = { x: -2, y: 0 }, eqB = { x: 2, y: 0 }, eqC = { x: 0, y: 2 * Math.sqrt(3) };
+      document.getElementById('miniTriEqui').innerHTML = renderMiniTriangleSVG(eqA, eqB, eqC, [
+        { P1: eqA, P2: eqB, tick: true, label: null },
+        { P1: eqB, P2: eqC, tick: true, label: null },
+        { P1: eqC, P2: eqA, tick: true, label: null }
+      ]);
+    })();
+
+    /* ---------- Step 2: three-point draggable lab ---------- */
+
+    var LW = 460, LH = 460, LPAD = 34, LXMIN = -8, LXMAX = 8, LYMIN = -8, LYMAX = 8;
+    var lmx = function (x) { return LPAD + (x - LXMIN) / (LXMAX - LXMIN) * (LW - 2 * LPAD); };
+    var lmy = function (y) { return LH - LPAD - (y - LYMIN) / (LYMAX - LYMIN) * (LH - 2 * LPAD); };
+    var linvx = function (px) { return LXMIN + (px - LPAD) / (LW - 2 * LPAD) * (LXMAX - LXMIN); };
+    var linvy = function (py) { return LYMAX - (py - LPAD) / (LH - 2 * LPAD) * (LYMAX - LYMIN); };
+
+    var trianglePoints = {
+      A: { x: 0, y: 2 },
+      B: { x: -3, y: -2 },
+      C: { x: 3, y: -2 }
+    };
+    var draggingKey = null;
+
+    var TRIANGLE_PRESETS = {
+      isosceles: { A: { x: 0, y: 2 }, B: { x: -3, y: -2 }, C: { x: 3, y: -2 } },
+      equilateral: { A: { x: -3, y: 0 }, B: { x: 3, y: 0 }, C: { x: 0, y: 3 * Math.sqrt(3) } },
+      scalene: { A: { x: -4, y: -3 }, B: { x: 2, y: -2 }, C: { x: -2, y: 3 } }
+    };
+
+    function applyPreset(name) {
+      var preset = TRIANGLE_PRESETS[name];
+      trianglePoints.A = { x: preset.A.x, y: preset.A.y };
+      trianglePoints.B = { x: preset.B.x, y: preset.B.y };
+      trianglePoints.C = { x: preset.C.x, y: preset.C.y };
+      updateTriangleVisual();
+    }
+
+    function updateTriangleReadout() {
+      var A = trianglePoints.A, B = trianglePoints.B, C = trianglePoints.C;
+      var readout = document.getElementById('triReadout');
+      readout.classList.remove('status-none', 'status-success');
+
+      if (isDegenerate(A, B, C)) {
+        readout.classList.add('status-none');
+        readout.innerHTML = 'שתי נקודות חופפות - גררו קודקוד להפרדתן ולקבלת משולש תקין.';
+        return;
+      }
+
+      var eb = explainBlock(A, B, C);
+      var html = eb.html;
+      if (eb.info.type !== 'scalene') {
+        readout.classList.add('status-success');
+        var badgeText = eb.info.type === 'equilateral'
+          ? '✓ משולש שווה-צלעות!'
+          : ('✓ משולש שווה-שוקיים! (ראש ' + eb.info.apex + ', בסיס ' + eb.info.baseLabel + ')');
+        html += '<div class="tri-badges"><span class="tri-badge badge-right">' + badgeText + '</span></div>';
+      } else {
+        html += '<div class="tri-badges"><span class="tri-badge">כל הצלעות שונות - משולש שונה-צלעות</span></div>';
+      }
+
+      readout.innerHTML = html;
+      renderMathInElement(readout, katexOptions);
+    }
+
+    function updateTriangleVisual() {
+      var A = trianglePoints.A, B = trianglePoints.B, C = trianglePoints.C;
+      document.getElementById('markerA').setAttribute('cx', lmx(A.x)); document.getElementById('markerA').setAttribute('cy', lmy(A.y));
+      document.getElementById('markerB').setAttribute('cx', lmx(B.x)); document.getElementById('markerB').setAttribute('cy', lmy(B.y));
+      document.getElementById('markerC').setAttribute('cx', lmx(C.x)); document.getElementById('markerC').setAttribute('cy', lmy(C.y));
+      document.getElementById('labelA').setAttribute('x', lmx(A.x) + 13); document.getElementById('labelA').setAttribute('y', lmy(A.y) - 10);
+      document.getElementById('labelB').setAttribute('x', lmx(B.x) + 13); document.getElementById('labelB').setAttribute('y', lmy(B.y) - 10);
+      document.getElementById('labelC').setAttribute('x', lmx(C.x) + 13); document.getElementById('labelC').setAttribute('y', lmy(C.y) - 10);
+      document.getElementById('triPoly').setAttribute('points',
+        lmx(A.x) + ',' + lmy(A.y) + ' ' + lmx(B.x) + ',' + lmy(B.y) + ' ' + lmx(C.x) + ',' + lmy(C.y));
+
+      document.getElementById('edgeAB').setAttribute('x1', lmx(A.x)); document.getElementById('edgeAB').setAttribute('y1', lmy(A.y));
+      document.getElementById('edgeAB').setAttribute('x2', lmx(B.x)); document.getElementById('edgeAB').setAttribute('y2', lmy(B.y));
+      document.getElementById('edgeBC').setAttribute('x1', lmx(B.x)); document.getElementById('edgeBC').setAttribute('y1', lmy(B.y));
+      document.getElementById('edgeBC').setAttribute('x2', lmx(C.x)); document.getElementById('edgeBC').setAttribute('y2', lmy(C.y));
+      document.getElementById('edgeCA').setAttribute('x1', lmx(C.x)); document.getElementById('edgeCA').setAttribute('y1', lmy(C.y));
+      document.getElementById('edgeCA').setAttribute('x2', lmx(A.x)); document.getElementById('edgeCA').setAttribute('y2', lmy(A.y));
+
+      var info = !isDegenerate(A, B, C) ? classifyAndColor(A, B, C) : null;
+      var edgeColors = info ? info.colors : { AB: null, BC: null, CA: null };
+      document.getElementById('edgeAB').setAttribute('stroke', edgeColors.AB || '#94a3b8');
+      document.getElementById('edgeBC').setAttribute('stroke', edgeColors.BC || '#94a3b8');
+      document.getElementById('edgeCA').setAttribute('stroke', edgeColors.CA || '#94a3b8');
+
+      var ticks = '';
+      if (edgeColors.AB) ticks += tickMarkSVG(lmx, lmy, A, B, edgeColors.AB);
+      if (edgeColors.BC) ticks += tickMarkSVG(lmx, lmy, B, C, edgeColors.BC);
+      if (edgeColors.CA) ticks += tickMarkSVG(lmx, lmy, C, A, edgeColors.CA);
+      document.getElementById('tickMarksGroup').innerHTML = ticks;
+
+      updateTriangleReadout();
+    }
+
+    function buildTriangleSkeleton() {
+      var markup = buildGridMarkup(lmx, lmy, LXMIN, LXMAX, LYMIN, LYMAX);
+      markup += '<polygon id="triPoly" points="" class="tri-poly-fill"/>';
+      markup += '<line id="edgeAB" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<line id="edgeBC" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<line id="edgeCA" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<g id="tickMarksGroup"></g>';
+      markup += '<text id="labelA" class="vertex-label">A</text>';
+      markup += '<text id="labelB" class="vertex-label">B</text>';
+      markup += '<text id="labelC" class="vertex-label">C</text>';
+      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker"/>';
+      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker"/>';
+      markup += '<circle id="markerC" cx="0" cy="0" r="9" class="drag-marker"/>';
+      document.getElementById('triSvg').innerHTML = markup;
+
+      VERTEX_KEYS.forEach(function (key) {
+        var marker = document.getElementById('marker' + key);
+        marker.addEventListener('pointerdown', function (e) {
+          draggingKey = key;
+          marker.setPointerCapture(e.pointerId);
+          marker.style.cursor = 'grabbing';
+        });
+        marker.addEventListener('pointermove', function (e) {
+          if (draggingKey !== key) return;
+          var svg = document.getElementById('triSvg');
+          var rect = svg.getBoundingClientRect();
+          var scaleX = LW / rect.width, scaleY = LH / rect.height;
+          var px = (e.clientX - rect.left) * scaleX;
+          var py = (e.clientY - rect.top) * scaleY;
+          trianglePoints[key].x = clamp(Math.round(linvx(px)), LXMIN, LXMAX);
+          trianglePoints[key].y = clamp(Math.round(linvy(py)), LYMIN, LYMAX);
+          updateTriangleVisual();
+        });
+        marker.addEventListener('pointerup', function () {
+          draggingKey = null;
+          marker.style.cursor = 'grab';
+        });
+      });
+
+      updateTriangleVisual();
+    }
+
+    buildTriangleSkeleton();
+
+    document.getElementById('presetIsosceles').addEventListener('click', function () { applyPreset('isosceles'); });
+    document.getElementById('presetEquilateral').addEventListener('click', function () { applyPreset('equilateral'); });
+    document.getElementById('presetScalene').addEventListener('click', function () { applyPreset('scalene'); });
+
+    /* ---------- Step 3: quiz (5 questions, algebraic - no visuals) ---------- */
+
+    function buildIsoscelesTriangle(apexKey) {
+      var anchor, dx, dy, attempts = 0;
+      do {
+        anchor = { x: randInt(-3, 2), y: randInt(-3, 2) };
+        dx = randInt(1, 4) * randChoice([1, -1]);
+        dy = randInt(1, 4) * randChoice([1, -1]);
+        attempts++;
+      } while ((dx === dy || dx === -dy) && attempts < 40);
+
+      var leg1 = { x: dx, y: dy }, leg2 = { x: dy, y: dx };
+      var p1 = { x: anchor.x + leg1.x, y: anchor.y + leg1.y };
+      var p2 = { x: anchor.x + leg2.x, y: anchor.y + leg2.y };
+      var pts = { A: null, B: null, C: null };
+      pts[apexKey] = anchor;
+      var others = VERTEX_KEYS.filter(function (k) { return k !== apexKey; });
+      pts[others[0]] = p1;
+      pts[others[1]] = p2;
+      return pts;
+    }
+
+    function buildEquilateralTriangle() {
+      var anchorX = randInt(-2, 2);
+      var m = randChoice([1, 2, 3]);
+      var signDx = randChoice([1, -1]);
+      var signRot = randChoice([1, -1]);
+      var dx = 2 * m * signDx;
+      var A = { x: anchorX, y: 0 };
+      var B = { x: anchorX + dx, y: 0 };
+      var k = signRot * m * signDx;
+      var C = { x: anchorX + dx / 2, y: k * Math.sqrt(3) };
+      return { A: A, B: B, C: C };
+    }
+
+    function buildScaleneTriangle() {
+      var A, B, C, attempts = 0, info;
+      do {
+        A = { x: randInt(-3, 2), y: randInt(-3, 2) };
+        B = { x: A.x + randInt(1, 4) * randChoice([1, -1]), y: A.y + randInt(1, 4) * randChoice([1, -1]) };
+        C = { x: A.x + randInt(1, 4) * randChoice([1, -1]), y: A.y + randInt(1, 4) * randChoice([1, -1]) };
+        attempts++;
+        info = classifyAndColor(A, B, C);
+      } while ((info.type !== 'scalene' || isDegenerate(A, B, C)) && attempts < 60);
+      return { A: A, B: B, C: C };
+    }
+
+    function makeClassifyQuestion(pts) {
+      var A = pts.A, B = pts.B, C = pts.C;
+      var eb = explainBlock(A, B, C);
+      var typeLabel = { equilateral: 'משולש שווה-צלעות', isosceles: 'משולש שווה-שוקיים', scalene: 'משולש שונה-צלעות' }[eb.info.type];
+      var options = shuffle(['משולש שווה-שוקיים', 'משולש שווה-צלעות', 'משולש שונה-צלעות']);
+      var correctIndex = options.indexOf(typeLabel);
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A' + pointLabel(A) + '$, $B' + pointLabel(B) + '$, $C' + pointLabel(C) + '$. איזה סוג משולש הן יוצרות (בהתאם לאורכי הצלעות)?',
+        options: options,
+        correctIndex: correctIndex,
+        explain: eb.html
+      };
+    }
+
+    function makeIdentifyBaseQuestion(pts) {
+      var A = pts.A, B = pts.B, C = pts.C;
+      var eb = explainBlock(A, B, C);
+      var baseLabel = eb.info.baseLabel;
+      var options = shuffle(['AB', 'BC', 'CA']);
+      var correctIndex = options.indexOf(baseLabel);
+      var explain = eb.html + '<p class="dist-line"><strong>צלע הבסיס היא <span class="coord-ltr">' + baseLabel + '</span></strong></p>';
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A' + pointLabel(A) + '$, $B' + pointLabel(B) + '$, $C' + pointLabel(C) + '$. ידוע כי מתקבל משולש שווה-שוקיים. מהי צלע הבסיס (הצלע שאורכה שונה משתי האחרות)?',
+        options: options,
+        correctIndex: correctIndex,
+        explain: explain
+      };
+    }
+
+    function generateQuizQuestions() {
+      var qs = [
+        makeClassifyQuestion(buildIsoscelesTriangle('A')),
+        makeIdentifyBaseQuestion(buildIsoscelesTriangle(randChoice(['B', 'C']))),
+        makeClassifyQuestion(buildEquilateralTriangle()),
+        makeClassifyQuestion(buildScaleneTriangle()),
+        makeClassifyQuestion(buildScaleneTriangle())
+      ];
+      qs.forEach(function (q, i) { q.id = 'tri-m2-q' + (i + 1); });
+      return shuffle(qs);
+    }
+
+    function buildQuizDotsSkeleton() {
+      var wrap = document.getElementById('quizDots');
+      wrap.innerHTML = '';
+      for (var i = 0; i < QUIZ_SIZE; i++) {
+        var dot = document.createElement('span');
+        dot.className = 'quiz-dot';
+        wrap.appendChild(dot);
+      }
+      updateQuizDots();
+    }
+
+    function updateQuizDots() {
+      var dots = document.querySelectorAll('#quizDots .quiz-dot');
+      dots.forEach(function (dot, i) {
+        dot.classList.remove('dot-current', 'dot-correct', 'dot-incorrect');
+        if (i === state.quiz.index) dot.classList.add('dot-current');
+        if (state.quiz.answers[i] === true) dot.classList.add('dot-correct');
+        else if (state.quiz.answers[i] === false) dot.classList.add('dot-incorrect');
+      });
+    }
+
+    function renderQuizQuestion() {
+      var q = state.quiz.questions[state.quiz.index];
+      document.getElementById('qIndex').textContent = state.quiz.index + 1;
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+
+      var feedbackEl = document.getElementById('quizFeedback');
+      feedbackEl.hidden = true;
+      feedbackEl.innerHTML = '';
+      document.getElementById('btnNextQuestion').hidden = true;
+
+      var html = '<p class="quiz-instruction">' + q.promptText + '</p>';
+      html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
+        return '<button type="button" class="quiz-option-btn" data-index="' + i + '">' + opt + '</button>';
+      }).join('') + '</div>';
+
+      document.getElementById('quizBody').innerHTML = html + '<p class="quiz-id-tag">' + q.id + '</p>';
+
+      document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          if (state.quiz.locked) return;
+          var idx = parseInt(this.dataset.index, 10);
+          submitAnswer(q.options[idx] === q.options[q.correctIndex], this);
+        });
+      });
+
+      renderMathInElement(document.getElementById('quizBody'), katexOptions);
+    }
+
+    function showFeedback(isCorrect, explain) {
+      var el = document.getElementById('quizFeedback');
+      el.hidden = false;
+      el.className = 'quiz-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+      el.innerHTML = '<strong>' + (isCorrect ? 'תשובה נכונה!' : 'לא נכון.') + '</strong><div class="feedback-explain">' + (explain || '') + '</div>';
+      renderMathInElement(el, katexOptions);
+    }
+
+    function submitAnswer(isCorrect, clickedBtn) {
+      state.quiz.locked = true;
+      var q = state.quiz.questions[state.quiz.index];
+      state.quiz.answers[state.quiz.index] = isCorrect;
+      if (isCorrect) state.quiz.score++;
+
+      document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (b) {
+        b.disabled = true;
+        var idx = parseInt(b.dataset.index, 10);
+        if (q.options[idx] === q.options[q.correctIndex]) b.classList.add('option-correct');
+        else if (b === clickedBtn) b.classList.add('option-incorrect');
+      });
+
+      showFeedback(isCorrect, q.explain);
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+      document.getElementById('btnNextQuestion').hidden = false;
+    }
+
+    function startQuiz() {
+      state.quiz.questions = generateQuizQuestions();
+      state.quiz.index = 0;
+      state.quiz.score = 0;
+      state.quiz.answers = [];
+      state.quiz.locked = false;
+      buildQuizDotsSkeleton();
+      renderQuizQuestion();
+    }
+
+    /* ---------- Step 4: results & certificate ---------- */
+
+    function renderResults() {
+      var total = QUIZ_SIZE;
+      var correct = state.quiz.score;
+      var pct = Math.round((correct / total) * 100);
+      document.getElementById('resultsCorrect').textContent = correct;
+      document.getElementById('resultsPercent').textContent = pct + '%';
+      var verdict, cardClass;
+      if (pct >= 90) { verdict = 'מצוין! שליטה מלאה בחומר.'; cardClass = 'results-good'; }
+      else if (pct >= 60) { verdict = 'כל הכבוד, עברתם בהצלחה!'; cardClass = 'results-mid'; }
+      else { verdict = 'עדיין לא עברתם את סף המעבר (60). חזרו לתרגל ונסו שוב.'; cardClass = 'results-low'; }
+      document.getElementById('resultsVerdict').textContent = verdict;
+      document.getElementById('resultsCard').className = 'results-card ' + cardClass;
+
+      var passed = pct >= 60;
+      document.getElementById('certificateCard').hidden = !passed;
+      document.getElementById('encouragementCard').hidden = passed;
+      document.getElementById('summaryActions').hidden = !passed;
+
+      if (passed) renderCertificate(pct, correct, total);
+      sendScoreToSheet({
+        studentName: studentName,
+        teacherName: teacherName,
+        grade: 'י\'',
+        level: '4 יח"ל',
+        mainTopic: 'גיאומטריה אנליטית - צורות גיאומטריות',
+        subTopic: 'משולש שווה-שוקיים ושווה-צלעות',
+        mode: 'תרגול',
+        time: quizTiming.totalSeconds,
+        score: pct
+      });
+    }
+
+    function renderCertificate(pct, correct, total) {
+      document.getElementById('certStudentName').textContent = studentName || 'תלמיד/ה';
+      document.getElementById('certLessonName').textContent = 'לומדה: ' + LESSON_NAME;
+      document.getElementById('certScore').textContent = 'ציון סופי: ' + pct + ' (' + correct + '/' + total + ')';
+      var icon, title, quote;
+      if (pct >= 90) {
+        icon = '🏆'; title = 'תעודת הצטיינות';
+        quote = '"ההצלחה היא סך כל המאמצים הקטנים שנעשים יום אחרי יום."';
+      } else {
+        icon = '🏅'; title = 'תעודת סיום בהצלחה';
+        quote = '"טעויות הן שכר הלימוד של ההצלחה הבאה שלך. המשיכו לחקור!"';
+      }
+      document.getElementById('certIcon').textContent = icon;
+      document.getElementById('certTitleText').textContent = title;
+      document.getElementById('certQuote').textContent = quote;
+      var timeText = (typeof quizTiming.totalSeconds === 'number') ? 'Time: ' + quizTiming.totalSeconds + 's' : '';
+      document.getElementById('certTime').textContent = timeText;
+    }
+
+    /* ---------- Navigation ---------- */
+
+    function updateNavButtons() {
+      var btnPrev = document.getElementById('btnPrev');
+      var btnNext = document.getElementById('btnNext');
+      var navRow = document.querySelector('.nav-buttons');
+      btnPrev.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+      navRow.style.display = currentStep === 4 ? 'none' : 'flex';
+
+      if (currentStep === 3) {
+        var quizDone = state.quiz.questions.length > 0 && state.quiz.index >= state.quiz.questions.length;
+        btnNext.disabled = !quizDone;
+        btnNext.title = quizDone ? '' : 'השלימו את כל 5 השאלות כדי להמשיך';
+      } else {
+        btnNext.disabled = false;
+        btnNext.title = '';
+      }
+    }
+
+    function goToStep(n) {
+      document.querySelectorAll('.step-panel').forEach(function (panel) {
+        panel.hidden = (parseInt(panel.dataset.step, 10) !== n);
+      });
+      currentStep = n;
+      document.getElementById('stepProgress').setAttribute('current-step', n);
+
+      if (n === 3) {
+        document.getElementById('nameGate').hidden = quizStarted;
+        document.getElementById('quizContent').hidden = !quizStarted;
+      }
+      if (n === 4) renderResults();
+
+      updateNavButtons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ---------- Init & event wiring ---------- */
+
+    document.getElementById('btnNext').addEventListener('click', function () {
+      if (currentStep < 4) goToStep(currentStep + 1);
+    });
+    document.getElementById('btnPrev').addEventListener('click', function () {
+      if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    document.getElementById('btnNextQuestion').addEventListener('click', function () {
+      state.quiz.index++;
+      state.quiz.locked = false;
+      if (state.quiz.index < state.quiz.questions.length) {
+        renderQuizQuestion();
+      } else {
+        document.getElementById('quizBody').innerHTML = '<p class="quiz-complete-msg">כל הכבוד! סיימתם את כל 5 השאלות. לחצו על "הבא" כדי לראות את הסיכום שלכם.</p>';
+        document.getElementById('quizFeedback').hidden = true;
+        document.getElementById('btnNextQuestion').hidden = true;
+        if (quizTiming.startTime) {
+          quizTiming.totalSeconds = Math.round((Date.now() - quizTiming.startTime) / 1000);
+        }
+        updateNavButtons();
+      }
+    });
+
+    document.getElementById('studentNameInput').addEventListener('input', function () {
+      document.getElementById('btnStartQuiz').disabled = this.value.trim().length < 2;
+    });
+
+    document.getElementById('btnStartQuiz').addEventListener('click', function () {
+      studentName = document.getElementById('studentNameInput').value.trim();
+      if (studentName.length < 2) return;
+      var teacherInputVal = document.getElementById('teacherNameInput').value.trim();
+      if (!isValidTeacherName(teacherInputVal)) {
+        document.getElementById('teacherNameError').hidden = false;
+        return;
+      }
+      document.getElementById('teacherNameError').hidden = true;
+      teacherName = teacherInputVal;
+      quizStarted = true;
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      document.getElementById('nameGate').hidden = true;
+      document.getElementById('quizContent').hidden = false;
+      startQuiz();
+    });
+
+    function restartQuiz() {
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      startQuiz();
+      goToStep(3);
+    }
+    document.getElementById('btnRestart').addEventListener('click', restartQuiz);
+    var btnRetryFail = document.getElementById('btnRetryFail');
+    if (btnRetryFail) btnRetryFail.addEventListener('click', restartQuiz);
+
+    document.getElementById('btnDownloadCert').addEventListener('click', function () {
+      var btn = this;
+      var originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'מכינים תמונה...';
+      html2canvas(document.getElementById('certificateCard'), { backgroundColor: '#ffffff', scale: 2 }).then(function (canvas) {
+        var safeStudent = (studentName || 'תלמיד').replace(/[\\/:*?"<>|]/g, '').trim();
+        var link = document.createElement('a');
+        link.download = 'תעודה_' + safeStudent + '_' + LESSON_NAME + '.png';
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }).catch(function (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        alert('אירעה שגיאה ביצירת התמונה. נסו שוב.');
+      });
+    });
+
+    populateTeacherDatalist();
+    updateNavButtons();
+    renderMathInElement(document.body, katexOptions);
+  </script>
+</body>
+</html>

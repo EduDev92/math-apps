@@ -31,7 +31,13 @@ const MODULE_REGISTRY = {
           ("02-triangle-types" - folder numbered by shapes-topic build order, not curriculum
           position; its question ids use the "tri" prefix, e.g. tri-m1-qK, not "shapes"; 5
           questions per quiz, not 10, each rendering its own dynamic triangle SVG)
-       2: תיכונים וגבהים במשולש במערכת הצירים - not yet built
+       2: משולש שווה-שוקיים ושווה-צלעות (סיווג משולשים לפי אורכי צלעות, נוסחת המרחק) - existing
+          lesson ("03-isosceles-equilateral" - folder numbered by shapes-topic build order;
+          question ids use the "tri" prefix too, e.g. tri-m2-qK; 5 questions, no graph in the
+          quiz - see [[pattern-question-ids]]). This position previously held a placeholder for
+          "תיכונים וגבהים במשולש" in planning notes; the user redirected lesson 2's content to
+          isosceles/equilateral classification instead, so that medians/altitudes topic is not
+          currently scheduled at any position in this roadmap.
        3: שטחים והיקפים של משולשים במערכת הצירים - not yet built
        4: לומדת סיכום: תכונות מרובעים - existing lesson (folder kept as "01-quadrilaterals",
           its original build-order name, to avoid breaking any existing links)
@@ -39,7 +45,7 @@ const MODULE_REGISTRY = {
           past a single lesson once scoped */
     modules: [
       '02-triangle-types',
-      null,
+      '03-isosceles-equilateral',
       null,
       '01-quadrilaterals',
       null
