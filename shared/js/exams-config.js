@@ -1,8 +1,8 @@
 const MODULE_REGISTRY = {
-  'grade10-level4': {
+  'grade10-level4-line': {
     grade: "י'",
     level: '4 יח"ל',
-    mainTopic: 'גיאומטריה אנליטית',
+    mainTopic: 'גיאומטריה אנליטית - הקו הישר',
     basePath: 'grade10/level4/topics/',
     modules: [
       '01-coordinate-system',
@@ -17,6 +17,17 @@ const MODULE_REGISTRY = {
       '10-parallel-lines',
       '11-perpendicular-lines',
       '12-intersecting-lines'
+    ]
+  },
+  'grade10-level4-shapes': {
+    grade: "י'",
+    level: '4 יח"ל',
+    mainTopic: 'גיאומטריה אנליטית - צורות גיאומטריות',
+    basePath: 'grade10/level4/topics/',
+    modules: [
+      '01-quadrilaterals'
+      /* triangle-classification lessons (עפ תכנית הלימודים) are planned but not yet built -
+         append their topic-folder slugs here once created, keeping this array in module order */
     ]
   },
   'grade12-level5': {
@@ -40,8 +51,8 @@ const MODULE_REGISTRY = {
 
 const EXAMS_CONFIG = {
   'GEO-101': {
-    title: 'מבדק אמצע: גיאומטריה אנליטית',
-    course: 'grade10-level4',
+    title: 'מבדק אמצע: גיאומטריה אנליטית - הקו הישר',
+    course: 'grade10-level4-line',
     sourceModules: [1, 2, 3, 4, 5, 6],
     questionsCount: 10
   }
