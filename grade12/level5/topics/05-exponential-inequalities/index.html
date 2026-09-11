@@ -184,6 +184,7 @@
     }
 
     .quiz-instruction { font-weight: 700; margin-bottom: 12px; }
+    .quiz-id-tag { margin-top: 14px; text-align: center; font-size: 0.72rem; color: #b8c2d1; font-family: monospace; direction: ltr; }
     .quiz-formula { direction: ltr; text-align: center; font-size: 1.3rem; margin: 14px 0; max-width: 100%; overflow-x: auto; }
 
     .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
@@ -854,7 +855,7 @@
         html += '<div class="quiz-input-wrap"><math-input-pad id="answerPad"></math-input-pad></div>';
       }
 
-      document.getElementById('quizBody').innerHTML = html;
+      document.getElementById('quizBody').innerHTML = html + '<p class="quiz-id-tag">' + q.id + '</p>';
 
       if (q.kind === 'choice') {
         document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {

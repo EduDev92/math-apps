@@ -83,6 +83,7 @@
 
     .quiz-body { min-height: 140px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
     .quiz-instruction { font-weight: 700; margin-bottom: 12px; text-align: center; }
+    .quiz-id-tag { margin-top: 14px; text-align: center; font-size: 0.72rem; color: #b8c2d1; font-family: monospace; direction: ltr; }
 
     .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
     .quiz-option-btn {
@@ -644,7 +645,7 @@
         return '<button type="button" class="quiz-option-btn" data-index="' + i + '">' + opt + '</button>';
       }).join('') + '</div>';
 
-      document.getElementById('quizBody').innerHTML = html;
+      document.getElementById('quizBody').innerHTML = html + '<p class="quiz-id-tag">' + q.id + '</p>';
 
       document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {

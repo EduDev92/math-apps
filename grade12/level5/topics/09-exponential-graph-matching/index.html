@@ -111,6 +111,7 @@
 
     .quiz-body { min-height: 160px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
     .quiz-instruction { font-weight: 700; margin-bottom: 12px; }
+    .quiz-id-tag { margin-top: 14px; text-align: center; font-size: 0.72rem; color: #b8c2d1; font-family: monospace; direction: ltr; }
     .quiz-formula { direction: ltr; text-align: center; font-size: 1.3rem; margin: 14px 0; max-width: 100%; overflow-x: auto; }
 
     .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
@@ -711,7 +712,7 @@
         }).join('') + '</div>';
       }
 
-      document.getElementById('quizBody').innerHTML = html;
+      document.getElementById('quizBody').innerHTML = html + '<p class="quiz-id-tag">' + q.id + '</p>';
 
       if (q.kind === 'graph') {
         document.querySelectorAll('#quizBody .quiz-graph-btn').forEach(function (btn) {
