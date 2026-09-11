@@ -37,7 +37,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .formula-display { direction: ltr; text-align: center; margin: 14px 0; font-size: 1.15rem; max-width: 100%; overflow-x: auto; }
 
     .method-graph-wrap { max-width: 220px; margin: 10px auto 0; }
@@ -201,7 +200,7 @@
 
         <div class="content-block">
           <h3>נוסחת השיפוע</h3>
-          <p>השיפוע <span class="coord-ltr">m</span> בין הנקודות <span class="coord-ltr">A(x₁,y₁)</span> ו-<span class="coord-ltr">B(x₂,y₂)</span> מחושב כך:</p>
+          <p>השיפוע <span class="math-ltr">m</span> בין הנקודות <span class="math-ltr">A(x₁,y₁)</span> ו-<span class="math-ltr">B(x₂,y₂)</span> מחושב כך:</p>
           <div class="formula-display" id="mainFormula"></div>
           <p>זהו בדיוק אותו יחס "מדרגות" שלמדנו — <strong>הפרש ה-y (עלייה/ירידה) חלקי הפרש ה-x (התקדמות)</strong>.</p>
         </div>
@@ -209,12 +208,12 @@
         <div class="content-block">
           <h3>דוגמה</h3>
           <div class="method-graph-wrap" id="introGraph"></div>
-          <p style="text-align:center;font-size:0.9rem;"><span class="coord-ltr">A(-1,-1), B(2,3)</span> → <span class="coord-ltr">m = (3-(-1))/(2-(-1)) = 4/3</span></p>
+          <p style="text-align:center;font-size:0.9rem;"><span class="math-ltr">A(-1,-1), B(2,3)</span> → <span class="math-ltr">m = (3-(-1))/(2-(-1)) = 4/3</span></p>
         </div>
 
         <div class="content-block highlight-block">
           <h4>שימו לב — הסדר קובע!</h4>
-          <p>חשוב לשמור על <strong>אותו סדר נקודות</strong> במונה ובמכנה. אם בוחרים ש-B הוא "הנקודה השנייה" במונה (<span class="coord-ltr">y₂-y₁</span>), חייבים לבחור אותה גם "הנקודה השנייה" במכנה (<span class="coord-ltr">x₂-x₁</span>) — אסור לערבב סדר בין המונה למכנה.</p>
+          <p>חשוב לשמור על <strong>אותו סדר נקודות</strong> במונה ובמכנה. אם בוחרים ש-B הוא "הנקודה השנייה" במונה (<span class="math-ltr">y₂-y₁</span>), חייבים לבחור אותה גם "הנקודה השנייה" במכנה (<span class="math-ltr">x₂-x₁</span>) — אסור לערבב סדר בין המונה למכנה.</p>
         </div>
       </section>
 
@@ -315,6 +314,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -420,7 +420,7 @@
         return;
       }
       var f = reduceFraction(dy, dx);
-      readout.innerHTML = '<span class="coord-ltr">A(x₁,y₁)' + pointLabel(st.pA) + ',&nbsp; B(x₂,y₂)' + pointLabel(st.pB) + '</span>' +
+      readout.innerHTML = '<span class="math-ltr">A(x₁,y₁)' + pointLabel(st.pA) + ',&nbsp; B(x₂,y₂)' + pointLabel(st.pB) + '</span>' +
         '$$m = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + st.pB.y + ' - (' + st.pA.y + ')}{' + st.pB.x + ' - (' + st.pA.x + ')} = \\dfrac{' + dy + '}{' + dx + '} = ' + (f.den === 1 ? f.num : '\\dfrac{' + f.num + '}{' + f.den + '}') + '$$';
       renderMathInElement(readout, katexOptions);
     }
@@ -548,7 +548,7 @@
         q.promptText = 'מהו השיפוע בין הנקודות המסומנות בשרטוט?';
         q.svg = renderSlopeSegmentSVG(g.A, g.B);
       } else {
-        q.promptText = 'מהו השיפוע בין הנקודות <span class="coord-ltr">A' + pointLabel(g.A) + '</span> ו-<span class="coord-ltr">B' + pointLabel(g.B) + '</span>?';
+        q.promptText = 'מהו השיפוע בין הנקודות <span class="math-ltr">A' + pointLabel(g.A) + '</span> ו-<span class="math-ltr">B' + pointLabel(g.B) + '</span>?';
       }
       return q;
     }

@@ -36,7 +36,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
 
     .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 10px; }
     .method-card { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; }
@@ -202,23 +201,23 @@
         <div class="method-grid">
           <div class="method-card">
             <h4>ציר ה-x וציר ה-y</h4>
-            <p>מערכת הצירים בנויה משני ישרים מאונכים: <strong>ציר ה-x</strong> (האופקי) ו<strong>ציר ה-y</strong> (האנכי). הנקודה שבה הצירים נפגשים נקראת <strong>ראשית הצירים</strong>, ומסומנת <span class="coord-ltr">(0, 0)</span>.</p>
+            <p>מערכת הצירים בנויה משני ישרים מאונכים: <strong>ציר ה-x</strong> (האופקי) ו<strong>ציר ה-y</strong> (האנכי). הנקודה שבה הצירים נפגשים נקראת <strong>ראשית הצירים</strong>, ומסומנת <span class="math-ltr">(0, 0)</span>.</p>
           </div>
           <div class="method-card">
             <h4>שיעורי נקודה</h4>
-            <p>כל נקודה במישור מתוארת בזוג מספרים <span class="coord-ltr">(x, y)</span>: <strong>x</strong> הוא המרחק האופקי מהראשית (ימינה חיובי, שמאלה שלילי), ו-<strong>y</strong> הוא המרחק האנכי מהראשית (למעלה חיובי, למטה שלילי).</p>
+            <p>כל נקודה במישור מתוארת בזוג מספרים <span class="math-ltr">(x, y)</span>: <strong>x</strong> הוא המרחק האופקי מהראשית (ימינה חיובי, שמאלה שלילי), ו-<strong>y</strong> הוא המרחק האנכי מהראשית (למעלה חיובי, למטה שלילי).</p>
           </div>
         </div>
 
         <div class="content-block highlight-block">
           <h4>איך קוראים נקודה על הגרף?</h4>
-          <p>כדי לקרוא את השיעורים של נקודה מסומנת: קודם מסתכלים כמה יחידות היא רחוקה מהראשית <strong>אופקית</strong> (זה ה-x), ואז כמה יחידות היא רחוקה <strong>אנכית</strong> (זה ה-y). הסדר תמיד <span class="coord-ltr">(x, y)</span> — קודם x, אחר כך y.</p>
+          <p>כדי לקרוא את השיעורים של נקודה מסומנת: קודם מסתכלים כמה יחידות היא רחוקה מהראשית <strong>אופקית</strong> (זה ה-x), ואז כמה יחידות היא רחוקה <strong>אנכית</strong> (זה ה-y). הסדר תמיד <span class="math-ltr">(x, y)</span> — קודם x, אחר כך y.</p>
         </div>
 
         <div class="content-block">
           <h3>דוגמה</h3>
           <div class="intro-graph-wrap" id="introGraphWrap"></div>
-          <p style="text-align:center;">הנקודה המסומנת נמצאת 3 יחידות ימינה ו-2 יחידות למעלה מהראשית, ולכן שיעוריה <span class="coord-ltr">(3, 2)</span>.</p>
+          <p style="text-align:center;">הנקודה המסומנת נמצאת 3 יחידות ימינה ו-2 יחידות למעלה מהראשית, ולכן שיעוריה <span class="math-ltr">(3, 2)</span>.</p>
         </div>
       </section>
 
@@ -320,6 +319,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     var LESSON_NAME = 'מערכת צירים ושיבוץ נקודות';
@@ -406,7 +406,7 @@
       var xVal = clamp(Math.round(ginvx(px)), GXMIN, GXMAX);
       var yVal = clamp(Math.round(ginvy(py)), GYMIN, GYMAX);
       drawGridLab({ x: xVal, y: yVal });
-      document.getElementById('gridReadout').innerHTML = 'לחצתם על הנקודה <span class="coord-ltr">(' + xVal + ', ' + yVal + ')</span>';
+      document.getElementById('gridReadout').innerHTML = 'לחצתם על הנקודה <span class="math-ltr">(' + xVal + ', ' + yVal + ')</span>';
     });
 
     drawGridLab(null);
@@ -471,7 +471,7 @@
         pointSvg: renderPointQuestionSVG(correct),
         options: options.map(pointLabel),
         correctIndex: correctIndex,
-        explain: 'הנקודה נמצאת ' + Math.abs(correct.x) + ' יחידות ' + (correct.x >= 0 ? 'ימינה' : 'שמאלה') + ' מהראשית (x = ' + correct.x + ') ו-' + Math.abs(correct.y) + ' יחידות ' + (correct.y >= 0 ? 'למעלה' : 'למטה') + ' מהראשית (y = ' + correct.y + ') — כלומר <span class="coord-ltr">' + pointLabel(correct) + '</span>.'
+        explain: 'הנקודה נמצאת ' + Math.abs(correct.x) + ' יחידות ' + (correct.x >= 0 ? 'ימינה' : 'שמאלה') + ' מהראשית (x = ' + correct.x + ') ו-' + Math.abs(correct.y) + ' יחידות ' + (correct.y >= 0 ? 'למעלה' : 'למטה') + ' מהראשית (y = ' + correct.y + ') — כלומר <span class="math-ltr">' + pointLabel(correct) + '</span>.'
       };
     }
 

@@ -37,7 +37,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
     .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; }
     .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
@@ -201,7 +200,7 @@
 
         <div class="content-block">
           <h3>תהליך בן שני שלבים</h3>
-          <p><strong>שלב א׳:</strong> מחשבים את השיפוע <span class="coord-ltr">m</span> בעזרת שתי הנקודות, בדיוק כפי שלמדנו בלומדה הקודמת.</p>
+          <p><strong>שלב א׳:</strong> מחשבים את השיפוע <span class="math-ltr">m</span> בעזרת שתי הנקודות, בדיוק כפי שלמדנו בלומדה הקודמת.</p>
           <p><strong>שלב ב׳:</strong> בוחרים <strong>אחת</strong> מהנקודות (לא משנה איזו!) ומציבים אותה יחד עם השיפוע בנוסחת שיפוע-נקודה, בדיוק כמו בלומדה שלפני כן.</p>
         </div>
 
@@ -312,6 +311,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -468,7 +468,7 @@
       var bBFrac = fracSub({ num: st.pB.y, den: 1 }, fracMul(mFrac, { num: st.pB.x, den: 1 }));
       var isEqual = fracEqual(bAFrac, bBFrac);
       readout.innerHTML =
-        '<span class="coord-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span>' +
+        '<span class="math-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span>' +
         '<div class="stage-label">שלב א׳: שיפוע</div>' +
         '$$m = \\dfrac{' + dy + '}{' + dx + '} = ' + fracToLatex(mFrac) + '$$' +
         '<div class="stage-label">שלב ב׳: הצבה עם A</div>' +
@@ -595,7 +595,7 @@
 
       return {
         kind: 'choice',
-        promptText: 'מהי משוואת הישר העובר דרך הנקודות <span class="coord-ltr">A' + pointLabel(g.A) + '</span> ו-<span class="coord-ltr">B' + pointLabel(g.B) + '</span>?',
+        promptText: 'מהי משוואת הישר העובר דרך הנקודות <span class="math-ltr">A' + pointLabel(g.A) + '</span> ו-<span class="math-ltr">B' + pointLabel(g.B) + '</span>?',
         options: options.map(function (o) { return equationLabel(o.m, o.b); }),
         correctIndex: correctIndex,
         explain: explain

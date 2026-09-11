@@ -37,7 +37,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .formula-display { direction: ltr; text-align: center; margin: 14px 0; font-size: 1.25rem; max-width: 100%; overflow-x: auto; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
     .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; }
@@ -209,16 +208,16 @@
         <div class="method-grid">
           <div class="method-card">
             <h4>"הופכי ונגדי"</h4>
-            <p>כדי למצוא את השיפוע המאונך לשיפוע נתון, הופכים את השבר (מונה↔מכנה) <strong>וגם</strong> מחליפים סימן. לדוגמה: אם שיפוע אחד הוא <span class="coord-ltr">2/3</span>, השיפוע המאונך לו הוא <span class="coord-ltr">-3/2</span>.</p>
+            <p>כדי למצוא את השיפוע המאונך לשיפוע נתון, הופכים את השבר (מונה↔מכנה) <strong>וגם</strong> מחליפים סימן. לדוגמה: אם שיפוע אחד הוא <span class="math-ltr">2/3</span>, השיפוע המאונך לו הוא <span class="math-ltr">-3/2</span>.</p>
           </div>
           <div class="method-card">
             <h4>שתי הטעויות הנפוצות</h4>
-            <p>לוקחים רק <strong>נגדי</strong> בלי הופכי (<span class="coord-ltr">-2/3</span> — טעות!), או רק <strong>הופכי</strong> בלי נגדי (<span class="coord-ltr">3/2</span> — גם טעות!). צריך את שניהם ביחד.</p>
+            <p>לוקחים רק <strong>נגדי</strong> בלי הופכי (<span class="math-ltr">-2/3</span> — טעות!), או רק <strong>הופכי</strong> בלי נגדי (<span class="math-ltr">3/2</span> — גם טעות!). צריך את שניהם ביחד.</p>
           </div>
         </div>
 
         <div class="content-block">
-          <h3>דוגמה: מאונך ל-<span class="coord-ltr">y=2x+1</span>, עובר ב-<span class="coord-ltr">(4,1)</span></h3>
+          <h3>דוגמה: מאונך ל-<span class="math-ltr">y=2x+1</span>, עובר ב-<span class="math-ltr">(4,1)</span></h3>
           <div class="derivation-block" id="exampleDerivation"></div>
         </div>
 
@@ -324,6 +323,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -464,7 +464,7 @@
       var readout = document.getElementById('perpReadout');
       readout.innerHTML =
         '<span class="given-line-label">הישר הנתון: $' + fracEquationLatex(GIVEN_M1, GIVEN_B1) + '$</span><br>' +
-        'הנקודה: <span class="coord-ltr">(' + freePoint.x + ', ' + freePoint.y + ')</span>' +
+        'הנקודה: <span class="math-ltr">(' + freePoint.x + ', ' + freePoint.y + ')</span>' +
         '$$m_2 = -\\dfrac{1}{m_1} = ' + fracToLatex(GIVEN_M2) + '$$' +
         '$$y - (' + freePoint.y + ') = ' + fracToLatex(GIVEN_M2) + '(x - (' + freePoint.x + '))$$' +
         '<span class="perp-line-label">הישר המאונך: $' + fracEquationLatex(GIVEN_M2, bFrac) + '$</span>';
@@ -600,7 +600,7 @@
 
       return {
         kind: 'choice',
-        promptText: 'מצאו את משוואת הישר המאונך ל-<span class="coord-ltr">' + fracEquationPlain(intFrac(g.m1), g.origB1) + '</span> ועובר בנקודה <span class="coord-ltr">(' + g.px + ', ' + g.py + ')</span>.',
+        promptText: 'מצאו את משוואת הישר המאונך ל-<span class="math-ltr">' + fracEquationPlain(intFrac(g.m1), g.origB1) + '</span> ועובר בנקודה <span class="math-ltr">(' + g.px + ', ' + g.py + ')</span>.',
         options: options.map(function (o) { return fracEquationPlain(o.m, o.b); }),
         correctIndex: correctIndex,
         explain: explain

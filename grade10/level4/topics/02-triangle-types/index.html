@@ -50,7 +50,6 @@
     .example-svg-wrap svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
     .example-calc-wrap { flex: 1; min-width: 220px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
     .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
     .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
@@ -230,7 +229,7 @@
 
         <div class="content-block">
           <h3>הגדרה: משולש ישר-זווית</h3>
-          <p><strong>משולש ישר-זווית</strong> הוא משולש שבו אחת הזוויות שווה בדיוק ל-<span class="coord-ltr">90°</span>.</p>
+          <p><strong>משולש ישר-זווית</strong> הוא משולש שבו אחת הזוויות שווה בדיוק ל-<span class="math-ltr">90°</span>.</p>
           <p>שתי הצלעות היוצרות את הזווית הישרה נקראות <strong>ניצבים</strong>. הצלע השלישית, הנמצאת מול הזווית הישרה, נקראת <strong>יתר</strong> - והיא תמיד הצלע הארוכה ביותר במשולש.</p>
         </div>
 
@@ -255,7 +254,7 @@
 
         <div class="content-block">
           <h3>תזכורת: נוסחת השיפוע</h3>
-          <p>השיפוע של צלע בין שתי נקודות <span class="coord-ltr">$(x_1,y_1)$</span> ו-<span class="coord-ltr">$(x_2,y_2)$</span> מחושב לפי הנוסחה:</p>
+          <p>השיפוע של צלע בין שתי נקודות <span class="math-ltr">$(x_1,y_1)$</span> ו-<span class="math-ltr">$(x_2,y_2)$</span> מחושב לפי הנוסחה:</p>
           <div class="derivation-block">
             <p class="derivation-line">$$m = \dfrac{y_2-y_1}{x_2-x_1}$$</p>
           </div>
@@ -263,13 +262,13 @@
 
         <div class="content-block">
           <h3>איך מוכיחים זאת אנליטית? תנאי הניצבות בין שתי צלעות</h3>
-          <p>כדי לבדוק אם קודקוד מסוים הוא זווית ישרה, מחשבים את <strong>שיפועי</strong> שתי הצלעות הנפגשות באותו קודקוד. אם מכפלת השיפועים שווה ל-<span class="coord-ltr">-1</span>, הצלעות מאונכות - והזווית ביניהן ישרה.</p>
+          <p>כדי לבדוק אם קודקוד מסוים הוא זווית ישרה, מחשבים את <strong>שיפועי</strong> שתי הצלעות הנפגשות באותו קודקוד. אם מכפלת השיפועים שווה ל-<span class="math-ltr">-1</span>, הצלעות מאונכות - והזווית ביניהן ישרה.</p>
           <div class="content-block highlight-block" style="margin-top:14px;">
             <h4>שיטת העבודה</h4>
             <p>1. עבור כל קודקוד (A, B, C) מחשבים את שיפועי שתי הצלעות הנפגשות בו.<br>
-            2. בודקים את מכפלת השיפועים: <span class="coord-ltr">$m_1 \cdot m_2$</span>.<br>
-            3. אם המכפלה שווה ל-<span class="coord-ltr">-1</span> - מצאנו את הזווית הישרה!<br>
-            4. אם באף קודקוד המכפלה אינה <span class="coord-ltr">-1</span> - המשולש אינו ישר-זווית.</p>
+            2. בודקים את מכפלת השיפועים: <span class="math-ltr">$m_1 \cdot m_2$</span>.<br>
+            3. אם המכפלה שווה ל-<span class="math-ltr">-1</span> - מצאנו את הזווית הישרה!<br>
+            4. אם באף קודקוד המכפלה אינה <span class="math-ltr">-1</span> - המשולש אינו ישר-זווית.</p>
           </div>
         </div>
 
@@ -382,6 +381,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -531,7 +531,7 @@
         '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AC + '}{m_{AC} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + C.y + ' - (' + A.y + ')}{' + C.x + ' - (' + A.x + ')} = \\dfrac{' + (C.y - A.y) + '}{' + (C.x - A.x) + '} = ' + fracToLatex(mAC) + '}$</p>' +
         '<p class="stage-label">מכפלת השיפועים</p>' +
         '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AB + '}{' + fracLatexMaybeParen(mAB) + '} \\cdot \\textcolor{' + EXAMPLE_COLOR_AC + '}{' + fracLatexMaybeParen(mAC) + '} = ' + fracToLatex(fracMul(mAB, mAC)) + '$</p>' +
-        '<p class="derivation-line"><strong>' + (vertex ? 'מכפלת השיפועים שווה ל-<span class="coord-ltr">(-1)</span>, ולכן זווית $' + vertex + '$ היא זווית ישרה!' : 'הזווית אינה ישרה') + '</strong></p>' +
+        '<p class="derivation-line"><strong>' + (vertex ? 'מכפלת השיפועים שווה ל-<span class="math-ltr">(-1)</span>, ולכן זווית $' + vertex + '$ היא זווית ישרה!' : 'הזווית אינה ישרה') + '</strong></p>' +
         '</div>' +
         '</div>';
       renderMathInElement(el, katexOptions);
@@ -670,9 +670,9 @@
         if (isRightAngle) {
           var vertLabel = pair.red === null ? pair.redLabel : pair.greenLabel;
           var horizLabel = pair.red === null ? pair.greenLabel : pair.redLabel;
-          return '<p class="slope-line">בקודקוד ' + vertexLabel + ': צלע ' + vertLabel + ' אנכית וצלע ' + horizLabel + ' אופקית - צלע אנכית תמיד ניצבת לצלע אופקית, ולכן הזווית ישרה!</p>';
+          return '<p class="slope-line">בקודקוד ' + ltrToken(vertexLabel) + ': צלע ' + ltrToken(vertLabel) + ' אנכית וצלע ' + ltrToken(horizLabel) + ' אופקית - צלע אנכית תמיד ניצבת לצלע אופקית, ולכן הזווית ישרה!</p>';
         }
-        return '<p class="slope-line">בקודקוד ' + vertexLabel + ': אחת הצלעות אנכית (שיפוע לא מוגדר) - הזווית בקודקוד זה אינה ישרה.</p>';
+        return '<p class="slope-line">בקודקוד ' + ltrToken(vertexLabel) + ': אחת הצלעות אנכית (שיפוע לא מוגדר) - הזווית בקודקוד זה אינה ישרה.</p>';
       }
       var product = fracMul(pair.red, pair.green);
       var body = '\\text{בקודקוד ' + vertexLabel + ':}\\quad \\textcolor{' + COLOR_LEG_RED + '}{' + fracLatexMaybeParen(pair.red) + '} \\cdot \\textcolor{' + COLOR_LEG_GREEN + '}{' + fracLatexMaybeParen(pair.green) + '} = ' + fracToLatex(product);
@@ -703,12 +703,12 @@
       if (vertex) {
         readout.classList.add('status-success');
         html += pairProductHTML(vertex, legPairForVertex(vertex, mAB, mBC, mCA), true);
-        html += '<div class="tri-badges"><span class="tri-badge badge-right">✓ זווית ' + vertex + ' ישרה!</span></div>';
+        html += '<div class="tri-badges"><span class="tri-badge badge-right">✓ זווית ' + ltrToken(vertex) + ' ישרה!</span></div>';
       } else {
         ['A', 'B', 'C'].forEach(function (v) {
           html += pairProductHTML(v, legPairForVertex(v, mAB, mBC, mCA), false);
         });
-        html += '<div class="tri-badges"><span class="tri-badge">אף מכפלה אינה שווה ל-<span class="coord-ltr">(-1)</span> - אינו ישר-זווית</span></div>';
+        html += '<div class="tri-badges"><span class="tri-badge">אף מכפלה אינה שווה ל-' + ltrToken('(-1)') + ' - אינו ישר-זווית</span></div>';
       }
 
       readout.innerHTML = html;

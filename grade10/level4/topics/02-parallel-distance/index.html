@@ -36,7 +36,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
 
     .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 10px; }
     .method-card { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; }
@@ -220,7 +219,7 @@
 
         <div class="content-block highlight-block">
           <h4>שימו לב</h4>
-          <p>אורך של קטע הוא תמיד <strong>מספר חיובי</strong> (או אפס אם הנקודות זהות) — לכן תמיד לוקחים את ההפרש בערך המוחלט: <span class="coord-ltr">|הגדול − הקטן|</span>.</p>
+          <p>אורך של קטע הוא תמיד <strong>מספר חיובי</strong> (או אפס אם הנקודות זהות) — לכן תמיד לוקחים את ההפרש בערך המוחלט: <span class="math-ltr">|הגדול − הקטן|</span>.</p>
         </div>
       </section>
 
@@ -324,6 +323,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     var LESSON_NAME = 'מרחק המקביל לצירים';
@@ -417,8 +417,8 @@
       }
       L = Math.abs(v2 - v1);
       var readout = document.getElementById('distReadout');
-      readout.innerHTML = '<span class="coord-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span><br>' +
-        'אורך = |' + axisLabel + '| = <span class="coord-ltr">|' + v2 + ' − (' + v1 + ')| = ' + L + '</span>';
+      readout.innerHTML = '<span class="math-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span><br>' +
+        'אורך = |' + axisLabel + '| = <span class="math-ltr">|' + v2 + ' − (' + v1 + ')| = ' + L + '</span>';
     }
 
     function updateLabVisual() {
@@ -549,8 +549,8 @@
       var correctIndex = numericOptions.indexOf(g.correctL);
       var axisWord = g.axis === 'h' ? 'x' : 'y';
       var otherAxisWord = g.axis === 'h' ? 'y' : 'x';
-      var explain = 'שתי הנקודות חולקות את אותו שיעור ' + otherAxisWord + ', ולכן הקטע ' + (g.axis === 'h' ? 'מקביל לציר ה-x' : 'מקביל לציר ה-y') +
-        '. אורכו הוא ההפרש בין שיעורי ה-' + axisWord + ': <span class="coord-ltr">|' + g.v2 + ' − (' + g.v1 + ')| = ' + g.correctL + '</span>. זכרו: אורך קטע הוא תמיד מספר חיובי (או אפס).';
+      var explain = 'שתי הנקודות חולקות את אותו שיעור ' + ltrToken(otherAxisWord) + ', ולכן הקטע ' + (g.axis === 'h' ? 'מקביל לציר ה-' + ltrToken('x') : 'מקביל לציר ה-' + ltrToken('y')) +
+        '. אורכו הוא ההפרש בין שיעורי ה-' + ltrToken(axisWord) + ': ' + ltrToken('|' + g.v2 + ' − (' + g.v1 + ')| = ' + g.correctL) + '. זכרו: אורך קטע הוא תמיד מספר חיובי (או אפס).';
 
       var q = {
         kind: 'choice',
@@ -562,7 +562,7 @@
         q.promptText = 'מה אורך הקטע המסומן בשרטוט?';
         q.svg = renderSegmentSVG(g.pA, g.pB);
       } else {
-        q.promptText = 'מה אורך הקטע בין הנקודות <span class="coord-ltr">' + pointLabel(g.pA) + '</span> ל-<span class="coord-ltr">' + pointLabel(g.pB) + '</span>?';
+        q.promptText = 'מה אורך הקטע בין הנקודות <span class="math-ltr">' + pointLabel(g.pA) + '</span> ל-<span class="math-ltr">' + pointLabel(g.pB) + '</span>?';
       }
       return q;
     }

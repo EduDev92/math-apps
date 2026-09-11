@@ -37,7 +37,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
     .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; }
     .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
@@ -214,28 +213,28 @@
         <div class="method-grid">
           <div class="method-card">
             <h4>חיתוך עם ציר ה-y</h4>
-            <p>מציבים <span class="coord-ltr">x=0</span> במשוואת הישר.</p>
+            <p>מציבים <span class="math-ltr">x=0</span> במשוואת הישר.</p>
           </div>
           <div class="method-card">
             <h4>חיתוך עם ציר ה-x</h4>
-            <p>מציבים <span class="coord-ltr">y=0</span> במשוואת הישר ופותרים עבור <span class="coord-ltr">x</span>.</p>
+            <p>מציבים <span class="math-ltr">y=0</span> במשוואת הישר ופותרים עבור <span class="math-ltr">x</span>.</p>
           </div>
         </div>
 
         <div class="content-block">
-          <h3>דוגמה: חיתוך <span class="coord-ltr">y=2x-8</span> עם הצירים</h3>
+          <h3>דוגמה: חיתוך <span class="math-ltr">y=2x-8</span> עם הצירים</h3>
           <div class="derivation-block" id="axisExample"></div>
         </div>
 
         <div class="content-block">
           <h3>חיתוך בין שני ישרים</h3>
-          <p>משווים בין שתי המשוואות (שתיהן שוות ל-<span class="coord-ltr">y</span>), פותרים עבור <span class="coord-ltr">x</span>, ואז מציבים באחת המשוואות כדי למצוא את <span class="coord-ltr">y</span>.</p>
+          <p>משווים בין שתי המשוואות (שתיהן שוות ל-<span class="math-ltr">y</span>), פותרים עבור <span class="math-ltr">x</span>, ואז מציבים באחת המשוואות כדי למצוא את <span class="math-ltr">y</span>.</p>
           <div class="derivation-block" id="twoLineExample"></div>
         </div>
 
         <div class="content-block highlight-block">
           <h4>שימו לב</h4>
-          <p>אחרי שמוצאים את <span class="coord-ltr">x</span>, אפשר להציב אותו <strong>בכל אחת</strong> משתי המשוואות — שתיהן ייתנו אותו <span class="coord-ltr">y</span>, כי בנקודת החיתוך שני הישרים "נפגשים".</p>
+          <p>אחרי שמוצאים את <span class="math-ltr">x</span>, אפשר להציב אותו <strong>בכל אחת</strong> משתי המשוואות — שתיהן ייתנו אותו <span class="math-ltr">y</span>, כי בנקודת החיתוך שני הישרים "נפגשים".</p>
         </div>
       </section>
 
@@ -356,6 +355,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -572,10 +572,10 @@
       var eqText = 'y = ' + (g.m === 1 ? 'x' : g.m === -1 ? '-x' : g.m + 'x') + (g.b === 0 ? '' : (g.b >= 0 ? ' + ' + g.b : ' - ' + Math.abs(g.b)));
       var explain, promptText;
       if (g.askAxis === 'y') {
-        promptText = 'הישר <span class="coord-ltr">' + eqText + '</span> — היכן הוא חותך את <strong>ציר ה-y</strong>?';
+        promptText = 'הישר <span class="math-ltr">' + eqText + '</span> — היכן הוא חותך את <strong>ציר ה-y</strong>?';
         explain = 'מציבים $x=0$: $y = ' + g.m + '\\cdot 0' + (g.b >= 0 ? '+' : '') + g.b + ' = ' + g.b + '$<br><strong>' + pointLabel(correctPoint) + '</strong>';
       } else {
-        promptText = 'הישר <span class="coord-ltr">' + eqText + '</span> — היכן הוא חותך את <strong>ציר ה-x</strong>?';
+        promptText = 'הישר <span class="math-ltr">' + eqText + '</span> — היכן הוא חותך את <strong>ציר ה-x</strong>?';
         explain = 'מציבים $y=0$: $0 = ' + g.m + 'x' + (g.b >= 0 ? '+' : '') + g.b + ' \\Rightarrow x = ' + g.xRoot + '$<br><strong>' + pointLabel(correctPoint) + '</strong>';
       }
 
@@ -639,7 +639,7 @@
 
       return {
         kind: 'choice',
-        promptText: 'מהי נקודת החיתוך של הישרים <span class="coord-ltr">' + eqLabel(g.m1, g.b1) + '</span> ו-<span class="coord-ltr">' + eqLabel(g.m2, g.b2) + '</span>?',
+        promptText: 'מהי נקודת החיתוך של הישרים <span class="math-ltr">' + eqLabel(g.m1, g.b1) + '</span> ו-<span class="math-ltr">' + eqLabel(g.m2, g.b2) + '</span>?',
         options: options.map(pointLabel),
         correctIndex: correctIndex,
         explain: explain

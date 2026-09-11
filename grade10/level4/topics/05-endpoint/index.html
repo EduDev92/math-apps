@@ -37,7 +37,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .formula-display { direction: ltr; text-align: center; margin: 14px 0; font-size: 1.15rem; max-width: 100%; overflow-x: auto; }
 
     .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 10px; }
@@ -207,12 +206,12 @@
         <div class="method-grid">
           <div class="method-card">
             <h4>שיטת הקפיצות</h4>
-            <p>בודקים כמה "קופצים" מהקצה הנתון <span class="coord-ltr">A</span> כדי להגיע לאמצע <span class="coord-ltr">M</span> — כלומר, בכמה משתנה ה-x ובכמה משתנה ה-y. מכיוון ש-M נמצאת בדיוק באמצע, צריך "לקפוץ" את <strong>אותה קפיצה בדיוק</strong> עוד פעם אחת מ-M כדי להגיע לקצה השני <span class="coord-ltr">B</span>.</p>
+            <p>בודקים כמה "קופצים" מהקצה הנתון <span class="math-ltr">A</span> כדי להגיע לאמצע <span class="math-ltr">M</span> — כלומר, בכמה משתנה ה-x ובכמה משתנה ה-y. מכיוון ש-M נמצאת בדיוק באמצע, צריך "לקפוץ" את <strong>אותה קפיצה בדיוק</strong> עוד פעם אחת מ-M כדי להגיע לקצה השני <span class="math-ltr">B</span>.</p>
           </div>
           <div class="method-card">
             <h4>הדוגמה שלנו</h4>
             <div class="method-graph-wrap" id="introGraph"></div>
-            <p style="text-align:center;font-size:0.9rem;"><span class="coord-ltr">A(-4,-2) → M(-1,1)</span>: קפיצה של <span class="coord-ltr">(+3,+3)</span>. מ-M עוד קפיצה כזו → <span class="coord-ltr">B(2,4)</span>.</p>
+            <p style="text-align:center;font-size:0.9rem;"><span class="math-ltr">A(-4,-2) → M(-1,1)</span>: קפיצה של <span class="math-ltr">(+3,+3)</span>. מ-M עוד קפיצה כזו → <span class="math-ltr">B(2,4)</span>.</p>
           </div>
         </div>
 
@@ -224,7 +223,7 @@
 
         <div class="content-block highlight-block">
           <h4>שימו לב</h4>
-          <p>שתי השיטות תמיד נותנות את אותה תוצאה — שיטת הקפיצות היא בעצם דרך חזותית להבין למה הנוסחה <span class="coord-ltr">B = 2M - A</span> עובדת.</p>
+          <p>שתי השיטות תמיד נותנות את אותה תוצאה — שיטת הקפיצות היא בעצם דרך חזותית להבין למה הנוסחה <span class="math-ltr">B = 2M - A</span> עובדת.</p>
         </div>
       </section>
 
@@ -331,6 +330,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -448,13 +448,13 @@
     function updateJumpReadout() {
       var readout = document.getElementById('jumpReadout');
       if (jumpStage === 0) {
-        readout.innerHTML = '<span class="coord-ltr">A' + pointLabel(EX_A) + ',&nbsp; M' + pointLabel(EX_M) + '</span><br>לחצו על "בצע קפיצה ראשונה" כדי להתחיל.';
+        readout.innerHTML = '<span class="math-ltr">A' + pointLabel(EX_A) + ',&nbsp; M' + pointLabel(EX_M) + '</span><br>לחצו על "בצע קפיצה ראשונה" כדי להתחיל.';
       } else if (jumpStage === 1) {
-        readout.innerHTML = '<span class="coord-ltr">A' + pointLabel(EX_A) + ' → M' + pointLabel(EX_M) + '</span>' +
+        readout.innerHTML = '<span class="math-ltr">A' + pointLabel(EX_A) + ' → M' + pointLabel(EX_M) + '</span>' +
           '$$x_m - x_A = ' + EX_STEP.x + ', \\quad y_m - y_A = ' + EX_STEP.y + '$$' +
           'עכשיו נבצע את אותה קפיצה שוב מ-M.';
       } else {
-        readout.innerHTML = '<span class="coord-ltr">M' + pointLabel(EX_M) + ' → B' + pointLabel(EX_B) + '</span>' +
+        readout.innerHTML = '<span class="math-ltr">M' + pointLabel(EX_M) + ' → B' + pointLabel(EX_B) + '</span>' +
           '$$B = M + (' + EX_STEP.x + ', ' + EX_STEP.y + ') = ' + pointLabel(EX_B) + '$$' +
           '<strong>מצאנו את הקצה השני!</strong>';
       }
@@ -555,11 +555,11 @@
       var options = shuffle([g.B].concat(distractors));
       var correctIndex = -1;
       options.forEach(function (p, i) { if (pointKey(p) === pointKey(g.B)) correctIndex = i; });
-      var explain = 'הקפיצה מ-A ל-M: <span class="coord-ltr">(' + g.stepX + ', ' + g.stepY + ')</span>. מבצעים אותה קפיצה שוב מ-M:<br>' +
+      var explain = 'הקפיצה מ-A ל-M: <span class="math-ltr">(' + g.stepX + ', ' + g.stepY + ')</span>. מבצעים אותה קפיצה שוב מ-M:<br>' +
         '$$B = 2M - A = (2\\cdot' + g.M.x + '-(' + g.A.x + '),\\ 2\\cdot' + g.M.y + '-(' + g.A.y + ')) = ' + pointLabel(g.B) + '$$';
       return {
         kind: 'choice',
-        promptText: 'נתונים הקצה <span class="coord-ltr">A' + pointLabel(g.A) + '</span> ואמצע הקטע <span class="coord-ltr">M' + pointLabel(g.M) + '</span>. מהו הקצה השני <span class="coord-ltr">B</span>?',
+        promptText: 'נתונים הקצה <span class="math-ltr">A' + pointLabel(g.A) + '</span> ואמצע הקטע <span class="math-ltr">M' + pointLabel(g.M) + '</span>. מהו הקצה השני <span class="math-ltr">B</span>?',
         options: options.map(pointLabel),
         correctIndex: correctIndex,
         explain: explain

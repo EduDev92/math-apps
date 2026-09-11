@@ -37,7 +37,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .formula-display { direction: ltr; text-align: center; margin: 14px 0; font-size: 1.25rem; max-width: 100%; overflow-x: auto; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
     .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; }
@@ -207,17 +206,17 @@
 
         <div class="content-block">
           <h3>איך מוצאים ישר מקביל שעובר בנקודה נתונה?</h3>
-          <p>פשוט "גונבים" את השיפוע מהישר הנתון, ומשתמשים בנקודה החדשה כדי למצוא <span class="coord-ltr">b</span> חדש — בדיוק כמו בלומדה על משוואת שיפוע-נקודה.</p>
+          <p>פשוט "גונבים" את השיפוע מהישר הנתון, ומשתמשים בנקודה החדשה כדי למצוא <span class="math-ltr">b</span> חדש — בדיוק כמו בלומדה על משוואת שיפוע-נקודה.</p>
         </div>
 
         <div class="content-block">
-          <h3>דוגמה: מקביל ל-<span class="coord-ltr">y=3x-5</span>, עובר ב-<span class="coord-ltr">(2,10)</span></h3>
+          <h3>דוגמה: מקביל ל-<span class="math-ltr">y=3x-5</span>, עובר ב-<span class="math-ltr">(2,10)</span></h3>
           <div class="derivation-block" id="exampleDerivation"></div>
         </div>
 
         <div class="content-block highlight-block">
           <h4>שימו לב</h4>
-          <p>ה-<span class="coord-ltr">b</span> של הישר החדש כמעט תמיד <strong>שונה</strong> מה-<span class="coord-ltr">b</span> של הישר המקורי (אלא אם הנקודה שנבחרה נמצאת גם היא על הישר המקורי) — הדבר היחיד ששני הישרים חייבים לחלוק הוא השיפוע.</p>
+          <p>ה-<span class="math-ltr">b</span> של הישר החדש כמעט תמיד <strong>שונה</strong> מה-<span class="math-ltr">b</span> של הישר המקורי (אלא אם הנקודה שנבחרה נמצאת גם היא על הישר המקורי) — הדבר היחיד ששני הישרים חייבים לחלוק הוא השיפוע.</p>
         </div>
       </section>
 
@@ -317,6 +316,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -434,7 +434,7 @@
       var readout = document.getElementById('parallelReadout');
       readout.innerHTML =
         '<span class="given-line-label">הישר הנתון: $' + equationLabel(GIVEN_M, GIVEN_B) + '$</span><br>' +
-        'הנקודה: <span class="coord-ltr">(' + freePoint.x + ', ' + freePoint.y + ')</span>' +
+        'הנקודה: <span class="math-ltr">(' + freePoint.x + ', ' + freePoint.y + ')</span>' +
         '$$y - (' + freePoint.y + ') = ' + GIVEN_M + '(x - (' + freePoint.x + '))$$' +
         '<span class="parallel-line-label">הישר המקביל: $' + equationLabel(GIVEN_M, newB) + '$</span>';
       renderMathInElement(readout, katexOptions);
@@ -541,7 +541,7 @@
 
       return {
         kind: 'choice',
-        promptText: 'מצאו את משוואת הישר המקביל ל-<span class="coord-ltr">' + equationLabel(g.m, g.origB) + '</span> ועובר בנקודה <span class="coord-ltr">(' + g.px + ', ' + g.py + ')</span>.',
+        promptText: 'מצאו את משוואת הישר המקביל ל-<span class="math-ltr">' + equationLabel(g.m, g.origB) + '</span> ועובר בנקודה <span class="math-ltr">(' + g.px + ', ' + g.py + ')</span>.',
         options: options.map(function (o) { return equationLabel(o.m, o.b); }),
         correctIndex: correctIndex,
         explain: explain

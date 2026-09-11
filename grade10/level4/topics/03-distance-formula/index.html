@@ -37,7 +37,6 @@
     .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .formula-display { direction: ltr; text-align: center; margin: 14px 0; font-size: 1.2rem; max-width: 100%; overflow-x: auto; }
 
     .method-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 10px; }
@@ -201,25 +200,25 @@
 
         <div class="content-block">
           <h3>נוסחת המרחק</h3>
-          <p>המרחק בין הנקודות <span class="coord-ltr">A(x₁, y₁)</span> ו-<span class="coord-ltr">B(x₂, y₂)</span> נתון על ידי הנוסחה:</p>
+          <p>המרחק בין הנקודות <span class="math-ltr">A(x₁, y₁)</span> ו-<span class="math-ltr">B(x₂, y₂)</span> נתון על ידי הנוסחה:</p>
           <div class="formula-display" id="mainFormula"></div>
         </div>
 
         <div class="method-grid">
           <div class="method-card">
             <h4>הקשר למשפט פיתגורס</h4>
-            <p>אם נשלים את הקטע AB למשולש ישר זווית על ידי קווים המקבילים לצירים, נקבל: הניצב האופקי באורך <span class="coord-ltr">|x₂−x₁|</span>, הניצב האנכי באורך <span class="coord-ltr">|y₂−y₁|</span>, והמרחק AB הוא <strong>היתר</strong>.</p>
+            <p>אם נשלים את הקטע AB למשולש ישר זווית על ידי קווים המקבילים לצירים, נקבל: הניצב האופקי באורך <span class="math-ltr">|x₂−x₁|</span>, הניצב האנכי באורך <span class="math-ltr">|y₂−y₁|</span>, והמרחק AB הוא <strong>היתר</strong>.</p>
           </div>
           <div class="method-card">
             <h4>דוגמה</h4>
             <div class="method-graph-wrap" id="introGraph"></div>
-            <p style="text-align:center;font-size:0.9rem;">ניצבים 3 ו-4 → יתר 5 (משפט פיתגורס: <span class="coord-ltr">3²+4²=5²</span>)</p>
+            <p style="text-align:center;font-size:0.9rem;">ניצבים 3 ו-4 → יתר 5 (משפט פיתגורס: <span class="math-ltr">3²+4²=5²</span>)</p>
           </div>
         </div>
 
         <div class="content-block highlight-block">
           <h4>שימו לב</h4>
-          <p>הסדר לא משנה: <span class="coord-ltr">(x₂−x₁)²</span> ו-<span class="coord-ltr">(x₁−x₂)²</span> נותנים אותה תוצאה, כי מעלים בריבוע. המרחק תמיד יוצא מספר חיובי (או אפס).</p>
+          <p>הסדר לא משנה: <span class="math-ltr">(x₂−x₁)²</span> ו-<span class="math-ltr">(x₁−x₂)²</span> נותנים אותה תוצאה, כי מעלים בריבוע. המרחק תמיד יוצא מספר חיובי (או אפס).</p>
         </div>
       </section>
 
@@ -321,6 +320,7 @@
 
   <script src="../../../../shared/components/step-progress.js"></script>
   <script src="../../../../shared/js/score-tracker.js"></script>
+  <script src="../../../../shared/js/bidi-utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -426,7 +426,7 @@
       var d = Math.sqrt(sq);
       var dDisplay = (Number.isInteger(d)) ? String(d) : d.toFixed(2);
       var readout = document.getElementById('distReadout');
-      readout.innerHTML = '<span class="coord-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span>' +
+      readout.innerHTML = '<span class="math-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span>' +
         '$$x_2-x_1 = ' + dx + ',\\quad y_2-y_1 = ' + dy + '$$' +
         '$$d = \\sqrt{(' + dx + ')^2+(' + dy + ')^2} = \\sqrt{' + sq + '} \\approx ' + dDisplay + '$$';
       renderMathInElement(readout, katexOptions);
@@ -557,7 +557,7 @@
         '$$d = \\sqrt{(' + g.dx + ')^2+(' + g.dy + ')^2} = \\sqrt{' + sqSum + '} = ' + g.correctD + '$$';
       return {
         kind: 'choice',
-        promptText: 'מה המרחק בין הנקודות <span class="coord-ltr">' + pointLabel(g.p1) + '</span> ל-<span class="coord-ltr">' + pointLabel(g.p2) + '</span>?',
+        promptText: 'מה המרחק בין הנקודות <span class="math-ltr">' + pointLabel(g.p1) + '</span> ל-<span class="math-ltr">' + pointLabel(g.p2) + '</span>?',
         options: numericOptions.map(String),
         correctIndex: correctIndex,
         explain: explain
