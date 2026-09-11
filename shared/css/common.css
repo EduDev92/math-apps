@@ -103,6 +103,7 @@ body {
   letter-spacing: 0.02em;
   margin-inline-start: 10px;
   vertical-align: middle;
+  text-transform: uppercase;
 }
 
 /* שורת תגיות עליונה בכרטיס לומדה בפורטל - תג זמינות בצד אחד, מזהה מודול בצד השני */
