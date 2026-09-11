@@ -51,7 +51,7 @@
 
     .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
-    .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+    .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0; -webkit-overflow-scrolling: touch; }
     .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
 
     /* Step 2 lab */
@@ -73,7 +73,8 @@
     }
     .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
     .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
-    .dist-line { margin: 10px 0; font-size: 0.92rem; }
+    .dist-line-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .dist-line { margin: 10px 0; font-size: 0.92rem; max-width: 100%; }
     .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
     .tri-badge {
       display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
@@ -488,11 +489,19 @@
       var dx = P2.x - P1.x, dy = P2.y - P1.y;
       var dxSq = Math.round(dx * dx), dySq = Math.round(dy * dy);
       var sumSq = dxSq + dySq;
-      var body = 'd_{' + labelPair + '} = \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2} = ' +
-        '\\sqrt{\\left(' + fmtCoord(P2.x) + '-(' + fmtCoord(P1.x) + ')\\right)^2+\\left(' + fmtCoord(P2.y) + '-(' + fmtCoord(P1.y) + ')\\right)^2} = ' +
-        '\\sqrt{' + dxSq + '+' + dySq + '} = \\sqrt{' + sumSq + '} = ' + sqrtToLatex(sumSq);
+      // Broken into discrete aligned steps (rather than one long "a = b = c = d = e"
+      // chain) so each row stays short enough to read without horizontal scrolling
+      // on narrow phones - the wrapping .dist-line container still scrolls as a
+      // fallback for the widest row (the raw-substitution step).
+      var rows = [
+        'd_{' + labelPair + '} &= \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}',
+        '&= \\sqrt{\\left(' + fmtCoord(P2.x) + '-(' + fmtCoord(P1.x) + ')\\right)^2+\\left(' + fmtCoord(P2.y) + '-(' + fmtCoord(P1.y) + ')\\right)^2}',
+        '&= \\sqrt{' + dxSq + '+' + dySq + '}',
+        '&= \\sqrt{' + sumSq + '} = ' + sqrtToLatex(sumSq)
+      ];
+      var body = '\\begin{aligned}' + rows.join(' \\\\ ') + '\\end{aligned}';
       if (color) body = '\\textcolor{' + color + '}{' + body + '}';
-      return '<p class="dist-line">$$' + body + '$$</p>';
+      return '<div class="dist-line-wrap"><p class="dist-line">$$' + body + '$$</p></div>';
     }
 
     function explainBlock(A, B, C) {

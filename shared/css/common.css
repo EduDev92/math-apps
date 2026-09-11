@@ -53,8 +53,16 @@ body {
   max-width: 100%;
 }
 
-/* מונע מנוסחאות ארוכות לגלוש מחוץ לכרטיסים במסכים צרים - גלילה אופקית מקומית במקום חריגה */
+/* מונע מנוסחאות ארוכות לגלוש מחוץ לכרטיסים במסכים צרים - גלילה אופקית מקומית במקום חריגה.
+   direction:ltr כאן הוא לא קוסמטי - הוא התיקון בפועל: .katex-display יורש
+   direction:rtl מ-body (העמוד כולו RTL), אבל תוכן המתמטיקה בתוכו (.katex)
+   הוא LTR. אי-ההתאמה הזו בין כיוון הקונטיינר הגולל (RTL) לכיוון התוכן שלו
+   (LTR) גורמת לכרום לחשב scrollWidth שגוי - הוא מדווח שאין גלישה כלל (equal
+   ל-clientWidth) גם כשהנוסחה בפועל רחבה בהרבה מהקונטיינר, כך שנוסחאות ארוכות
+   "מצטמצמות" בלי גלילה במקום לגלוש ולהיגלל כמתוכנן. once .katex-display עצמו
+   מוגדר גם הוא LTR (תואם לתוכן שבתוכו), הדפדפן מחשב scrollWidth נכון. */
 .katex-display {
+  direction: ltr;
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
@@ -62,11 +70,17 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 480px) {
+/* Math formulas get a touch smaller under 600px so long KaTeX expressions
+   are less likely to force horizontal scrolling on phones. Kept as its own
+   query (rather than folded into the 480px one below) since it targets a
+   wider range than the layout-padding tweak does. */
+@media (max-width: 600px) {
   .katex {
     font-size: 0.9em;
   }
+}
 
+@media (max-width: 480px) {
   .lesson-card {
     padding: 14px 10px;
     overflow-x: hidden;
