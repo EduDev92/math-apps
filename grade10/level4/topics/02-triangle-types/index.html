@@ -45,9 +45,14 @@
     .leg-label-sm { font-size: 10px; font-weight: 700; fill: var(--blue-primary); }
     .hyp-label-sm { font-size: 10px; font-weight: 700; fill: var(--orange-strong); }
 
+    .example-layout { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .example-svg-wrap { flex: 0 0 260px; max-width: 260px; }
+    .example-svg-wrap svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
+    .example-calc-wrap { flex: 1; min-width: 220px; }
+
     .coord-ltr { direction: ltr; unicode-bidi: isolate; display: inline-block; font-weight: 700; }
     .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
-    .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; }
+    .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
     .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
 
     /* Step 2 lab */
@@ -452,20 +457,74 @@
 
     /* ---------- Step 1: worked example ---------- */
 
+    var EXAMPLE_COLOR_AB = '#2e5fa3';
+    var EXAMPLE_COLOR_AC = '#2e9e5b';
+
+    function renderExampleSVG(A, B, C, rightKey, colorAB, colorAC) {
+      var W = 260, H = 260, PAD = 30;
+      var xs = [A.x, B.x, C.x], ys = [A.y, B.y, C.y];
+      var xLo = Math.min.apply(null, xs), xHi = Math.max.apply(null, xs);
+      var yLo = Math.min.apply(null, ys), yHi = Math.max.apply(null, ys);
+      var span = Math.max(xHi - xLo, yHi - yLo) + 2.4;
+      var cx = (xLo + xHi) / 2, cy = (yLo + yHi) / 2;
+      var XMIN = cx - span / 2, XMAX = cx + span / 2, YMIN = cy - span / 2, YMAX = cy + span / 2;
+      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
+      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
+
+      var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, XMIN, XMAX, YMIN, YMAX);
+
+      markup += '<line x1="' + mx(B.x) + '" y1="' + my(B.y) + '" x2="' + mx(C.x) + '" y2="' + my(C.y) + '" stroke="#c2650b" stroke-width="3"/>';
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(B.x) + '" y2="' + my(B.y) + '" stroke="' + colorAB + '" stroke-width="3.5"/>';
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(C.x) + '" y2="' + my(C.y) + '" stroke="' + colorAC + '" stroke-width="3.5"/>';
+
+      var pts = { A: A, B: B, C: C };
+      var vertex = pts[rightKey];
+      var others = ['A', 'B', 'C'].filter(function (k) { return k !== rightKey; });
+      var legEnd1 = pts[others[0]], legEnd2 = pts[others[1]];
+      var u1 = unitVec(vertex, legEnd1), u2 = unitVec(vertex, legEnd2);
+      var s = 16;
+      var vx = mx(vertex.x), vy = my(vertex.y);
+      var p1x = vx + u1.x * s, p1y = vy - u1.y * s;
+      var p2x = p1x + u2.x * s, p2y = p1y - u2.y * s;
+      var p3x = vx + u2.x * s, p3y = vy - u2.y * s;
+      markup += '<polyline points="' + p1x + ',' + p1y + ' ' + p2x + ',' + p2y + ' ' + p3x + ',' + p3y + '" class="right-angle-mark"/>';
+
+      markup += '<circle cx="' + mx(A.x) + '" cy="' + my(A.y) + '" r="4.5" class="point-marker"/>';
+      markup += '<circle cx="' + mx(B.x) + '" cy="' + my(B.y) + '" r="4.5" class="point-marker"/>';
+      markup += '<circle cx="' + mx(C.x) + '" cy="' + my(C.y) + '" r="4.5" class="point-marker"/>';
+
+      var centroid = { x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 };
+      ['A', 'B', 'C'].forEach(function (k) {
+        var P = pts[k];
+        var dx = P.x - centroid.x, dy = P.y - centroid.y;
+        var len = Math.sqrt(dx * dx + dy * dy) || 1;
+        var lx = mx(P.x) + (dx / len) * 14, ly = my(P.y) - (dy / len) * 14;
+        markup += '<text x="' + lx + '" y="' + ly + '" class="vertex-label-sm" text-anchor="middle">' + k + '</text>';
+      });
+
+      markup += '</svg>';
+      return markup;
+    }
+
     (function buildExample() {
       var A = { x: -3, y: -2 }, B = { x: 0, y: 2 }, C = { x: -7, y: 1 };
       var vertex = rightAngleVertex(A, B, C);
       var mAB = slopeFrac(A, B), mAC = slopeFrac(A, C);
       var el = document.getElementById('exampleDerivation');
       el.innerHTML =
+        '<div class="example-layout">' +
+        '<div class="example-svg-wrap">' + renderExampleSVG(A, B, C, vertex || 'A', EXAMPLE_COLOR_AB, EXAMPLE_COLOR_AC) + '</div>' +
+        '<div class="example-calc-wrap">' +
         '<p class="derivation-line">$A' + pointLabel(A) + ',\\ B' + pointLabel(B) + ',\\ C' + pointLabel(C) + '$</p>' +
-        '<p class="stage-label">שיפוע הצלע AB</p>' +
-        '<p class="derivation-line">$m_{AB} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + B.y + ' - (' + A.y + ')}{' + B.x + ' - (' + A.x + ')} = \\dfrac{' + (B.y - A.y) + '}{' + (B.x - A.x) + '} = ' + fracToLatex(mAB) + '$</p>' +
-        '<p class="stage-label">שיפוע הצלע AC</p>' +
-        '<p class="derivation-line">$m_{AC} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + C.y + ' - (' + A.y + ')}{' + C.x + ' - (' + A.x + ')} = \\dfrac{' + (C.y - A.y) + '}{' + (C.x - A.x) + '} = ' + fracToLatex(mAC) + '$</p>' +
+        '<p class="stage-label">שיפוע הצלע <span style="color:' + EXAMPLE_COLOR_AB + ';">AB</span></p>' +
+        '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AB + '}{m_{AB} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + B.y + ' - (' + A.y + ')}{' + B.x + ' - (' + A.x + ')} = \\dfrac{' + (B.y - A.y) + '}{' + (B.x - A.x) + '} = ' + fracToLatex(mAB) + '}$</p>' +
+        '<p class="stage-label">שיפוע הצלע <span style="color:' + EXAMPLE_COLOR_AC + ';">AC</span></p>' +
+        '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AC + '}{m_{AC} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + C.y + ' - (' + A.y + ')}{' + C.x + ' - (' + A.x + ')} = \\dfrac{' + (C.y - A.y) + '}{' + (C.x - A.x) + '} = ' + fracToLatex(mAC) + '}$</p>' +
         '<p class="stage-label">מכפלת השיפועים</p>' +
         '<p class="derivation-line">$m_{AB} \\cdot m_{AC} = ' + fracToLatex(mAB) + ' \\cdot ' + fracToLatex(mAC) + ' = ' + (mAB.num * mAC.num) / (mAB.den * mAC.den) + '$</p>' +
-        '<p class="derivation-line"><strong>' + (vertex === 'A' ? 'מכפלת השיפועים שווה ל-1- ⇒ זווית A ישרה!' : 'הזווית אינה ישרה') + '</strong></p>';
+        '<p class="derivation-line"><strong>' + (vertex === 'A' ? 'מכפלת השיפועים שווה ל-1- ⇒ זווית A ישרה!' : 'הזווית אינה ישרה') + '</strong></p>' +
+        '</div>' +
+        '</div>';
       renderMathInElement(el, katexOptions);
     })();
 
