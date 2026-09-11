@@ -14,21 +14,14 @@ function isValidTeacherName(name) {
   return TEACHERS_LIST.indexOf(name) !== -1;
 }
 
-function sendScoreToSheet(studentName, teacherName, classLevel, score, timeInSeconds) {
+function sendScoreToSheet(data) {
   try {
     fetch(GOOGLE_SHEETS_URL, {
       method: 'POST',
       mode: 'no-cors',
-      body: JSON.stringify({
-        studentName: studentName,
-        teacherName: teacherName,
-        classLevel: classLevel,
-        moduleName: document.title,
-        score: score,
-        time: timeInSeconds
-      })
+      body: JSON.stringify(data)
     });
   } catch (e) {
-    /* fire-and-forget: tracking must never disrupt the student's certificate flow */
+    /* fire-and-forget: tracking must never disrupt the student's certificate/summary flow */
   }
 }

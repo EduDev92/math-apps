@@ -103,6 +103,123 @@
       cursor: default;
       opacity: 0.65;
     }
+    .exam-entry-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      background: linear-gradient(135deg, var(--blue-deep) 0%, var(--blue-primary) 100%);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow-card);
+    }
+    .exam-entry-text h2 {
+      color: #fff;
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .exam-entry-text p {
+      color: #dbe7fb;
+      font-size: 0.92rem;
+    }
+    .btn-exam-entry {
+      background: #fff;
+      color: var(--blue-deep);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px 26px;
+      font-family: var(--font-family);
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-exam-entry:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    }
+    .exam-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 26, 46, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+    .exam-modal-overlay[hidden] { display: none; }
+    .exam-modal {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 30px 26px;
+      max-width: 380px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+    .exam-modal h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--blue-deep);
+      margin-bottom: 8px;
+    }
+    .exam-modal p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .exam-modal-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-family);
+      font-size: 1.05rem;
+      text-align: center;
+      direction: ltr;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+    .exam-modal-input:focus { outline: none; border-color: var(--blue-primary); }
+    .exam-modal-error {
+      color: var(--red-error);
+      background: var(--red-soft);
+      border: 1px solid var(--red-error);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .exam-modal-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .exam-modal-actions button {
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: none;
+      font-family: var(--font-family);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    .btn-modal-cancel {
+      background: #eef2f9;
+      color: var(--blue-primary);
+      border: 1px solid var(--border-subtle) !important;
+    }
+    .btn-modal-submit {
+      background: var(--blue-primary);
+      color: #fff;
+    }
+    .btn-modal-submit:hover { background: var(--blue-deep); }
   </style>
 </head>
 <body>
@@ -111,6 +228,27 @@
       <h1>מרחב לומדות אינטראקטיביות במתמטיקה</h1>
       <p>בחרו כיתה ורמת לימוד כדי להתחיל</p>
     </header>
+
+    <div class="exam-entry-banner">
+      <div class="exam-entry-text">
+        <h2>יש לכם קוד מבדק כיתתי?</h2>
+        <p>הקלידו את הקוד שקיבלתם מהמורה כדי לגשת למבדק.</p>
+      </div>
+      <button type="button" class="btn-exam-entry" id="btnOpenExamModal">כניסה למבדק כיתתי עם קוד</button>
+    </div>
+
+    <div class="exam-modal-overlay" id="examModalOverlay" hidden>
+      <div class="exam-modal">
+        <h3>כניסה למבדק כיתתי</h3>
+        <p>הקלידו את קוד המבדק שקיבלתם מהמורה</p>
+        <p class="exam-modal-error" id="examModalError" hidden>אנא הקלידו קוד מבדק</p>
+        <input type="text" id="examModalInput" class="exam-modal-input" placeholder="לדוגמה: GEO-101" autocomplete="off">
+        <div class="exam-modal-actions">
+          <button type="button" class="btn-modal-cancel" id="btnCancelExamModal">ביטול</button>
+          <button type="button" class="btn-modal-submit" id="btnSubmitExamModal">כניסה</button>
+        </div>
+      </div>
+    </div>
 
     <main>
       <section class="grade-section">
@@ -177,5 +315,40 @@
       </section>
     </main>
   </div>
+
+  <script>
+    var examModalOverlay = document.getElementById('examModalOverlay');
+    var examModalInput = document.getElementById('examModalInput');
+    var examModalError = document.getElementById('examModalError');
+
+    function openExamModal() {
+      examModalError.hidden = true;
+      examModalInput.value = '';
+      examModalOverlay.hidden = false;
+      examModalInput.focus();
+    }
+    function closeExamModal() {
+      examModalOverlay.hidden = true;
+    }
+    function submitExamModal() {
+      var code = examModalInput.value.trim();
+      if (!code) {
+        examModalError.textContent = 'אנא הקלידו קוד מבדק';
+        examModalError.hidden = false;
+        return;
+      }
+      window.location.href = 'exam.html?code=' + encodeURIComponent(code);
+    }
+
+    document.getElementById('btnOpenExamModal').addEventListener('click', openExamModal);
+    document.getElementById('btnCancelExamModal').addEventListener('click', closeExamModal);
+    document.getElementById('btnSubmitExamModal').addEventListener('click', submitExamModal);
+    examModalOverlay.addEventListener('click', function (e) {
+      if (e.target === examModalOverlay) closeExamModal();
+    });
+    examModalInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submitExamModal();
+    });
+  </script>
 </body>
 </html>

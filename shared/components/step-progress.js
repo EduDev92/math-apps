@@ -5,7 +5,7 @@ class StepProgress extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['current-step'];
+    return ['current-step', 'labels'];
   }
 
   attributeChangedCallback() {
@@ -18,12 +18,9 @@ class StepProgress extends HTMLElement {
 
   render() {
     const current = parseInt(this.getAttribute('current-step') || '1', 10);
-    const steps = [
-      { num: 1, label: 'מכירים' },
-      { num: 2, label: 'חוקרים' },
-      { num: 3, label: 'מתרגלים' },
-      { num: 4, label: 'מסכמים' }
-    ];
+    const labelsAttr = this.getAttribute('labels');
+    const labelList = labelsAttr ? labelsAttr.split(',') : ['מכירים', 'חוקרים', 'מתרגלים', 'מסכמים'];
+    const steps = labelList.map((label, i) => ({ num: i + 1, label: label }));
 
     this.shadowRoot.innerHTML = `
       <style>

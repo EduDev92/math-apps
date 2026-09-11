@@ -929,7 +929,17 @@
       document.getElementById('summaryActions').hidden = !passed;
 
       if (passed) renderCertificate(pct, correct, total);
-      sendScoreToSheet(studentName, teacherName, "כיתה יב' 5 יח\"ל (שאלון 572)", pct, quizTiming.totalSeconds);
+      sendScoreToSheet({
+        studentName: studentName,
+        teacherName: teacherName,
+        grade: 'יב\'',
+        level: '5 יח"ל (שאלון 572)',
+        mainTopic: 'הפונקציה המעריכית',
+        subTopic: 'אי-שוויונים מעריכיים',
+        mode: 'תרגול',
+        time: quizTiming.totalSeconds,
+        score: pct
+      });
     }
 
     function renderCertificate(pct, correct, total) {

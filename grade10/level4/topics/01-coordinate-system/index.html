@@ -585,7 +585,17 @@
       document.getElementById('summaryActions').hidden = !passed;
 
       if (passed) renderCertificate(pct, correct, total);
-      sendScoreToSheet(studentName, teacherName, "כיתה י' 4 יח\"ל", pct, quizTiming.totalSeconds);
+      sendScoreToSheet({
+        studentName: studentName,
+        teacherName: teacherName,
+        grade: 'י\'',
+        level: '4 יח"ל',
+        mainTopic: 'גיאומטריה אנליטית',
+        subTopic: 'מערכת צירים ושיבוץ נקודות',
+        mode: 'תרגול',
+        time: quizTiming.totalSeconds,
+        score: pct
+      });
     }
 
     function renderCertificate(pct, correct, total) {
