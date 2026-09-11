@@ -72,3 +72,32 @@ body {
     overflow-x: hidden;
   }
 }
+
+/* תג מזהה מודול פנימי (למשל tri-m2) - לצורך התייחסות מנהלית מול מבדקים/גיליונות, לא לתלמידים */
+.module-id-badge {
+  display: inline-block;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: #f1f4f9;
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 2px 10px;
+  direction: ltr;
+  unicode-bidi: isolate;
+  letter-spacing: 0.02em;
+  margin-inline-start: 10px;
+  vertical-align: middle;
+}
+
+/* שורת תגיות עליונה בכרטיס לומדה בפורטל - תג זמינות בצד אחד, מזהה מודול בצד השני */
+.card-badges-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.card-badges-row .module-id-badge {
+  margin-inline-start: 0;
+}
