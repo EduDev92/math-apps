@@ -565,6 +565,7 @@
     function generateQuizQuestions() {
       var qs = [];
       for (var i = 0; i < 10; i++) qs.push(makeDistanceQuestion());
+      qs.forEach(function (q, i) { q.id = 'geo-m3-q' + (i + 1); });
       return shuffle(qs);
     }
 

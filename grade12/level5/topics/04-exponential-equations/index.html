@@ -929,6 +929,7 @@
         });
       });
 
+      qs.forEach(function (q, i) { q.id = 'exp-m4-q' + (i + 1); });
       return shuffle(qs);
     }
 

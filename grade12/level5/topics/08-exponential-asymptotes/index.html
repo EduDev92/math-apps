@@ -527,6 +527,7 @@
         });
       });
 
+      qs.forEach(function (q, i) { q.id = 'exp-m8-q' + (i + 1); });
       return shuffle(qs).slice(0, 10);
     }
 

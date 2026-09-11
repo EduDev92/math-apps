@@ -694,6 +694,7 @@
         });
       });
 
+      qs.forEach(function (q, i) { q.id = 'quad-m1-q' + (i + 1); });
       return shuffle(qs);
     }
 

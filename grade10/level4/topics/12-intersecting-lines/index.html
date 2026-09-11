@@ -648,6 +648,7 @@
       var qs = [];
       for (var i = 0; i < 5; i++) qs.push(makeAxisQuestion());
       for (var i = 0; i < 5; i++) qs.push(makeTwoLineQuestion());
+      qs.forEach(function (q, i) { q.id = 'geo-m12-q' + (i + 1); });
       return shuffle(qs);
     }
 

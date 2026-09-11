@@ -569,6 +569,7 @@
       var qs = [];
       for (var i = 0; i < 5; i++) qs.push(makeLengthQuestion(false));
       for (var i = 0; i < 5; i++) qs.push(makeLengthQuestion(true));
+      qs.forEach(function (q, i) { q.id = 'geo-m2-q' + (i + 1); });
       return shuffle(qs);
     }
 

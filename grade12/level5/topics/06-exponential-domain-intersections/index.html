@@ -593,6 +593,7 @@
         });
       });
 
+      qs.forEach(function (q, i) { q.id = 'exp-m6-q' + (i + 1); });
       return shuffle(qs);
     }
 

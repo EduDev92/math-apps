@@ -674,6 +674,7 @@
       var qs = [];
       for (var i = 0; i < 5; i++) qs.push(makeCategoryQuestion());
       for (var i = 0; i < 5; i++) qs.push(makeStepQuestion());
+      qs.forEach(function (q, i) { q.id = 'geo-m6-q' + (i + 1); });
       return shuffle(qs);
     }
 

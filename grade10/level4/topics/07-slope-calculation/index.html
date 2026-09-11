@@ -555,6 +555,7 @@
       var qs = [];
       for (var i = 0; i < 5; i++) qs.push(makeSlopeCalcQuestion(false));
       for (var i = 0; i < 5; i++) qs.push(makeSlopeCalcQuestion(true));
+      qs.forEach(function (q, i) { q.id = 'geo-m7-q' + (i + 1); });
       return shuffle(qs);
     }
 

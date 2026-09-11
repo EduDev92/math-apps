@@ -1487,6 +1487,7 @@
 
       qs.push(generateTypeF()); qs.push(generateTypeF());
 
+      qs.forEach(function (q, i) { q.id = 'exp-m1-q' + (i + 1); });
       return shuffle(qs);
     }
 

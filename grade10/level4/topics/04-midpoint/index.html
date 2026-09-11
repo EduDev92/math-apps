@@ -544,6 +544,7 @@
     function generateQuizQuestions() {
       var qs = [];
       for (var i = 0; i < 10; i++) qs.push(makeMidpointQuestion());
+      qs.forEach(function (q, i) { q.id = 'geo-m4-q' + (i + 1); });
       return shuffle(qs);
     }
 

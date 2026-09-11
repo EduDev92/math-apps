@@ -1453,6 +1453,7 @@
       var usedProp = [];
       for (var p = 0; p < 2; p++) qs.push(generatePropertyQuestion(usedProp));
 
+      qs.forEach(function (q, i) { q.id = 'exp-m2-q' + (i + 1); });
       return shuffle(qs);
     }
 

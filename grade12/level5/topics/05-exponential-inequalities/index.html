@@ -785,6 +785,7 @@
         qs.push(makeChoiceQuestion('E', 'פתרו את אי-השוויון הבא:', item.promptLatex, item.options, item.correctLabel, item.explain));
       });
 
+      qs.forEach(function (q, i) { q.id = 'exp-m5-q' + (i + 1); });
       return shuffle(qs);
     }
 
