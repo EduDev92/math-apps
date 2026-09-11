@@ -27,7 +27,9 @@ const MODULE_REGISTRY = {
     /* Full planned sequence for this topic - positions are fixed so lesson numbering stays stable
        as content is built. A `null` slot is a lesson that doesn't exist yet; resolveExamConfig()
        refuses to resolve any sourceModules entry that lands on one.
-       1: סוגי משולשים (זיהוי לפי מרחקים ושיפועים) - not yet built
+       1: סוגי משולשים (זיהוי לפי מרחקים ושיפועים) - existing lesson ("02-triangle-types" -
+          folder numbered by shapes-topic build order, not curriculum position; its question ids
+          use the "tri" prefix, e.g. tri-m1-qK, not "shapes")
        2: תיכונים וגבהים במשולש במערכת הצירים - not yet built
        3: שטחים והיקפים של משולשים במערכת הצירים - not yet built
        4: לומדת סיכום: תכונות מרובעים - existing lesson (folder kept as "01-quadrilaterals",
@@ -35,7 +37,7 @@ const MODULE_REGISTRY = {
        5: מרובעים במערכת הצירים (הוכחה וחישובים אנליטיים) - not yet built; this cluster may grow
           past a single lesson once scoped */
     modules: [
-      null,
+      '02-triangle-types',
       null,
       null,
       '01-quadrilaterals',
