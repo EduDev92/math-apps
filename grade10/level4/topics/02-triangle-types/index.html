@@ -95,7 +95,6 @@
     .axis-label-y { text-anchor: end; }
 
     .tri-poly { fill: var(--blue-primary); fill-opacity: 0.12; stroke: var(--blue-primary); stroke-width: 2.5; }
-    .schematic-connector { fill: none; stroke: #b8c2d1; stroke-width: 1.5; stroke-dasharray: 5, 4; }
     .tri-poly-fill { fill: var(--blue-primary); fill-opacity: 0.08; stroke: none; }
     .tri-edge { stroke-width: 3; }
     .vertex-label { font-size: 14px; font-weight: 800; fill: var(--blue-deep); }
@@ -113,8 +112,6 @@
 
     .quiz-body { min-height: 140px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
     .quiz-instruction { font-weight: 700; margin-bottom: 12px; text-align: center; }
-    .quiz-point-svg-wrap { max-width: 260px; margin: 0 auto 14px; }
-    .quiz-point-svg-wrap svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
     .quiz-id-tag { margin-top: 14px; text-align: center; font-size: 0.72rem; color: #b8c2d1; font-family: monospace; direction: ltr; }
 
     .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
@@ -612,32 +609,6 @@
       document.getElementById('miniTri3').innerHTML = renderMiniRightTriangleSVG({ x: 1, y: -3 }, { x: 3, y: 1 }, { x: -3, y: -1 }, 'A');
     })();
 
-    function renderTriangleQuestionSVG(A, B, C) {
-      var W = 240, H = 240, PAD = 28;
-      var xs = [A.x, B.x, C.x], ys = [A.y, B.y, C.y];
-      var xLo = Math.min.apply(null, xs), xHi = Math.max.apply(null, xs);
-      var yLo = Math.min.apply(null, ys), yHi = Math.max.apply(null, ys);
-      var margin = 2;
-      var span = Math.max(xHi - xLo, yHi - yLo) + margin * 2;
-      span = Math.max(span, 6); /* never zoom in tighter than a 6-unit view, even for a tiny triangle */
-      var cx = (xLo + xHi) / 2, cy = (yLo + yHi) / 2;
-      var XMIN = cx - span / 2, XMAX = cx + span / 2, YMIN = cy - span / 2, YMAX = cy + span / 2;
-      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
-      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
-      var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, XMIN, XMAX, YMIN, YMAX);
-      /* Faint dashed connectors only - a filled/solid triangle would let students see the
-         90-degree angle by eye instead of proving it algebraically via slopes. */
-      markup += '<polyline points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + ' ' + mx(A.x) + ',' + my(A.y) + '" class="schematic-connector"/>';
-      markup += '<circle cx="' + mx(A.x) + '" cy="' + my(A.y) + '" r="4" class="point-marker"/>';
-      markup += '<circle cx="' + mx(B.x) + '" cy="' + my(B.y) + '" r="4" class="point-marker"/>';
-      markup += '<circle cx="' + mx(C.x) + '" cy="' + my(C.y) + '" r="4" class="point-marker"/>';
-      markup += '<text x="' + (mx(A.x) + 7) + '" y="' + (my(A.y) - 7) + '" class="vertex-label-sm">A</text>';
-      markup += '<text x="' + (mx(B.x) + 7) + '" y="' + (my(B.y) - 7) + '" class="vertex-label-sm">B</text>';
-      markup += '<text x="' + (mx(C.x) + 7) + '" y="' + (my(C.y) - 7) + '" class="vertex-label-sm">C</text>';
-      markup += '</svg>';
-      return markup;
-    }
-
     /* ---------- Step 2: three-point draggable lab ---------- */
 
     var LW = 460, LH = 460, LPAD = 34, LXMIN = -8, LXMAX = 8, LYMIN = -8, LYMAX = 8;
@@ -886,14 +857,7 @@
     }
 
     function makeRightAngleVertexQuestion(forcedKind) {
-      var pts;
-      if (forcedKind === 'none') {
-        pts = buildNoRightTriangle();
-      } else if (forcedKind) {
-        pts = buildRightTriangleAt(forcedKind);
-      } else {
-        pts = Math.random() < 0.75 ? buildRightTriangleAt(randChoice(VERTEX_KEYS)) : buildNoRightTriangle();
-      }
+      var pts = forcedKind === 'none' ? buildNoRightTriangle() : buildRightTriangleAt(forcedKind);
 
       var A = pts.A, B = pts.B, C = pts.C;
       var vertex = rightAngleVertex(A, B, C);
@@ -907,13 +871,24 @@
       var correctIndex = options.indexOf(correctLabel);
 
       var mAB = slopeFrac(A, B), mBC = slopeFrac(B, C), mCA = slopeFrac(C, A);
-      var explain = '$m_{AB} = ' + fracToLatex(mAB) + ',\\ m_{BC} = ' + fracToLatex(mBC) + ',\\ m_{CA} = ' + fracToLatex(mCA) + '$<br>' +
-        '<strong>' + correctLabel + '</strong>';
+      var slopesLine = '$m_{AB} = ' + (mAB === null ? '\\text{לא מוגדר}' : fracToLatex(mAB)) +
+        ',\\ m_{BC} = ' + (mBC === null ? '\\text{לא מוגדר}' : fracToLatex(mBC)) +
+        ',\\ m_{CA} = ' + (mCA === null ? '\\text{לא מוגדר}' : fracToLatex(mCA)) + '$';
+
+      var productsHTML;
+      if (vertex) {
+        productsHTML = pairProductHTML(vertex, legPairForVertex(vertex, mAB, mBC, mCA), true);
+      } else {
+        productsHTML = ['A', 'B', 'C'].map(function (v) {
+          return pairProductHTML(v, legPairForVertex(v, mAB, mBC, mCA), false);
+        }).join('');
+      }
+
+      var explain = slopesLine + productsHTML + '<strong>' + correctLabel + '</strong>';
 
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A' + pointLabel(A) + '$, $B' + pointLabel(B) + '$, $C' + pointLabel(C) + '$. באיזה קודקוד (אם בכלל) נמצאת הזווית הישרה?',
-        svg: renderTriangleQuestionSVG(A, B, C),
         options: options,
         correctIndex: correctIndex,
         explain: explain
@@ -926,7 +901,7 @@
         makeRightAngleVertexQuestion('B'),
         makeRightAngleVertexQuestion('C'),
         makeRightAngleVertexQuestion('none'),
-        makeRightAngleVertexQuestion(null)
+        makeRightAngleVertexQuestion('none')
       ];
       qs.forEach(function (q, i) { q.id = 'tri-m1-q' + (i + 1); });
       return shuffle(qs);
@@ -965,7 +940,6 @@
       document.getElementById('btnNextQuestion').hidden = true;
 
       var html = '<p class="quiz-instruction">' + q.promptText + '</p>';
-      html += '<div class="quiz-point-svg-wrap">' + q.svg + '</div>';
       html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
         return '<button type="button" class="quiz-option-btn" data-index="' + i + '">' + opt + '</button>';
       }).join('') + '</div>';
