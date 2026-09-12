@@ -218,31 +218,31 @@
 
       <section class="step-panel" id="step-1" data-step="1">
         <h2 class="step-heading">שלב 1: מכירים</h2>
-        <p class="step-intro">תיכון במשולש הוא קטע היוצא מקודקוד ומחבר אותו אל אמצע הצלע שמולו. נלמד למצוא את משוואת התיכון בשלושה שלבים.</p>
+        <p class="step-intro">תיכון במשולש <span class="math-ltr">ABC</span> היוצא מקודקוד <span class="math-ltr">A</span> הוא הקטע <span class="math-ltr">AD</span>, כאשר <span class="math-ltr">D</span> אמצע הצלע שמולו - <span class="math-ltr">BC</span>. נלמד למצוא את משוואת התיכון <span class="math-ltr">AD</span> בשלושה שלבים.</p>
 
         <div class="content-block">
-          <h3>שלב 1: אמצע הצלע הנגדית</h3>
-          <p>כדי למצוא את התיכון היוצא מקודקוד נתון, מוצאים קודם את <strong>אמצע הצלע הנגדית</strong> לאותו קודקוד, לפי נוסחת אמצע קטע:</p>
+          <h3>שלב 1: מציאת שיעורי הנקודה D (אמצע הצלע BC)</h3>
+          <p>כדי למצוא את התיכון היוצא מקודקוד <span class="math-ltr">A</span>, מוצאים קודם את שיעורי הנקודה <span class="math-ltr">D</span> - אמצע הצלע הנגדית <span class="math-ltr">BC</span> - לפי נוסחת אמצע קטע:</p>
           <div class="highlight-block">
             <h4>נוסחת אמצע קטע</h4>
-            <p>$$M=\left(\dfrac{x_1+x_2}{2},\dfrac{y_1+y_2}{2}\right)$$</p>
+            <p>$$D=\left(\dfrac{x_B+x_C}{2},\dfrac{y_B+y_C}{2}\right)$$</p>
           </div>
           <div class="derivation-block" id="step1Example"></div>
         </div>
 
         <div class="content-block">
-          <h3>שלב 2: שיפוע התיכון</h3>
-          <p>התיכון הוא הישר העובר דרך הקודקוד ודרך נקודת האמצע שמצאנו. את שיפועו מחשבים בעזרת נוסחת השיפוע הרגילה, בין הקודקוד לנקודת האמצע:</p>
+          <h3>שלב 2: מציאת שיפוע התיכון AD</h3>
+          <p>התיכון <span class="math-ltr">AD</span> הוא הישר העובר דרך הקודקוד <span class="math-ltr">A</span> ודרך הנקודה <span class="math-ltr">D</span> שמצאנו. את שיפועו מחשבים בעזרת נוסחת השיפוע הרגילה:</p>
           <div class="highlight-block">
             <h4>נוסחת השיפוע</h4>
-            <p>$$m=\dfrac{y_M-y_1}{x_M-x_1}$$</p>
+            <p>$$m_{AD}=\dfrac{y_D-y_A}{x_D-x_A}$$</p>
           </div>
           <div class="derivation-block" id="step2Example"></div>
         </div>
 
         <div class="content-block">
-          <h3>שלב 3: משוואת התיכון המלאה</h3>
-          <p>לאחר שמצאנו את השיפוע, כותבים את משוואת הישר העובר דרך הקודקוד (בעל השיפוע שמצאנו):</p>
+          <h3>שלב 3: מציאת משוואת התיכון AD</h3>
+          <p>לאחר שמצאנו את השיפוע, כותבים את משוואת הישר <span class="math-ltr">AD</span> העובר דרך הקודקוד <span class="math-ltr">A</span> (בעל השיפוע שמצאנו):</p>
           <div class="highlight-block">
             <h4>נוסחה</h4>
             <p>$$y-y_1=m(x-x_1)$$</p>
@@ -253,7 +253,7 @@
 
       <section class="step-panel" id="step-2" data-step="2" hidden>
         <h2 class="step-heading">שלב 2: חוקרים</h2>
-        <p class="step-intro">גררו כל אחד משלושת הקודקודים. אמצע הצלע הנגדית לקודקוד A, שיפוע התיכון ומשוואתו יחושבו ויוצגו באופן חי.</p>
+        <p class="step-intro">גררו כל אחד משלושת הקודקודים. הנקודה <span class="math-ltr">D</span> (אמצע הצלע הנגדית לקודקוד <span class="math-ltr">A</span>), שיפוע התיכון <span class="math-ltr">AD</span> ומשוואתו יחושבו ויוצגו באופן חי.</p>
 
         <div class="lab-block">
           <h3>בנו משולש וחקרו את התיכון היוצא מקודקוד A</h3>
@@ -312,9 +312,9 @@
             <table class="data-table">
               <thead><tr><th>שלב</th><th>מה עושים</th></tr></thead>
               <tbody>
-                <tr><td>1</td><td>מוצאים את אמצע הצלע הנגדית לפי נוסחת אמצע קטע</td></tr>
-                <tr><td>2</td><td>מחשבים את שיפוע התיכון בין הקודקוד לנקודת האמצע</td></tr>
-                <tr><td>3</td><td>כותבים את משוואת התיכון: <span class="math-ltr">y - y₁ = m(x - x₁)</span></td></tr>
+                <tr><td>1</td><td>מוצאים את שיעורי הנקודה <span class="math-ltr">D</span> (אמצע הצלע הנגדית <span class="math-ltr">BC</span>), כך ש-<span class="math-ltr">BD = DC</span></td></tr>
+                <tr><td>2</td><td>מחשבים את שיפוע התיכון <span class="math-ltr">AD</span></td></tr>
+                <tr><td>3</td><td>כותבים את משוואת התיכון <span class="math-ltr">AD</span>: <span class="math-ltr">y - y₁ = m(x - x₁)</span></td></tr>
               </tbody>
             </table>
           </div>
@@ -419,8 +419,18 @@
     function slopeOrNull(P, Q) { var dx = Q.x - P.x; if (dx === 0) return null; return (Q.y - P.y) / dx; }
     function fmt2(n) {
       var r = Math.round(n * 100) / 100;
-      return (Math.abs(r - Math.round(r)) < 1e-9) ? String(Math.round(r)) : r.toFixed(2);
+      if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
+      return String(r.toFixed(2)).replace(/0+$/, '').replace(/\.$/, '');
     }
+    /* D (the midpoint of two integer-coordinate vertices) is always either a
+       whole integer or exactly n+0.5 - never a messier decimal. Show it as a
+       clean fraction like "3/2" in that case, matching how a written solution
+       would present it, rather than "1.5". */
+    function coordPartToStr(v) {
+      if (Number.isInteger(v)) return String(v);
+      return fracToStr(makeFrac(Math.round(v * 2), 2));
+    }
+    function pointToStr(P) { return '(' + coordPartToStr(P.x) + ',' + coordPartToStr(P.y) + ')'; }
 
     /* ---------- SVG rendering helpers ---------- */
 
@@ -454,15 +464,39 @@
     function pointMarkers(mx, my, pts) {
       return pts.map(function (P) { return '<circle cx="' + mx(P.x) + '" cy="' + my(P.y) + '" r="4.5" class="point-marker"/>'; }).join('');
     }
-    function renderMedianSVG(A, B, C, M) {
+    function tickMarkSVG(mx, my, P1, P2, color) {
+      var x1 = mx(P1.x), y1 = my(P1.y), x2 = mx(P2.x), y2 = my(P2.y);
+      var midx = (x1 + x2) / 2, midy = (y1 + y2) / 2;
+      var ang = Math.atan2(y2 - y1, x2 - x1);
+      var perp = ang + Math.PI / 2;
+      var half = 6;
+      var ax = midx + Math.cos(perp) * half, ay = midy + Math.sin(perp) * half;
+      var bx = midx - Math.cos(perp) * half, by = midy - Math.sin(perp) * half;
+      return '<line x1="' + ax + '" y1="' + ay + '" x2="' + bx + '" y2="' + by + '" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round"/>';
+    }
+    function renderMedianSVG(A, B, C, D) {
       var W = 260, H = 260, PAD = 30;
       var sc = makeLocalScale([A, B, C], W, H, PAD);
       var mx = sc.mx, my = sc.my;
+      var centroid = { x: (A.x + B.x + C.x) / 3, y: (A.y + B.y + C.y) / 3 };
       var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
       markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly-fill"/>';
-      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(M.x) + '" y2="' + my(M.y) + '" stroke="' + COLOR_MEDIAN + '" stroke-width="3"/>';
-      markup += '<circle cx="' + mx(M.x) + '" cy="' + my(M.y) + '" r="4" fill="' + COLOR_MEDIAN + '"/>';
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(D.x) + '" y2="' + my(D.y) + '" stroke="' + COLOR_MEDIAN + '" stroke-width="3" stroke-dasharray="6,4"/>';
+      markup += tickMarkSVG(mx, my, B, D, COLOR_MEDIAN);
+      markup += tickMarkSVG(mx, my, D, C, COLOR_MEDIAN);
+      markup += '<circle cx="' + mx(D.x) + '" cy="' + my(D.y) + '" r="4" fill="' + COLOR_MEDIAN + '"/>';
       markup += pointMarkers(mx, my, [A, B, C]);
+      [['A', A], ['B', B], ['C', C]].forEach(function (pair) {
+        var key = pair[0], P = pair[1];
+        var dx = P.x - centroid.x, dy = P.y - centroid.y;
+        var len = Math.sqrt(dx * dx + dy * dy) || 1;
+        var lx = P.x + (dx / len) * 0.7, ly = P.y + (dy / len) * 0.7;
+        markup += '<text x="' + mx(lx) + '" y="' + my(ly) + '" class="vertex-label-sm" text-anchor="middle">' + key + '</text>';
+      });
+      var dirAD = { x: D.x - A.x, y: D.y - A.y };
+      var lenAD = Math.sqrt(dirAD.x * dirAD.x + dirAD.y * dirAD.y) || 1;
+      var dLabel = { x: D.x + (dirAD.x / lenAD) * 0.8, y: D.y + (dirAD.y / lenAD) * 0.8 };
+      markup += '<text x="' + mx(dLabel.x) + '" y="' + my(dLabel.y) + '" class="vertex-label-sm" text-anchor="middle">D</text>';
       markup += '</svg>';
       return markup;
     }
@@ -473,25 +507,26 @@
 
     (function buildStep1Content() {
       var A = MAIN_A, B = MAIN_B, C = MAIN_C;
-      var M = midpoint(B, C);
-      var mMedian = makeFrac((M.y - A.y) * 2, (M.x - A.x) * 2);
+      var D = midpoint(B, C);
+      var mMedian = makeFrac((D.y - A.y) * 2, (D.x - A.x) * 2);
 
       var s1Html = '<p class="derivation-line">$A(' + A.x + ',' + A.y + '),\\ B(' + B.x + ',' + B.y + '),\\ C(' + C.x + ',' + C.y + ')$</p>';
-      s1Html += '<p class="dist-line">מחפשים את התיכון היוצא מקודקוד $A$, לכן מוצאים את אמצע הצלע הנגדית לו - $BC$:</p>';
-      s1Html += '<p class="dist-line">$$M=\\left(\\dfrac{' + B.x + '+' + C.x + '}{2},\\dfrac{' + B.y + '+' + C.y + '}{2}\\right)=(' + M.x + ',' + fracToLatex(makeFrac(M.y * 2, 2)) + ')$$</p>';
+      s1Html += '<p class="dist-line">מחפשים את התיכון היוצא מקודקוד $A$, לכן מוצאים את שיעורי הנקודה $D$ - אמצע הצלע הנגדית $BC$:</p>';
+      s1Html += '<p class="dist-line">$$D=\\left(\\dfrac{' + B.x + '+' + C.x + '}{2},\\dfrac{' + B.y + '+' + C.y + '}{2}\\right)=(' + D.x + ',' + fracToLatex(makeFrac(D.y * 2, 2)) + ')$$</p>';
+      s1Html += '<p class="dist-line">מכיוון ש-$D$ אמצע $BC$, מתקיים <strong>$BD=DC$</strong> (מסומן בסימני שוויון על הבסיס).</p>';
       document.getElementById('step1Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, M) + '</div><div class="example-calc-wrap">' + s1Html + '</div></div>';
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s1Html + '</div></div>';
 
-      var s2Html = '<p class="dist-line">התיכון עובר דרך $A$ ודרך $M$, לכן שיפועו:</p>';
-      s2Html += '<p class="dist-line">$$m=\\dfrac{y_M-y_A}{x_M-x_A}=\\dfrac{' + M.y + '-' + A.y + '}{' + M.x + '-' + A.x + '}=' + fracToLatex(mMedian) + '$$</p>';
+      var s2Html = '<p class="dist-line">התיכון $AD$ עובר דרך $A$ ודרך $D$, לכן שיפועו:</p>';
+      s2Html += '<p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + D.y + '-' + A.y + '}{' + D.x + '-' + A.x + '}=' + fracToLatex(mMedian) + '$$</p>';
       document.getElementById('step2Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, M) + '</div><div class="example-calc-wrap">' + s2Html + '</div></div>';
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s2Html + '</div></div>';
 
-      var s3Html = '<p class="dist-line">משתמשים בקודקוד $A$ ובשיפוע שמצאנו כדי לכתוב את משוואת התיכון:</p>';
+      var s3Html = '<p class="dist-line">משתמשים בקודקוד $A$ ובשיפוע שמצאנו כדי לכתוב את משוואת התיכון $AD$:</p>';
       s3Html += '<p class="dist-line">$$y-' + A.y + '=' + fracToLatex(mMedian) + '(x-' + A.x + ')$$</p>';
       s3Html += '<p class="dist-line"><strong>$$y=' + fracToLatex(mMedian) + 'x+' + A.y + '$$</strong></p>';
       document.getElementById('step3Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, M) + '</div><div class="example-calc-wrap">' + s3Html + '</div></div>';
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s3Html + '</div></div>';
 
       renderMathInElement(document.getElementById('step-1'), katexOptions);
     })();
@@ -526,14 +561,14 @@
       }
       readout.classList.add('status-success');
 
-      var M = midpoint(B, C);
-      var mMedian = slopeOrNull(A, M);
-      var html = '<p class="dist-line"><strong>אמצע BC:</strong> $M(' + fmt2(M.x) + ',' + fmt2(M.y) + ')$</p>';
-      html += '<p class="dist-line"><strong>שיפוע התיכון:</strong> ' + (mMedian === null ? 'לא מוגדר (אנכי)' : '$' + fmt2(mMedian) + '$') + '</p>';
+      var D = midpoint(B, C);
+      var mMedian = slopeOrNull(A, D);
+      var html = '<p class="dist-line"><strong>D (אמצע BC):</strong> $D(' + fmt2(D.x) + ',' + fmt2(D.y) + ')$, כך ש-' + ltrToken('BD = DC') + '</p>';
+      html += '<p class="dist-line"><strong>שיפוע התיכון AD:</strong> ' + (mMedian === null ? 'לא מוגדר (אנכי)' : '$' + fmt2(mMedian) + '$') + '</p>';
       if (mMedian !== null) {
-        html += '<p class="dist-line"><strong>משוואת התיכון:</strong> $y=' + fmt2(mMedian) + 'x+' + fmt2(A.y - mMedian * A.x) + '$</p>';
+        html += '<p class="dist-line"><strong>משוואת התיכון AD:</strong> $y=' + fmt2(mMedian) + 'x+' + fmt2(A.y - mMedian * A.x) + '$</p>';
       } else {
-        html += '<p class="dist-line"><strong>משוואת התיכון:</strong> $x=' + fmt2(A.x) + '$</p>';
+        html += '<p class="dist-line"><strong>משוואת התיכון AD:</strong> $x=' + fmt2(A.x) + '$</p>';
       }
       readout.innerHTML = html;
       renderMathInElement(readout, katexOptions);
@@ -564,14 +599,25 @@
       document.getElementById('edgeCA').setAttribute('stroke', '#94a3b8');
 
       if (!isDegenerate(A, B, C)) {
-        var M = midpoint(B, C);
+        var D = midpoint(B, C);
         document.getElementById('medianLine').setAttribute('x1', lmx(A.x));
         document.getElementById('medianLine').setAttribute('y1', lmy(A.y));
-        document.getElementById('medianLine').setAttribute('x2', lmx(M.x));
-        document.getElementById('medianLine').setAttribute('y2', lmy(M.y));
+        document.getElementById('medianLine').setAttribute('x2', lmx(D.x));
+        document.getElementById('medianLine').setAttribute('y2', lmy(D.y));
         document.getElementById('medianLine').setAttribute('stroke', COLOR_MEDIAN);
+        document.getElementById('markerD').setAttribute('cx', lmx(D.x));
+        document.getElementById('markerD').setAttribute('cy', lmy(D.y));
+        document.getElementById('markerD').setAttribute('fill', COLOR_MEDIAN);
+        document.getElementById('labelD').setAttribute('x', lmx(D.x) + 13);
+        document.getElementById('labelD').setAttribute('y', lmy(D.y) - 10);
+        document.getElementById('labelD').textContent = 'D';
+        document.getElementById('tickMarksGroup').innerHTML =
+          tickMarkSVG(lmx, lmy, B, D, COLOR_MEDIAN) + tickMarkSVG(lmx, lmy, D, C, COLOR_MEDIAN);
       } else {
         document.getElementById('medianLine').setAttribute('stroke', 'none');
+        document.getElementById('markerD').setAttribute('fill', 'none');
+        document.getElementById('labelD').textContent = '';
+        document.getElementById('tickMarksGroup').innerHTML = '';
       }
 
       updateLabReadout();
@@ -583,7 +629,10 @@
       markup += '<line id="edgeAB" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
       markup += '<line id="edgeBC" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
       markup += '<line id="edgeCA" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
-      markup += '<line id="medianLine" x1="0" y1="0" x2="0" y2="0" stroke-width="3"/>';
+      markup += '<line id="medianLine" x1="0" y1="0" x2="0" y2="0" stroke-width="3" stroke-dasharray="6,4"/>';
+      markup += '<g id="tickMarksGroup"></g>';
+      markup += '<circle id="markerD" cx="0" cy="0" r="4"/>';
+      markup += '<text id="labelD" class="vertex-label">D</text>';
       markup += '<text id="labelA" class="vertex-label">A</text>';
       markup += '<text id="labelB" class="vertex-label">B</text>';
       markup += '<text id="labelC" class="vertex-label">C</text>';
@@ -656,36 +705,36 @@
       return out.slice(0, 3);
     }
 
-    function sameParityInts(min, max, parity) {
-      var candidates = [];
-      for (var v = min; v <= max; v++) if (((v % 2) + 2) % 2 === parity) candidates.push(v);
-      return [randChoice(candidates), randChoice(candidates)];
-    }
-
     function buildMedianTriangle() {
-      var parityX = randInt(0, 1), parityY = randInt(0, 1);
-      var bx = sameParityInts(-5, 5, parityX), by = sameParityInts(-5, 5, parityY);
-      var B = { x: bx[0], y: by[0] }, C = { x: bx[1], y: by[1] };
-      var A, attempts = 0;
-      do { A = { x: randInt(-5, 5), y: randInt(-5, 5) }; attempts++; } while (isDegenerate(A, B, C) && attempts < 60);
+      /* B, C are any integer grid points - their midpoint D is then always
+         guaranteed by simple arithmetic to be either a whole integer or
+         exactly n+0.5 (never a messier decimal), matching standard classroom
+         notation without needing any extra parity constraint. */
+      var B, C, A, attempts = 0;
+      do {
+        B = { x: randInt(-5, 5), y: randInt(-5, 5) };
+        C = { x: randInt(-5, 5), y: randInt(-5, 5) };
+        A = { x: randInt(-5, 5), y: randInt(-5, 5) };
+        attempts++;
+      } while (isDegenerate(A, B, C) && attempts < 60);
       return { A: A, B: B, C: C };
     }
 
     function makeMidpointQuestion() {
       var t = buildMedianTriangle();
-      var M = midpoint(t.B, t.C);
-      var correct = '(' + M.x + ',' + M.y + ')';
+      var D = midpoint(t.B, t.C);
+      var correct = pointToStr(D);
       var wrongs = buildDistractorSet(correct, [
-        '(' + (M.x + 1) + ',' + M.y + ')',
-        '(' + M.x + ',' + (M.y + 1) + ')',
-        '(' + (t.B.x + t.C.x) + ',' + (t.B.y + t.C.y) + ')',
-        '(' + t.B.x + ',' + t.B.y + ')'
+        pointToStr({ x: D.x + 1, y: D.y }),
+        pointToStr({ x: D.x, y: D.y + 1 }),
+        pointToStr({ x: t.B.x + t.C.x, y: t.B.y + t.C.y }),
+        pointToStr(t.B)
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">$$M=\\left(\\dfrac{' + t.B.x + '+' + t.C.x + '}{2},\\dfrac{' + t.B.y + '+' + t.C.y + '}{2}\\right)=' + correct + '$$</p>';
+      var explain = '<p class="dist-line">$$D=\\left(\\dfrac{' + t.B.x + '+' + t.C.x + '}{2},\\dfrac{' + t.B.y + '+' + t.C.y + '}{2}\\right)=' + correct + '$$</p><p class="dist-line">' + ltrToken('BD = DC') + '</p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהי אמצע הצלע שממול לקודקוד ' + ltrToken('A') + '?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהם שיעורי הנקודה ' + ltrToken('D') + ' - אמצע הצלע ' + ltrToken('BC') + ' שממול לקודקוד ' + ltrToken('A') + '?',
         options: options,
         correctIndex: options.indexOf(correct),
         explain: explain
@@ -693,24 +742,24 @@
     }
 
     function makeSlopeQuestion() {
-      var t, M, mMedian, attempts = 0;
+      var t, D, mMedian, attempts = 0;
       do {
         t = buildMedianTriangle();
-        M = midpoint(t.B, t.C);
-        mMedian = slopeOrNull(t.A, M);
+        D = midpoint(t.B, t.C);
+        mMedian = slopeOrNull(t.A, D);
         attempts++;
       } while (mMedian === null && attempts < 30);
-      var correct = fracToStr(makeFrac((M.y - t.A.y) * 2, (M.x - t.A.x) * 2));
+      var correct = fracToStr(makeFrac((D.y - t.A.y) * 2, (D.x - t.A.x) * 2));
       var wrongs = buildDistractorSet(correct, [
         fracToStr(makeFrac((t.B.y - t.A.y), (t.B.x - t.A.x) || 1)),
         fracToStr(makeFrac((t.C.y - t.A.y), (t.C.x - t.A.x) || 1)),
-        fracToStr(makeFrac(-(M.y - t.A.y) * 2, (M.x - t.A.x) * 2))
+        fracToStr(makeFrac(-(D.y - t.A.y) * 2, (D.x - t.A.x) * 2))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">אמצע $BC$: $M(' + M.x + ',' + M.y + ')$</p><p class="dist-line">$$m=\\dfrac{y_M-y_A}{x_M-x_A}=\\dfrac{' + M.y + '-' + t.A.y + '}{' + M.x + '-' + t.A.x + '}=' + correct + '$$</p>';
+      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$</p><p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + coordPartToStr(D.y) + '-' + t.A.y + '}{' + coordPartToStr(D.x) + '-' + t.A.x + '}=' + correct + '$$</p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שיפוע התיכון היוצא מקודקוד ' + ltrToken('A') + '?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שיפוע התיכון ' + ltrToken('AD') + ' היוצא מקודקוד ' + ltrToken('A') + '?',
         options: options,
         correctIndex: options.indexOf(correct),
         explain: explain
@@ -718,14 +767,14 @@
     }
 
     function makeIntersectionQuestion() {
-      var t, M, mMedian, attempts = 0;
+      var t, D, mMedian, attempts = 0;
       do {
         t = buildMedianTriangle();
-        M = midpoint(t.B, t.C);
-        mMedian = slopeOrNull(t.A, M);
+        D = midpoint(t.B, t.C);
+        mMedian = slopeOrNull(t.A, D);
         attempts++;
       } while (mMedian === null && attempts < 30);
-      var mFrac = makeFrac((M.y - t.A.y) * 2, (M.x - t.A.x) * 2);
+      var mFrac = makeFrac((D.y - t.A.y) * 2, (D.x - t.A.x) * 2);
       var n = t.A.y - (mFrac.num / mFrac.den) * t.A.x;
       var correct = fracToStr(makeFrac(Math.round(n * mFrac.den), mFrac.den));
       var wrongs = buildDistractorSet(correct, [
@@ -734,10 +783,10 @@
         fracToStr(makeFrac(Math.round(n * mFrac.den) + mFrac.den, mFrac.den))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">אמצע $BC$: $M(' + M.x + ',' + M.y + ')$, שיפוע התיכון $m=' + fracToLatex(mFrac) + '$</p><p class="dist-line">$$y-' + t.A.y + '=' + fracToLatex(mFrac) + '(x-' + t.A.x + ') \\;\\Rightarrow\\; y=' + fracToLatex(mFrac) + 'x+' + correct + '$$</p>';
+      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$, שיפוע התיכון $m_{AD}=' + fracToLatex(mFrac) + '$</p><p class="dist-line">$$y-' + t.A.y + '=' + fracToLatex(mFrac) + '(x-' + t.A.x + ') \\;\\Rightarrow\\; y=' + fracToLatex(mFrac) + 'x+' + correct + '$$</p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. במשוואת התיכון היוצא מקודקוד ' + ltrToken('A') + ' בצורה $y=mx+n$, מהו $n$?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. במשוואת התיכון ' + ltrToken('AD') + ' היוצא מקודקוד ' + ltrToken('A') + ' בצורה $y=mx+n$, מהו $n$?',
         options: options,
         correctIndex: options.indexOf(correct),
         explain: explain
