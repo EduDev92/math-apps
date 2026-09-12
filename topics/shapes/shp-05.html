@@ -400,10 +400,6 @@
       var r = Math.round(n * 2) / 2;
       return (r % 1 === 0) ? String(r) : r.toFixed(1);
     }
-    function fmt2(n) {
-      var r = Math.round(n * 100) / 100;
-      return (Math.abs(r - Math.round(r)) < 1e-9) ? String(Math.round(r)) : r.toFixed(2);
-    }
 
     /* ---------- Core geometry ---------- */
 
@@ -612,10 +608,17 @@
       }
       readout.classList.add('status-success');
 
-      var perimeter = dist(A, B) + dist(B, C) + dist(C, A);
+      /* A, B, C are always integers (drag-snapped to the grid), so every
+         squared distance is an exact integer - show each side length in
+         exact radical form (never a decimal approximation) via the same
+         sqrtToLatex machinery as the Step-1 worked example, and the area
+         via fmtNum (always exact: an integer or a clean half, never a
+         decimal, since a shoelace-formula area of integer coordinates is
+         always a multiple of 0.5). */
+      var dAB = sqDist(A, B), dBC = sqDist(B, C), dCA = sqDist(C, A);
       var area = shoelaceArea(A, B, C);
-      var html = '<p class="dist-line"><strong>היקף:</strong> $\\approx ' + fmt2(perimeter) + '$</p>';
-      html += '<p class="dist-line"><strong>שטח:</strong> $\\approx ' + fmt2(area) + '$</p>';
+      var html = '<p class="dist-line"><strong>היקף:</strong> $$P=' + sqrtToLatex(dAB) + '+' + sqrtToLatex(dBC) + '+' + sqrtToLatex(dCA) + '$$</p>';
+      html += '<p class="dist-line"><strong>שטח:</strong> $$S=' + fmtNum(area) + '$$</p>';
 
       var ra = findRightAngle(A, B, C);
       if (ra) {

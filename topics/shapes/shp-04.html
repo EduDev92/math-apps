@@ -419,6 +419,35 @@
       return sign + '\\dfrac{' + Math.abs(a.num) + '}{' + a.den + '}';
     }
     function fracToStr(a) { return a.den === 1 ? String(a.num) : (a.num + '/' + a.den); }
+    function fracAdd(a, b) { return makeFrac(a.num * b.den + b.num * a.den, a.den * b.den); }
+    function fracSub(a, b) { return makeFrac(a.num * b.den - b.num * a.den, a.den * b.den); }
+    function fracMul(a, b) { return makeFrac(a.num * b.num, a.den * b.den); }
+
+    /* ---------- Signed-term LaTeX helpers ----------
+       Concatenating a hardcoded template operator directly against a value that
+       might itself be negative produces a glued "+-3" or "--3" artifact. These
+       helpers always compute the single correctly-signed term instead. */
+    function fracMagLatex(f) {
+      var mag = Math.abs(f.num);
+      return f.den === 1 ? String(mag) : ('\\dfrac{' + mag + '}{' + f.den + '}');
+    }
+    function PLUS(f) {
+      /* "+f" or "-f" as a trailing additive term; omitted entirely when f=0. */
+      if (f.num === 0) return '';
+      return (f.num < 0 ? '-' : '+') + fracMagLatex(f);
+    }
+    function MINUS(f) {
+      /* "-f" (or "-(-f)" when f is itself negative) for a raw, not-yet-simplified
+         substitution step like "y - y_1" - always shown, even for f=0. */
+      return f.num < 0 ? ('-\\left(-' + fracMagLatex(f) + '\\right)') : ('-' + fracMagLatex(f));
+    }
+    function coefXLatex(f) {
+      /* The "mx" term - collapses the coefficient to a bare "x"/"-x" when
+         m=1/-1 instead of the forbidden "1x"/"-1x". */
+      if (f.den === 1 && f.num === 1) return 'x';
+      if (f.den === 1 && f.num === -1) return '-x';
+      return fracToLatex(f) + 'x';
+    }
 
     /* ---------- Core geometry ---------- */
 
@@ -428,12 +457,6 @@
       if (sqDist(A, B) === 0 || sqDist(B, C) === 0 || sqDist(C, A) === 0) return true;
       var cross = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
       return Math.abs(cross) < 1e-9;
-    }
-    function slopeOrNull(P, Q) { var dx = Q.x - P.x; if (dx === 0) return null; return (Q.y - P.y) / dx; }
-    function perpSlopeOrNull(m) { if (m === null) return 0; if (m === 0) return null; return -1 / m; }
-    function fmt2(n) {
-      var r = Math.round(n * 100) / 100;
-      return (Math.abs(r - Math.round(r)) < 1e-9) ? String(Math.round(r)) : r.toFixed(2);
     }
 
     /* ---------- SVG rendering helpers ---------- */
@@ -520,9 +543,10 @@
       document.getElementById('step2Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s2Html + '</div></div>';
 
+      var nAlt = fracSub(intFrac(A.y), fracMul(mAlt, intFrac(A.x)));
       var s3Html = '<p class="dist-line">משתמשים בקודקוד $A$ ובשיפוע הגובה כדי לכתוב את משוואתו:</p>';
-      s3Html += '<p class="dist-line">$$y-' + A.y + '=' + fracToLatex(mAlt) + '(x-' + A.x + ')$$</p>';
-      s3Html += '<p class="dist-line"><strong>$$y=' + fracToLatex(mAlt) + 'x+' + A.y + '$$</strong></p>';
+      s3Html += '<p class="dist-line">$$y' + MINUS(intFrac(A.y)) + '=' + fracToLatex(mAlt) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)$$</p>';
+      s3Html += '<p class="dist-line"><strong>$$y=' + coefXLatex(mAlt) + PLUS(nAlt) + '$$</strong></p>';
       document.getElementById('step3Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s3Html + '</div></div>';
 
@@ -579,18 +603,32 @@
       }
       readout.classList.add('status-success');
 
-      var mBC = slopeOrNull(B, C);
-      var mAlt = perpSlopeOrNull(mBC);
-      var html = '<p class="dist-line"><strong>שיפוע הבסיס BC:</strong> ' + (mBC === null ? 'לא מוגדר (אנכי)' : '$' + fmt2(mBC) + '$') + '</p>';
-      html += '<p class="dist-line"><strong>שיפוע הגובה מ-A:</strong> ' + (mAlt === null ? 'לא מוגדר (אנכי)' : '$' + fmt2(mAlt) + '$') + '</p>';
-      if (mAlt === null) {
-        html += '<p class="dist-line"><strong>משוואת הגובה:</strong> $x=' + fmt2(A.x) + '$</p>';
+      /* A, B, C are always integers (drag-snapped to the grid), so every
+         quantity derived from them is an exact rational - compute and show
+         it via the same exact-fraction machinery as the Step-1 worked
+         example, never a decimal approximation. */
+      var html = '<p class="dist-line"><strong>שלב 1 - שיפוע הבסיס BC:</strong></p>';
+      if (B.x === C.x) {
+        html += '<p class="dist-line">$BC$ מקבילה לציר ה-y (שיפוע לא מוגדר).</p>';
+        html += '<p class="dist-line"><strong>שלב 2-3 - הגובה מ-A:</strong></p>';
+        html += '<p class="dist-line"><strong>$$y=' + A.y + '$$</strong></p>';
         html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: הבסיס אנכי, לכן הגובה אופקי!</span></div>';
-      } else if (mAlt === 0) {
-        html += '<p class="dist-line"><strong>משוואת הגובה:</strong> $y=' + fmt2(A.y) + '$</p>';
-        html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: הבסיס אופקי, לכן הגובה אנכי!</span></div>';
       } else {
-        html += '<p class="dist-line"><strong>משוואת הגובה:</strong> $y=' + fmt2(mAlt) + 'x+' + fmt2(A.y - mAlt * A.x) + '$</p>';
+        var mBC = makeFrac(C.y - B.y, C.x - B.x);
+        html += '<p class="dist-line">$$m_{BC}=\\dfrac{y_C-y_B}{x_C-x_B}=\\dfrac{' + C.y + MINUS(intFrac(B.y)) + '}{' + C.x + MINUS(intFrac(B.x)) + '}=' + fracToLatex(mBC) + '$$</p>';
+        if (mBC.num === 0) {
+          html += '<p class="dist-line"><strong>שלב 2-3 - הגובה מ-A:</strong> $BC$ אופקי, לכן הגובה אנכי:</p>';
+          html += '<p class="dist-line"><strong>$$x=' + A.x + '$$</strong></p>';
+          html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: הבסיס אופקי, לכן הגובה אנכי!</span></div>';
+        } else {
+          var mAlt = fracNeg(fracDiv(intFrac(1), mBC));
+          html += '<p class="dist-line"><strong>שלב 2 - שיפוע הגובה (תנאי הניצבות):</strong></p>';
+          html += '<p class="dist-line">$$m_{\\text{גובה}}=-\\dfrac{1}{m_{BC}}=' + fracToLatex(mAlt) + '$$</p>';
+          var nAlt = fracSub(intFrac(A.y), fracMul(mAlt, intFrac(A.x)));
+          html += '<p class="dist-line"><strong>שלב 3 - משוואת הגובה:</strong></p>';
+          html += '<p class="dist-line">$$y' + MINUS(intFrac(A.y)) + '=' + fracToLatex(mAlt) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)$$</p>';
+          html += '<p class="dist-line"><strong>$$y=' + coefXLatex(mAlt) + PLUS(nAlt) + '$$</strong></p>';
+        }
       }
       readout.innerHTML = html;
       renderMathInElement(readout, katexOptions);
@@ -751,16 +789,15 @@
 
     function makeAltitudeIntersectionQuestion() {
       var t = buildAltitudeTriangle();
-      var mNum = t.mAlt.num / t.mAlt.den;
-      var n = t.A.y - mNum * t.A.x;
-      var correct = fracToStr(makeFrac(Math.round(n * t.mAlt.den), t.mAlt.den));
+      var nFrac = fracSub(intFrac(t.A.y), fracMul(t.mAlt, intFrac(t.A.x)));
+      var correct = fracToStr(nFrac);
       var wrongs = buildDistractorSet(correct, [
         String(t.A.y),
-        String(-parseFloat(correct)),
-        fracToStr(makeFrac(Math.round(n * t.mAlt.den) + t.mAlt.den, t.mAlt.den))
+        fracToStr(fracNeg(nFrac)),
+        fracToStr(fracAdd(nFrac, intFrac(1)))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">שיפוע הגובה: $m=' + fracToLatex(t.mAlt) + '$</p><p class="dist-line">$$y-' + t.A.y + '=' + fracToLatex(t.mAlt) + '(x-' + t.A.x + ') \\;\\Rightarrow\\; y=' + fracToLatex(t.mAlt) + 'x+' + correct + '$$</p>';
+      var explain = '<p class="dist-line">שיפוע הגובה: $m=' + fracToLatex(t.mAlt) + '$</p><p class="dist-line">$$y' + MINUS(intFrac(t.A.y)) + '=' + fracToLatex(t.mAlt) + '\\left(x' + MINUS(intFrac(t.A.x)) + '\\right) \\;\\Rightarrow\\; y=' + coefXLatex(t.mAlt) + PLUS(nFrac) + '$$</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. במשוואת הגובה היוצא מקודקוד ' + ltrToken('A') + ' בצורה $y=mx+n$, מהו $n$?',

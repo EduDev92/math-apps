@@ -405,6 +405,42 @@
       return sign + '\\dfrac{' + Math.abs(a.num) + '}{' + a.den + '}';
     }
     function fracToStr(a) { return a.den === 1 ? String(a.num) : (a.num + '/' + a.den); }
+    function intFrac(n) { return { num: n, den: 1 }; }
+    function fracNeg(a) { return { num: -a.num, den: a.den }; }
+    function fracAdd(a, b) { return makeFrac(a.num * b.den + b.num * a.den, a.den * b.den); }
+    function fracSub(a, b) { return makeFrac(a.num * b.den - b.num * a.den, a.den * b.den); }
+    function fracMul(a, b) { return makeFrac(a.num * b.num, a.den * b.den); }
+    function fracDiv(a, b) { return makeFrac(a.num * b.den, a.den * b.num); }
+
+    /* ---------- Signed-term LaTeX helpers ----------
+       Concatenating a hardcoded template operator directly against a value that
+       might itself be negative produces a glued "+-3" or "--3" artifact (a real
+       bug found across every equation-building template in this file). These
+       helpers always compute the single correctly-signed term instead. */
+    function fracMagLatex(f) {
+      var mag = Math.abs(f.num);
+      return f.den === 1 ? String(mag) : ('\\dfrac{' + mag + '}{' + f.den + '}');
+    }
+    function PLUS(f) {
+      /* "+f" or "-f" as a trailing additive term; omitted entirely when f=0,
+         since a final simplified equation shouldn't show a "+0". */
+      if (f.num === 0) return '';
+      return (f.num < 0 ? '-' : '+') + fracMagLatex(f);
+    }
+    function MINUS(f) {
+      /* "-f" (or "-(-f)" when f is itself negative, to avoid a glued "--")
+         for a raw, not-yet-simplified substitution step like "y - y_1" -
+         always shown, even for f=0, matching how a substitution step is
+         normally written before it gets simplified away. */
+      return f.num < 0 ? ('-\\left(-' + fracMagLatex(f) + '\\right)') : ('-' + fracMagLatex(f));
+    }
+    function coefXLatex(f) {
+      /* The "mx" term - collapses the coefficient to a bare "x"/"-x" when
+         m=1/-1 instead of the forbidden "1x"/"-1x". */
+      if (f.den === 1 && f.num === 1) return 'x';
+      if (f.den === 1 && f.num === -1) return '-x';
+      return fracToLatex(f) + 'x';
+    }
 
     /* ---------- Core geometry ---------- */
 
@@ -417,11 +453,6 @@
     }
     function midpoint(P, Q) { return { x: (P.x + Q.x) / 2, y: (P.y + Q.y) / 2 }; }
     function slopeOrNull(P, Q) { var dx = Q.x - P.x; if (dx === 0) return null; return (Q.y - P.y) / dx; }
-    function fmt2(n) {
-      var r = Math.round(n * 100) / 100;
-      if (Math.abs(r - Math.round(r)) < 1e-9) return String(Math.round(r));
-      return String(r.toFixed(2)).replace(/0+$/, '').replace(/\.$/, '');
-    }
     /* D (the midpoint of two integer-coordinate vertices) is always either a
        whole integer or exactly n+0.5 - never a messier decimal. Show it as a
        clean fraction like "3/2" in that case, matching how a written solution
@@ -431,6 +462,9 @@
       return fracToStr(makeFrac(Math.round(v * 2), 2));
     }
     function pointToStr(P) { return '(' + coordPartToStr(P.x) + ',' + coordPartToStr(P.y) + ')'; }
+    function coordPartFrac(v) { return Number.isInteger(v) ? intFrac(v) : makeFrac(Math.round(v * 2), 2); }
+    function coordPartToLatex(v) { return fracToLatex(coordPartFrac(v)); }
+    function pointToLatex(P) { return '\\left(' + coordPartToLatex(P.x) + ',' + coordPartToLatex(P.y) + '\\right)'; }
 
     /* ---------- SVG rendering helpers ---------- */
 
@@ -508,23 +542,25 @@
     (function buildStep1Content() {
       var A = MAIN_A, B = MAIN_B, C = MAIN_C;
       var D = midpoint(B, C);
-      var mMedian = makeFrac((D.y - A.y) * 2, (D.x - A.x) * 2);
+      var Dx = makeFrac(B.x + C.x, 2), Dy = makeFrac(B.y + C.y, 2);
+      var mMedian = fracDiv(fracSub(Dy, intFrac(A.y)), fracSub(Dx, intFrac(A.x)));
 
       var s1Html = '<p class="derivation-line">$A(' + A.x + ',' + A.y + '),\\ B(' + B.x + ',' + B.y + '),\\ C(' + C.x + ',' + C.y + ')$</p>';
       s1Html += '<p class="dist-line">מחפשים את התיכון היוצא מקודקוד $A$, לכן מוצאים את שיעורי הנקודה $D$ - אמצע הצלע הנגדית $BC$:</p>';
-      s1Html += '<p class="dist-line">$$D=\\left(\\dfrac{' + B.x + '+' + C.x + '}{2},\\dfrac{' + B.y + '+' + C.y + '}{2}\\right)=(' + D.x + ',' + fracToLatex(makeFrac(D.y * 2, 2)) + ')$$</p>';
+      s1Html += '<p class="dist-line">$$D=\\left(\\dfrac{' + B.x + PLUS(intFrac(C.x)) + '}{2},\\dfrac{' + B.y + PLUS(intFrac(C.y)) + '}{2}\\right)=\\left(' + fracToLatex(Dx) + ',' + fracToLatex(Dy) + '\\right)$$</p>';
       s1Html += '<p class="dist-line">מכיוון ש-$D$ אמצע $BC$, מתקיים <strong>$BD=DC$</strong> (מסומן בסימני שוויון על הבסיס).</p>';
       document.getElementById('step1Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s1Html + '</div></div>';
 
       var s2Html = '<p class="dist-line">התיכון $AD$ עובר דרך $A$ ודרך $D$, לכן שיפועו:</p>';
-      s2Html += '<p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + D.y + '-' + A.y + '}{' + D.x + '-' + A.x + '}=' + fracToLatex(mMedian) + '$$</p>';
+      s2Html += '<p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + fracToLatex(Dy) + MINUS(intFrac(A.y)) + '}{' + fracToLatex(Dx) + MINUS(intFrac(A.x)) + '}=' + fracToLatex(mMedian) + '$$</p>';
       document.getElementById('step2Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s2Html + '</div></div>';
 
+      var nMedian = fracSub(intFrac(A.y), fracMul(mMedian, intFrac(A.x)));
       var s3Html = '<p class="dist-line">משתמשים בקודקוד $A$ ובשיפוע שמצאנו כדי לכתוב את משוואת התיכון $AD$:</p>';
-      s3Html += '<p class="dist-line">$$y-' + A.y + '=' + fracToLatex(mMedian) + '(x-' + A.x + ')$$</p>';
-      s3Html += '<p class="dist-line"><strong>$$y=' + fracToLatex(mMedian) + 'x+' + A.y + '$$</strong></p>';
+      s3Html += '<p class="dist-line">$$y' + MINUS(intFrac(A.y)) + '=' + fracToLatex(mMedian) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)$$</p>';
+      s3Html += '<p class="dist-line"><strong>$$y=' + coefXLatex(mMedian) + PLUS(nMedian) + '$$</strong></p>';
       document.getElementById('step3Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s3Html + '</div></div>';
 
@@ -561,14 +597,28 @@
       }
       readout.classList.add('status-success');
 
-      var D = midpoint(B, C);
-      var mMedian = slopeOrNull(A, D);
-      var html = '<p class="dist-line"><strong>D (אמצע BC):</strong> $D(' + fmt2(D.x) + ',' + fmt2(D.y) + ')$, כך ש-' + ltrToken('BD = DC') + '</p>';
-      html += '<p class="dist-line"><strong>שיפוע התיכון AD:</strong> ' + (mMedian === null ? 'לא מוגדר (אנכי)' : '$' + fmt2(mMedian) + '$') + '</p>';
-      if (mMedian !== null) {
-        html += '<p class="dist-line"><strong>משוואת התיכון AD:</strong> $y=' + fmt2(mMedian) + 'x+' + fmt2(A.y - mMedian * A.x) + '$</p>';
+      /* B, C, A are always integers (drag-snapped to the grid), so D and every
+         value derived from it are exact rationals - compute and display them
+         via the same exact-fraction machinery as the Step-1 worked example,
+         never a decimal approximation, and never a glued "+-"/"1x" artifact. */
+      var Dx = makeFrac(B.x + C.x, 2), Dy = makeFrac(B.y + C.y, 2);
+      var html = '<p class="dist-line"><strong>שלב 1 - הנקודה D:</strong></p>';
+      html += '<p class="dist-line">$$D=\\left(\\dfrac{' + B.x + PLUS(intFrac(C.x)) + '}{2},\\dfrac{' + B.y + PLUS(intFrac(C.y)) + '}{2}\\right)=\\left(' + fracToLatex(Dx) + ',' + fracToLatex(Dy) + '\\right)$$</p>';
+      html += '<p class="dist-line">' + ltrToken('BD = DC') + '</p>';
+
+      var dxF = fracSub(Dx, intFrac(A.x));
+      if (dxF.num === 0) {
+        html += '<p class="dist-line"><strong>שלב 2-3:</strong> $x_A=x_D$, לכן התיכון ' + ltrToken('AD') + ' אנכי:</p>';
+        html += '<p class="dist-line"><strong>$$x=' + A.x + '$$</strong></p>';
       } else {
-        html += '<p class="dist-line"><strong>משוואת התיכון AD:</strong> $x=' + fmt2(A.x) + '$</p>';
+        var dyF = fracSub(Dy, intFrac(A.y));
+        var m = fracDiv(dyF, dxF);
+        html += '<p class="dist-line"><strong>שלב 2 - שיפוע AD:</strong></p>';
+        html += '<p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + fracToLatex(Dy) + MINUS(intFrac(A.y)) + '}{' + fracToLatex(Dx) + MINUS(intFrac(A.x)) + '}=' + fracToLatex(m) + '$$</p>';
+        var n = fracSub(intFrac(A.y), fracMul(m, intFrac(A.x)));
+        html += '<p class="dist-line"><strong>שלב 3 - משוואת AD:</strong></p>';
+        html += '<p class="dist-line">$$y' + MINUS(intFrac(A.y)) + '=' + fracToLatex(m) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)$$</p>';
+        html += '<p class="dist-line"><strong>$$y=' + coefXLatex(m) + PLUS(n) + '$$</strong></p>';
       }
       readout.innerHTML = html;
       renderMathInElement(readout, katexOptions);
@@ -731,7 +781,7 @@
         pointToStr(t.B)
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">$$D=\\left(\\dfrac{' + t.B.x + '+' + t.C.x + '}{2},\\dfrac{' + t.B.y + '+' + t.C.y + '}{2}\\right)=' + correct + '$$</p><p class="dist-line">' + ltrToken('BD = DC') + '</p>';
+      var explain = '<p class="dist-line">$$D=\\left(\\dfrac{' + t.B.x + PLUS(intFrac(t.C.x)) + '}{2},\\dfrac{' + t.B.y + PLUS(intFrac(t.C.y)) + '}{2}\\right)=' + pointToLatex(D) + '$$</p><p class="dist-line">' + ltrToken('BD = DC') + '</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהם שיעורי הנקודה ' + ltrToken('D') + ' - אמצע הצלע ' + ltrToken('BC') + ' שממול לקודקוד ' + ltrToken('A') + '?',
@@ -749,14 +799,15 @@
         mMedian = slopeOrNull(t.A, D);
         attempts++;
       } while (mMedian === null && attempts < 30);
-      var correct = fracToStr(makeFrac((D.y - t.A.y) * 2, (D.x - t.A.x) * 2));
+      var mFrac = makeFrac((D.y - t.A.y) * 2, (D.x - t.A.x) * 2);
+      var correct = fracToStr(mFrac);
       var wrongs = buildDistractorSet(correct, [
         fracToStr(makeFrac((t.B.y - t.A.y), (t.B.x - t.A.x) || 1)),
         fracToStr(makeFrac((t.C.y - t.A.y), (t.C.x - t.A.x) || 1)),
-        fracToStr(makeFrac(-(D.y - t.A.y) * 2, (D.x - t.A.x) * 2))
+        fracToStr(fracNeg(mFrac))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$</p><p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + coordPartToStr(D.y) + '-' + t.A.y + '}{' + coordPartToStr(D.x) + '-' + t.A.x + '}=' + correct + '$$</p>';
+      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$</p><p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + coordPartToLatex(D.y) + MINUS(intFrac(t.A.y)) + '}{' + coordPartToLatex(D.x) + MINUS(intFrac(t.A.x)) + '}=' + fracToLatex(mFrac) + '$$</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שיפוע התיכון ' + ltrToken('AD') + ' היוצא מקודקוד ' + ltrToken('A') + '?',
@@ -775,15 +826,15 @@
         attempts++;
       } while (mMedian === null && attempts < 30);
       var mFrac = makeFrac((D.y - t.A.y) * 2, (D.x - t.A.x) * 2);
-      var n = t.A.y - (mFrac.num / mFrac.den) * t.A.x;
-      var correct = fracToStr(makeFrac(Math.round(n * mFrac.den), mFrac.den));
+      var nFrac = fracSub(intFrac(t.A.y), fracMul(mFrac, intFrac(t.A.x)));
+      var correct = fracToStr(nFrac);
       var wrongs = buildDistractorSet(correct, [
         String(t.A.y),
-        String(-parseFloat(correct)),
-        fracToStr(makeFrac(Math.round(n * mFrac.den) + mFrac.den, mFrac.den))
+        fracToStr(fracNeg(nFrac)),
+        fracToStr(fracAdd(nFrac, intFrac(1)))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$, שיפוע התיכון $m_{AD}=' + fracToLatex(mFrac) + '$</p><p class="dist-line">$$y-' + t.A.y + '=' + fracToLatex(mFrac) + '(x-' + t.A.x + ') \\;\\Rightarrow\\; y=' + fracToLatex(mFrac) + 'x+' + correct + '$$</p>';
+      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$, שיפוע התיכון $m_{AD}=' + fracToLatex(mFrac) + '$</p><p class="dist-line">$$y' + MINUS(intFrac(t.A.y)) + '=' + fracToLatex(mFrac) + '\\left(x' + MINUS(intFrac(t.A.x)) + '\\right) \\;\\Rightarrow\\; y=' + coefXLatex(mFrac) + PLUS(nFrac) + '$$</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. במשוואת התיכון ' + ltrToken('AD') + ' היוצא מקודקוד ' + ltrToken('A') + ' בצורה $y=mx+n$, מהו $n$?',
