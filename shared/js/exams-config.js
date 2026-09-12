@@ -31,15 +31,17 @@ const MODULE_REGISTRY = {
     level: '4 יח"ל',
     mainTopic: 'גיאומטריה אנליטית - צורות גיאומטריות',
     basePath: 'topics/shapes/',
-    /* shp-01..shp-05 - full planned 5-lesson roadmap, positions fixed so ids
-       stay stable as content is built.
+    /* shp-01..shp-06 - full 6-lesson roadmap, all built. Positions fixed so
+       ids stay stable if content is ever reordered.
        shp-01: משולש ישר זווית (זיהוי קודקוד הזווית הישרה לפי מכפלת שיפועים).
        shp-02: משולש שווה-שוקיים ושווה-צלעות (סיווג לפי אורכי צלעות, נוסחת המרחק).
-       shp-03: שטחים והיקפים של משולשים במערכת הצירים - not yet built.
-       shp-04: לומדת סיכום: תכונות מרובעים.
-       shp-05: מרובעים במערכת הצירים (הוכחה וחישובים אנליטיים) - not yet
-          built; this cluster may grow past a single lesson once scoped. */
-    modules: seqModules('shp', 5, [3, 5])
+       shp-03: תיכון במשולש ומציאת משוואתו.
+       shp-04: גובה במשולש ומציאת משוואתו.
+       shp-05: היקפים ושטחים של משולשים.
+       shp-06: לומדת סיכום: תכונות מרובעים (was shp-04 before this cluster's
+          topics 3-5 were split out into their own focused median/altitude/
+          perimeter-area lessons). */
+    modules: seqModules('shp', 6, [])
   },
   'grade12-level5': {
     grade: "יב'",

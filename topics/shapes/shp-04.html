@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>תכונות המרובעים | לומדה 1</title>
+  <title>גובה במשולש ומציאת משוואתו | לומדה 4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../shared/css/common.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
   <style>
     :root {
       --orange-strong: #c2650b;
@@ -29,68 +30,69 @@
     .step-heading { font-size: 1.6rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
     .step-intro { color: var(--text-muted); margin-bottom: 20px; font-size: 0.98rem; }
 
-    .content-block { margin-bottom: 26px; }
+    .content-block { margin-bottom: 30px; }
     .content-block h3 { font-size: 1.15rem; font-weight: 700; color: var(--blue-primary); margin-bottom: 10px; }
     .content-block p { margin-bottom: 8px; }
 
-    .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.92rem; }
+    .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 16px 20px; font-size: 0.94rem; }
     .highlight-block h4 { color: var(--blue-deep); font-weight: 700; margin-bottom: 6px; }
 
-    /* Step 1: family sections & shape cards */
-    .family-section { margin-bottom: 30px; }
-    .family-title { font-size: 1.2rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
-    .family-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px; }
-    .quad-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-    .quad-card { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px; }
-    .quad-card h4 { font-size: 1.05rem; font-weight: 700; color: var(--blue-deep); margin: 10px 0 8px; text-align: center; }
-    .quad-svg-wrap { width: 100%; max-width: 200px; margin: 0 auto; }
-    .quad-svg-wrap svg { width: 100%; height: auto; display: block; }
-    .quad-props { font-size: 0.86rem; color: var(--text-main); padding-inline-start: 18px; margin: 0; }
-    .quad-props li { margin-bottom: 4px; }
-    .quad-props li.prop-angle-exception { color: var(--orange-strong); font-weight: 600; }
-    .prop-angle-exception-inline { color: var(--orange-strong); font-weight: 600; }
+    .example-layout { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+    .example-svg-wrap { flex: 0 0 260px; max-width: 260px; }
+    .example-svg-wrap svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
+    .example-calc-wrap { flex: 1; min-width: 220px; }
 
-    /* Step 2: lab */
+    .derivation-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 20px; margin-top: 12px; }
+    .derivation-line { direction: ltr; text-align: center; margin: 8px 0; font-size: 1.05rem; max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0; -webkit-overflow-scrolling: touch; }
+    .stage-label { font-weight: 700; color: var(--blue-primary); margin: 14px 0 4px; font-size: 0.95rem; }
+
+    /* Step 2 lab */
     .lab-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; }
     .lab-block h3 { font-size: 1.2rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
 
-    .mode-tabs { display: flex; gap: 8px; margin: 14px 0; flex-wrap: wrap; }
-    .mode-tab-btn {
-      padding: 9px 18px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
-      background: #fff; font-family: var(--font-family); font-weight: 700; font-size: 0.92rem; cursor: pointer;
-    }
-    .mode-tab-btn.tab-active { background: var(--blue-primary); color: #fff; border-color: var(--blue-primary); }
-
-    .prop-btn-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .prop-btn {
-      padding: 8px 14px; border-radius: 20px; border: 2px solid var(--border-subtle);
-      background: #fff; font-family: var(--font-family); font-size: 0.85rem; font-weight: 600; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .prop-btn:hover { border-color: var(--blue-primary); }
-    .prop-btn.prop-active { background: var(--blue-primary); color: #fff; border-color: var(--blue-primary); }
-
-    .shape-select-row { margin-bottom: 16px; }
-    .shape-select-row select {
-      padding: 9px 14px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
-      font-family: var(--font-family); font-size: 0.95rem; background: #fff; min-width: 220px;
-    }
-
+    .lab-layout { display: flex; flex-direction: column; align-items: center; gap: 16px; }
     .lab-readout {
       background: #fff; border: 2px solid var(--blue-soft); border-radius: var(--radius-md);
-      padding: 14px 16px; margin-bottom: 18px; font-size: 0.92rem; min-height: 24px;
+      padding: 14px 16px; font-size: 0.95rem; text-align: center; min-height: 24px; max-width: 460px; width: 100%; line-height: 1.85;
     }
-    .lab-readout ul { padding-inline-start: 18px; margin: 4px 0 0; }
+    .lab-readout.status-none { border-color: var(--red-error); background: var(--red-soft); }
+    .lab-readout.status-success { border-color: var(--green-success); background: var(--green-soft); }
+    .preset-btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .preset-btn {
+      padding: 9px 16px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
+      background: #fff; font-family: var(--font-family); font-weight: 700; font-size: 0.88rem; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
+    .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
+    .dist-line-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .dist-line { margin: 10px 0; font-size: 0.92rem; max-width: 100%; }
+    .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
+    .tri-badge {
+      display: inline-block; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+      background: var(--blue-soft); color: var(--blue-deep);
+    }
+    .tri-badge.badge-right { background: var(--green-soft); color: #1f7a41; }
 
-    .shape-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
-    .shape-card {
-      background: #fff; border: 2px solid var(--border-subtle); border-radius: var(--radius-md);
-      padding: 10px; text-align: center; transition: all 0.2s; opacity: 1;
+    .grid-svg-wrap { max-width: 380px; width: 100%; }
+    .graph-svg {
+      width: 100%; height: auto; display: block; background: #fff;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; touch-action: none;
     }
-    .shape-card svg { width: 100%; height: auto; display: block; }
-    .shape-card .shape-name { font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-top: 6px; }
-    .shape-card.shape-highlighted { border-color: var(--green-success); background: var(--green-soft); transform: scale(1.03); }
-    .shape-card.shape-dimmed { opacity: 0.3; }
+    .graph-svg text { font-family: var(--font-family); }
+
+    .grid-line { stroke: var(--border-subtle); stroke-width: 1; }
+    .axis-line { stroke: #94a3b8; stroke-width: 1.5; }
+    .axis-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; }
+    .axis-label-y { text-anchor: end; }
+
+    .tri-poly { fill: var(--blue-primary); fill-opacity: 0.12; stroke: var(--blue-primary); stroke-width: 2.5; }
+    .tri-poly-fill { fill: var(--blue-primary); fill-opacity: 0.08; stroke: none; }
+    .tri-edge { stroke-width: 3; }
+    .vertex-label { font-size: 14px; font-weight: 800; fill: var(--blue-deep); }
+    .vertex-label-sm { font-size: 12px; font-weight: 800; fill: var(--blue-deep); }
+    .point-marker { fill: var(--orange-strong); stroke: #fff; stroke-width: 1.5; }
+    .drag-marker { fill: var(--orange-strong); stroke: #fff; stroke-width: 2; cursor: grab; touch-action: none; }
 
     /* Step 3 quiz */
     .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; font-size: 0.95rem; color: var(--text-muted); }
@@ -101,7 +103,7 @@
     .quiz-dot.dot-incorrect { background: var(--red-error); }
 
     .quiz-body { min-height: 140px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
-    .quiz-instruction { font-weight: 700; margin-bottom: 12px; }
+    .quiz-instruction { font-weight: 700; margin-bottom: 12px; text-align: center; }
     .quiz-id-tag { margin-top: 14px; text-align: center; font-size: 0.72rem; color: #b8c2d1; font-family: monospace; direction: ltr; }
 
     .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
@@ -178,6 +180,7 @@
     .certificate-quote { font-style: italic; font-size: 0.96rem; color: var(--blue-primary); padding: 0 10px; margin-bottom: 16px; line-height: 1.6; }
     .certificate-ref { position: absolute; bottom: 8px; left: 14px; font-size: 0.68rem; color: #b8b8b8; direction: ltr; }
     .btn-download-cert { max-width: 420px; }
+
     .encouragement-card { background: var(--orange-soft); border: 2px dashed var(--orange-strong); border-radius: var(--radius-lg); padding: 32px 24px; text-align: center; max-width: 480px; margin: 10px auto 0; }
     .encouragement-icon { font-size: 44px; margin-bottom: 12px; }
     .encouragement-text { font-size: 1.02rem; color: var(--text-main); font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
@@ -215,40 +218,64 @@
 
       <section class="step-panel" id="step-1" data-step="1">
         <h2 class="step-heading">שלב 1: מכירים</h2>
-        <p class="step-intro">עץ המרובעים: נכיר כל מרובע לפי תכונות הצלעות והאלכסונים שלו בלבד.</p>
+        <p class="step-intro">גובה במשולש הוא קטע היוצא מקודקוד ומאונך לצלע שמולו (או להמשכה). נלמד למצוא את משוואת הגובה בשלושה שלבים, ואת מקרי הקצה המיוחדים.</p>
 
-        <div class="content-block highlight-block">
-          <h4>שימו לב</h4>
-          <p>בלומדה זו נתמקד <strong>רק</strong> בתכונות של צלעות ואלכסונים. התייחסות לזוויות תופיע רק במקומות שבהם היא הכרחית להגדרת הצורה: זוויות ישרות במלבן/ריבוע, אלכסונים מאונכים במעוין/ריבוע, והזווית הישרה המגדירה טרפז ישר זווית.</p>
+        <div class="content-block">
+          <h3>שלב 1: שיפוע צלע הבסיס</h3>
+          <p>כדי למצוא את הגובה היוצא מקודקוד נתון, מוצאים קודם את <strong>שיפוע הצלע הנגדית</strong> (הבסיס) לפי נוסחת השיפוע:</p>
+          <div class="highlight-block">
+            <h4>נוסחת השיפוע</h4>
+            <p>$$m_{BC}=\dfrac{y_C-y_B}{x_C-x_B}$$</p>
+          </div>
+          <div class="derivation-block" id="step1Example"></div>
         </div>
 
-        <div id="familyParallelogram" class="family-section"></div>
-        <div id="familyTrapezoid" class="family-section"></div>
+        <div class="content-block">
+          <h3>שלב 2: שיפוע הגובה - תנאי הניצבות</h3>
+          <p>הגובה מאונך לבסיס, ולכן שיפועו מקיים את <strong>תנאי הניצבות</strong>: מכפלת השיפועים של שני ישרים מאונכים שווה ל-<span class="math-ltr">-1</span>.</p>
+          <div class="highlight-block">
+            <h4>תנאי הניצבות</h4>
+            <p>$$m_1\cdot m_2=-1 \quad\Longleftrightarrow\quad m_2=-\dfrac{1}{m_1}$$</p>
+          </div>
+          <div class="derivation-block" id="step2Example"></div>
+        </div>
+
+        <div class="content-block">
+          <h3>שלב 3: משוואת הגובה המלאה</h3>
+          <p>לאחר שמצאנו את שיפוע הגובה, כותבים את משוואת הישר העובר דרך הקודקוד הנגדי (בעל השיפוע שמצאנו):</p>
+          <div class="highlight-block">
+            <h4>נוסחה</h4>
+            <p>$$y-y_1=m(x-x_1)$$</p>
+          </div>
+          <div class="derivation-block" id="step3Example"></div>
+        </div>
+
+        <div class="content-block">
+          <h3>שלב 4: מקרי קצה - בסיס אופקי או אנכי</h3>
+          <p>כאשר הבסיס <strong>מקביל לציר ה-x</strong> (אופקי, שיפוע 0), הגובה אליו הוא <strong>אנכי</strong> - ישר מהצורה <span class="math-ltr">x = קבוע</span> (שיפוע לא מוגדר, לכן תנאי הניצבות הרגיל לא ישים; פשוט מעבירים ישר אנכי דרך הקודקוד הנגדי). וכאשר הבסיס <strong>מקביל לציר ה-y</strong> (אנכי), הגובה אליו הוא <strong>אופקי</strong> - ישר מהצורה <span class="math-ltr">y = קבוע</span>.</p>
+          <div class="derivation-block" id="step4ExampleH"></div>
+          <div class="derivation-block" id="step4ExampleV" style="margin-top:16px;"></div>
+        </div>
       </section>
 
       <section class="step-panel" id="step-2" data-step="2" hidden>
         <h2 class="step-heading">שלב 2: חוקרים</h2>
-        <p class="step-intro">מעבדת תכונות: בחרו תכונה כדי לראות אילו מרובעים מקיימים אותה, או בחרו מרובע כדי לראות את כל תכונותיו.</p>
+        <p class="step-intro">גררו כל אחד משלושת הקודקודים. שיפוע הבסיס BC, שיפוע הגובה מקודקוד A ומשוואתו יחושבו ויוצגו באופן חי - כולל מקרי הקצה כאשר הבסיס אופקי או אנכי.</p>
 
         <div class="lab-block">
-          <h3>מעבדת תכונות המרובעים</h3>
-          <div class="mode-tabs">
-            <button type="button" class="mode-tab-btn tab-active" data-mode="propToShape">תכונה ← אילו מרובעים?</button>
-            <button type="button" class="mode-tab-btn" data-mode="shapeToProp">מרובע ← אילו תכונות?</button>
+          <h3>בנו משולש וחקרו את הגובה היוצא מקודקוד A</h3>
+          <p class="lab-hint">לא בטוחים מאיפה להתחיל? נסו אחת הדוגמאות המוכנות, או גררו קודקוד לפי בחירתכם:</p>
+          <div class="preset-btn-row">
+            <button type="button" class="preset-btn" id="presetGeneral">משולש כללי</button>
+            <button type="button" class="preset-btn" id="presetHorizontal">בסיס אופקי</button>
+            <button type="button" class="preset-btn" id="presetVertical">בסיס אנכי</button>
           </div>
-
-          <div id="propModePanel">
-            <div class="prop-btn-grid" id="propBtnGrid"></div>
-          </div>
-          <div id="shapeModePanel" hidden>
-            <div class="shape-select-row">
-              <select id="shapeSelect"></select>
+          <div class="lab-layout">
+            <div class="lab-readout" id="triReadout"></div>
+            <div class="grid-svg-wrap">
+              <svg id="triSvg" viewBox="0 0 460 460" class="graph-svg"></svg>
             </div>
           </div>
-
-          <div class="lab-readout" id="labReadout">בחרו תכונה מהרשימה למעלה כדי להתחיל.</div>
-
-          <div class="shape-grid" id="shapeGrid"></div>
         </div>
       </section>
 
@@ -266,8 +293,8 @@
 
         <div id="quizContent" hidden>
           <div class="quiz-header">
-            <div>שאלה <span id="qIndex">1</span> מתוך 10</div>
-            <div>ציון מצטבר: <span id="qScore">0</span>/10</div>
+            <div>שאלה <span id="qIndex">1</span> מתוך 5</div>
+            <div>ציון מצטבר: <span id="qScore">0</span>/5</div>
           </div>
           <div class="quiz-dots" id="quizDots"></div>
           <div class="quiz-body" id="quizBody"></div>
@@ -284,26 +311,31 @@
         <div class="printable-area">
           <div class="results-card" id="resultsCard">
             <div class="results-number" id="resultsCorrect">0</div>
-            <div class="results-label">תשובות נכונות מתוך 10</div>
+            <div class="results-label">תשובות נכונות מתוך 5</div>
             <div class="results-percent-row">אחוז הצלחה: <span id="resultsPercent">0%</span></div>
             <div class="results-verdict" id="resultsVerdict"></div>
           </div>
 
-          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: תכונות צלעות ואלכסונים</h3>
+          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: גובה במשולש</h3>
           <div class="table-wrap">
             <table class="data-table">
-              <thead><tr><th>מרובע</th><th>צלעות</th><th>אלכסונים</th></tr></thead>
-              <tbody id="summaryTableBody"></tbody>
+              <thead><tr><th>שלב</th><th>מה עושים</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>מוצאים את שיפוע הבסיס (הצלע הנגדית)</td></tr>
+                <tr><td>2</td><td>שיפוע הגובה: <span class="math-ltr">m₁·m₂=-1</span></td></tr>
+                <tr><td>3</td><td>כותבים את משוואת הגובה: <span class="math-ltr">y - y₁ = m(x - x₁)</span></td></tr>
+                <tr><td>4</td><td>בסיס אופקי ← גובה אנכי (<span class="math-ltr">x=קבוע</span>); בסיס אנכי ← גובה אופקי (<span class="math-ltr">y=קבוע</span>)</td></tr>
+              </tbody>
             </table>
           </div>
 
           <div class="certificate-card" id="certificateCard">
             <div class="certificate-trophy" id="certIcon" aria-hidden="true">🏆</div>
-            <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות והערכה בגיאומטריה - 4 יח"ל</h3>
+            <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות</h3>
             <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
             <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
-            <p class="certificate-lesson-name" id="certLessonName">לומדה: תכונות המרובעים</p>
-            <p class="certificate-score" id="certScore">ציון סופי: 0 (0/10)</p>
+            <p class="certificate-lesson-name" id="certLessonName">לומדה: גובה במשולש ומציאת משוואתו</p>
+            <p class="certificate-score" id="certScore">ציון סופי: 0 (0/5)</p>
             <p class="certificate-quote" id="certQuote"></p>
             <div class="certificate-ref" id="certTime">Time: 0s</div>
           </div>
@@ -331,9 +363,23 @@
   <script src="../../shared/components/step-progress.js"></script>
   <script src="../../shared/js/score-tracker.js"></script>
   <script src="../../shared/js/bidi-utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
-    var LESSON_NAME = 'תכונות המרובעים';
+    var katexOptions = {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    };
+
+    var LESSON_NAME = 'גובה במשולש ומציאת משוואתו';
+    var QUIZ_SIZE = 5;
+    var VERTEX_KEYS = ['A', 'B', 'C'];
+    var COLOR_LEG = '#2e9e5b';
+    var COLOR_BASE = '#64748b';
 
     var currentStep = 1;
     var studentName = '';
@@ -345,6 +391,7 @@
     };
 
     function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function randChoice(arr) { return arr[randInt(0, arr.length - 1)]; }
     function shuffle(arr) {
       var a = arr.slice();
       for (var i = a.length - 1; i > 0; i--) {
@@ -353,360 +400,444 @@
       }
       return a;
     }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
-    var QUADS = ['מקבילית', 'מלבן', 'מעוין', 'ריבוע', 'טרפז', 'טרפז שווה שוקיים', 'טרפז ישר זווית'];
+    /* ---------- Exact-fraction arithmetic ---------- */
 
-    /* ---------- Property matrix (sides & diagonals only, plus the permitted angle exceptions) ---------- */
+    function gcdInt(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = b; b = a % b; a = t; } return a || 1; }
+    function makeFrac(num, den) {
+      if (den < 0) { num = -num; den = -den; }
+      var g = gcdInt(num, den);
+      return { num: num / g, den: den / g };
+    }
+    function fracNeg(a) { return { num: -a.num, den: a.den }; }
+    function fracDiv(a, b) { return makeFrac(a.num * b.den, a.den * b.num); }
+    function intFrac(n) { return { num: n, den: 1 }; }
+    function fracToLatex(a) {
+      if (a.den === 1) return String(a.num);
+      var sign = a.num < 0 ? '-' : '';
+      return sign + '\\dfrac{' + Math.abs(a.num) + '}{' + a.den + '}';
+    }
+    function fracToStr(a) { return a.den === 1 ? String(a.num) : (a.num + '/' + a.den); }
 
-    var PROP_DEFS = [
-      { key: 'oppSidesParallelTwoPairs', text: 'שני זוגות של צלעות נגדיות מקבילות' },
-      { key: 'oppSidesEqualTwoPairs', text: 'שני זוגות של צלעות נגדיות שוות' },
-      { key: 'allSidesEqual', text: 'כל ארבע הצלעות שוות זו לזו' },
-      { key: 'onePairParallel', text: 'יש בדיוק זוג אחד של צלעות נגדיות מקבילות (בסיסים)' },
-      { key: 'legsEqual', text: 'השוקיים (הצלעות הלא-מקבילות) שוות זו לזו' },
-      { key: 'diagonalsBisect', text: 'האלכסונים חוצים זה את זה' },
-      { key: 'diagonalsEqual', text: 'האלכסונים שווים זה לזה באורכם' },
-      { key: 'diagonalsPerp', text: 'האלכסונים מאונכים זה לזה' },
-      { key: 'allAnglesRight', text: 'כל הזוויות ישרות (90°)' },
-      { key: 'rightLegAngle', text: 'יש שוק אחת המאונכת לבסיסים (שתי זוויות ישרות)' }
-    ];
+    /* ---------- Core geometry ---------- */
 
-    var SHAPE_PROPS = {
-      'מקבילית': { oppSidesParallelTwoPairs: true, oppSidesEqualTwoPairs: true, allSidesEqual: false, onePairParallel: false, legsEqual: false, diagonalsBisect: true, diagonalsEqual: false, diagonalsPerp: false, allAnglesRight: false, rightLegAngle: false },
-      'מלבן': { oppSidesParallelTwoPairs: true, oppSidesEqualTwoPairs: true, allSidesEqual: false, onePairParallel: false, legsEqual: false, diagonalsBisect: true, diagonalsEqual: true, diagonalsPerp: false, allAnglesRight: true, rightLegAngle: false },
-      'מעוין': { oppSidesParallelTwoPairs: true, oppSidesEqualTwoPairs: true, allSidesEqual: true, onePairParallel: false, legsEqual: false, diagonalsBisect: true, diagonalsEqual: false, diagonalsPerp: true, allAnglesRight: false, rightLegAngle: false },
-      'ריבוע': { oppSidesParallelTwoPairs: true, oppSidesEqualTwoPairs: true, allSidesEqual: true, onePairParallel: false, legsEqual: false, diagonalsBisect: true, diagonalsEqual: true, diagonalsPerp: true, allAnglesRight: true, rightLegAngle: false },
-      'טרפז': { oppSidesParallelTwoPairs: false, oppSidesEqualTwoPairs: false, allSidesEqual: false, onePairParallel: true, legsEqual: false, diagonalsBisect: false, diagonalsEqual: false, diagonalsPerp: false, allAnglesRight: false, rightLegAngle: false },
-      'טרפז שווה שוקיים': { oppSidesParallelTwoPairs: false, oppSidesEqualTwoPairs: false, allSidesEqual: false, onePairParallel: true, legsEqual: true, diagonalsBisect: false, diagonalsEqual: true, diagonalsPerp: false, allAnglesRight: false, rightLegAngle: false },
-      'טרפז ישר זווית': { oppSidesParallelTwoPairs: false, oppSidesEqualTwoPairs: false, allSidesEqual: false, onePairParallel: true, legsEqual: false, diagonalsBisect: false, diagonalsEqual: false, diagonalsPerp: false, allAnglesRight: false, rightLegAngle: true }
-    };
-
-    /* ---------- Generic quadrilateral SVG renderer ---------- */
-
-    function vsub(a, b) { return { x: a.x - b.x, y: a.y - b.y }; }
-    function vnorm(v) { var len = Math.sqrt(v.x * v.x + v.y * v.y) || 1; return { x: v.x / len, y: v.y / len }; }
-    function vperp(v) { return { x: -v.y, y: v.x }; }
-
-    function tickMarksSVG(p1, p2, count, color) {
-      var d = vnorm(vsub(p2, p1));
-      var pep = vperp(d);
-      var mid = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
-      var spacing = 7, len = 6, out = '';
-      for (var i = 0; i < count; i++) {
-        var offset = (i - (count - 1) / 2) * spacing;
-        var cx = mid.x + d.x * offset, cy = mid.y + d.y * offset;
-        out += '<line x1="' + (cx + pep.x * len).toFixed(1) + '" y1="' + (cy + pep.y * len).toFixed(1) + '" x2="' + (cx - pep.x * len).toFixed(1) + '" y2="' + (cy - pep.y * len).toFixed(1) + '" stroke="' + color + '" stroke-width="2.5"/>';
-      }
-      return out;
+    function sq(n) { return n * n; }
+    function sqDist(A, B) { return sq(B.x - A.x) + sq(B.y - A.y); }
+    function isDegenerate(A, B, C) {
+      if (sqDist(A, B) === 0 || sqDist(B, C) === 0 || sqDist(C, A) === 0) return true;
+      var cross = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
+      return Math.abs(cross) < 1e-9;
+    }
+    function slopeOrNull(P, Q) { var dx = Q.x - P.x; if (dx === 0) return null; return (Q.y - P.y) / dx; }
+    function perpSlopeOrNull(m) { if (m === null) return 0; if (m === 0) return null; return -1 / m; }
+    function fmt2(n) {
+      var r = Math.round(n * 100) / 100;
+      return (Math.abs(r - Math.round(r)) < 1e-9) ? String(Math.round(r)) : r.toFixed(2);
     }
 
-    function chevronSVG(p1, p2, color) {
-      var d = vnorm(vsub(p2, p1));
-      var pep = vperp(d);
-      var mid = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
-      var arm = 7;
-      var tip = { x: mid.x + d.x * arm * 0.6, y: mid.y + d.y * arm * 0.6 };
-      var back = { x: mid.x - d.x * arm * 0.6, y: mid.y - d.y * arm * 0.6 };
-      var up = { x: back.x + pep.x * arm, y: back.y + pep.y * arm };
-      var down = { x: back.x - pep.x * arm, y: back.y - pep.y * arm };
-      return '<polyline points="' + up.x.toFixed(1) + ',' + up.y.toFixed(1) + ' ' + tip.x.toFixed(1) + ',' + tip.y.toFixed(1) + ' ' + down.x.toFixed(1) + ',' + down.y.toFixed(1) + '" fill="none" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+    /* ---------- SVG rendering helpers ---------- */
+
+    function makeLocalScale(points, W, H, PAD) {
+      var xs = points.map(function (p) { return p.x; }), ys = points.map(function (p) { return p.y; });
+      var xLo = Math.min.apply(null, xs), xHi = Math.max.apply(null, xs);
+      var yLo = Math.min.apply(null, ys), yHi = Math.max.apply(null, ys);
+      var span = Math.max(xHi - xLo, yHi - yLo) + 2.4;
+      var cx = (xLo + xHi) / 2, cy = (yLo + yHi) / 2;
+      var XMIN = cx - span / 2, XMAX = cx + span / 2, YMIN = cy - span / 2, YMAX = cy + span / 2;
+      var mx = function (x) { return PAD + (x - XMIN) / (XMAX - XMIN) * (W - 2 * PAD); };
+      var my = function (y) { return H - PAD - (y - YMIN) / (YMAX - YMIN) * (H - 2 * PAD); };
+      return { mx: mx, my: my, XMIN: XMIN, XMAX: XMAX, YMIN: YMIN, YMAX: YMAX };
     }
-
-    function rightAngleMarkSVG(corner, towardA, towardB, color) {
-      var dA = vnorm(vsub(towardA, corner));
-      var dB = vnorm(vsub(towardB, corner));
-      var s = 11;
-      var p1 = { x: corner.x + dA.x * s, y: corner.y + dA.y * s };
-      var p2 = { x: corner.x + dA.x * s + dB.x * s, y: corner.y + dA.y * s + dB.y * s };
-      var p3 = { x: corner.x + dB.x * s, y: corner.y + dB.y * s };
-      return '<polyline points="' + p1.x.toFixed(1) + ',' + p1.y.toFixed(1) + ' ' + p2.x.toFixed(1) + ',' + p2.y.toFixed(1) + ' ' + p3.x.toFixed(1) + ',' + p3.y.toFixed(1) + '" fill="none" stroke="' + color + '" stroke-width="2"/>';
+    function buildGridMarkup(mx, my, xmin, xmax, ymin, ymax) {
+      var markup = '';
+      for (var gx = Math.ceil(xmin); gx <= Math.floor(xmax); gx++) {
+        markup += '<line x1="' + mx(gx) + '" y1="' + my(ymin) + '" x2="' + mx(gx) + '" y2="' + my(ymax) + '" class="grid-line"/>';
+        if (gx !== 0) markup += '<text x="' + mx(gx) + '" y="' + (my(0) + 16) + '" class="axis-label">' + gx + '</text>';
+      }
+      for (var gy = Math.ceil(ymin); gy <= Math.floor(ymax); gy++) {
+        markup += '<line x1="' + mx(xmin) + '" y1="' + my(gy) + '" x2="' + mx(xmax) + '" y2="' + my(gy) + '" class="grid-line"/>';
+        if (gy !== 0) markup += '<text x="' + (mx(0) - 8) + '" y="' + (my(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
+      }
+      markup += '<line x1="' + mx(xmin) + '" y1="' + my(0) + '" x2="' + mx(xmax) + '" y2="' + my(0) + '" class="axis-line"/>';
+      markup += '<line x1="' + mx(0) + '" y1="' + my(ymin) + '" x2="' + mx(0) + '" y2="' + my(ymax) + '" class="axis-line"/>';
+      markup += '<text x="' + (mx(xmax) - 6) + '" y="' + (my(0) - 8) + '" class="axis-label" style="font-weight:800;">x</text>';
+      markup += '<text x="' + (mx(0) + 12) + '" y="' + (my(ymax) + 12) + '" class="axis-label" style="font-weight:800;">y</text>';
+      return markup;
     }
-
-    function renderShapeSVG(def) {
-      var v = def.vertices;
-      var pts = v.map(function (p) { return p.x + ',' + p.y; }).join(' ');
-      var markup = '<svg viewBox="0 0 200 150" class="quad-shape-svg">';
-      markup += '<polygon points="' + pts + '" fill="#dce7f7" stroke="#2e5fa3" stroke-width="3"/>';
-
-      if (def.diagonals) {
-        markup += '<line x1="' + v[0].x + '" y1="' + v[0].y + '" x2="' + v[2].x + '" y2="' + v[2].y + '" stroke="#7c3aed" stroke-width="1.8" stroke-dasharray="5,4"/>';
-        markup += '<line x1="' + v[1].x + '" y1="' + v[1].y + '" x2="' + v[3].x + '" y2="' + v[3].y + '" stroke="#7c3aed" stroke-width="1.8" stroke-dasharray="5,4"/>';
-      }
-
-      (def.tickGroups || []).forEach(function (g) {
-        g.sides.forEach(function (sideIdx) {
-          var p1 = v[sideIdx], p2 = v[(sideIdx + 1) % 4];
-          markup += tickMarksSVG(p1, p2, g.count, '#2e5fa3');
-        });
-      });
-
-      (def.chevronSides || []).forEach(function (sideIdx) {
-        var p1 = v[sideIdx], p2 = v[(sideIdx + 1) % 4];
-        markup += chevronSVG(p1, p2, '#1b3a6b');
-      });
-
-      (def.rightAngleCorners || []).forEach(function (idx) {
-        var corner = v[idx], prev = v[(idx + 3) % 4], next = v[(idx + 1) % 4];
-        markup += rightAngleMarkSVG(corner, prev, next, '#c2650b');
-      });
-
-      if (def.diagonalTick) {
-        markup += tickMarksSVG(v[0], v[2], 1, '#c2650b');
-        markup += tickMarksSVG(v[1], v[3], 1, '#c2650b');
-      }
-
-      if (def.diagonalPerpAt) {
-        markup += rightAngleMarkSVG(def.diagonalPerpAt, v[0], v[1], '#c2650b');
-      }
-
+    function pointMarkers(mx, my, pts) {
+      return pts.map(function (P) { return '<circle cx="' + mx(P.x) + '" cy="' + my(P.y) + '" r="4.5" class="point-marker"/>'; }).join('');
+    }
+    function rightAngleMarker(mx, my, corner, u1, u2, frac, color) {
+      var m1 = { x: corner.x + u1.x * frac, y: corner.y + u1.y * frac };
+      var m2 = { x: corner.x + u2.x * frac, y: corner.y + u2.y * frac };
+      var mC = { x: m1.x + u2.x * frac, y: m1.y + u2.y * frac };
+      return '<polyline points="' + mx(m1.x) + ',' + my(m1.y) + ' ' + mx(mC.x) + ',' + my(mC.y) + ' ' + mx(m2.x) + ',' + my(m2.y) + '" fill="none" stroke="' + color + '" stroke-width="2"/>';
+    }
+    function renderAltitudeSVG(A, B, C, H) {
+      var W = 260, H2 = 260, PAD = 30;
+      var sc = makeLocalScale([A, B, C, H], W, H2, PAD);
+      var mx = sc.mx, my = sc.my;
+      var markup = '<svg viewBox="0 0 ' + W + ' ' + H2 + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
+      markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly-fill"/>';
+      markup += '<line x1="' + mx(B.x) + '" y1="' + my(B.y) + '" x2="' + mx(C.x) + '" y2="' + my(C.y) + '" stroke="' + COLOR_BASE + '" stroke-width="3"/>';
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(H.x) + '" y2="' + my(H.y) + '" stroke="' + COLOR_LEG + '" stroke-width="3"/>';
+      var uAlong = { x: C.x - B.x, y: C.y - B.y };
+      var lenAlong = Math.sqrt(uAlong.x * uAlong.x + uAlong.y * uAlong.y) || 1;
+      uAlong = { x: uAlong.x / lenAlong, y: uAlong.y / lenAlong };
+      var uPerp = { x: A.x - H.x, y: A.y - H.y };
+      var lenPerp = Math.sqrt(uPerp.x * uPerp.x + uPerp.y * uPerp.y) || 1;
+      uPerp = { x: uPerp.x / lenPerp, y: uPerp.y / lenPerp };
+      markup += rightAngleMarker(mx, my, H, uAlong, uPerp, 0.55, COLOR_BASE);
+      markup += '<circle cx="' + mx(H.x) + '" cy="' + my(H.y) + '" r="4" fill="' + COLOR_LEG + '"/>';
+      markup += pointMarkers(mx, my, [A, B, C]);
       markup += '</svg>';
       return markup;
     }
 
-    var QUAD_DEFS = {
-      'מקבילית': {
-        vertices: [{ x: 40, y: 120 }, { x: 170, y: 120 }, { x: 140, y: 30 }, { x: 10, y: 30 }],
-        tickGroups: [{ sides: [0, 2], count: 1 }, { sides: [1, 3], count: 2 }],
-        rightAngleCorners: [], diagonals: true, diagonalTick: false, diagonalPerpAt: null
-      },
-      'מלבן': {
-        vertices: [{ x: 40, y: 120 }, { x: 170, y: 120 }, { x: 170, y: 30 }, { x: 40, y: 30 }],
-        tickGroups: [{ sides: [0, 2], count: 1 }, { sides: [1, 3], count: 2 }],
-        rightAngleCorners: [0, 1, 2, 3], diagonals: true, diagonalTick: true, diagonalPerpAt: null
-      },
-      'מעוין': {
-        vertices: [{ x: 100, y: 10 }, { x: 190, y: 75 }, { x: 100, y: 140 }, { x: 10, y: 75 }],
-        tickGroups: [{ sides: [0, 1, 2, 3], count: 1 }],
-        rightAngleCorners: [], diagonals: true, diagonalTick: false, diagonalPerpAt: { x: 100, y: 75 }
-      },
-      'ריבוע': {
-        vertices: [{ x: 50, y: 120 }, { x: 150, y: 120 }, { x: 150, y: 20 }, { x: 50, y: 20 }],
-        tickGroups: [{ sides: [0, 1, 2, 3], count: 1 }],
-        rightAngleCorners: [0, 1, 2, 3], diagonals: true, diagonalTick: true, diagonalPerpAt: { x: 100, y: 70 }
-      },
-      'טרפז': {
-        vertices: [{ x: 20, y: 130 }, { x: 190, y: 130 }, { x: 150, y: 30 }, { x: 80, y: 30 }],
-        tickGroups: [], chevronSides: [0, 2],
-        rightAngleCorners: [], diagonals: true, diagonalTick: false, diagonalPerpAt: null
-      },
-      'טרפז שווה שוקיים': {
-        vertices: [{ x: 20, y: 130 }, { x: 190, y: 130 }, { x: 150, y: 30 }, { x: 60, y: 30 }],
-        tickGroups: [{ sides: [1, 3], count: 1 }], chevronSides: [0, 2],
-        rightAngleCorners: [], diagonals: true, diagonalTick: true, diagonalPerpAt: null
-      },
-      'טרפז ישר זווית': {
-        vertices: [{ x: 20, y: 130 }, { x: 190, y: 130 }, { x: 190, y: 30 }, { x: 90, y: 30 }],
-        tickGroups: [], chevronSides: [0, 2],
-        rightAngleCorners: [1, 2], diagonals: true, diagonalTick: false, diagonalPerpAt: null
+    /* ---------- Step 1: worked examples ---------- */
+
+    var MAIN_A = { x: 0, y: 6 }, MAIN_B = { x: -4, y: 3 }, MAIN_C = { x: 2, y: 0 };
+
+    (function buildStep1Content() {
+      var A = MAIN_A, B = MAIN_B, C = MAIN_C;
+      var mBC = makeFrac(C.y - B.y, C.x - B.x);
+      var mAlt = fracNeg(fracDiv(intFrac(1), mBC));
+      var altB = A.y - (mAlt.num / mAlt.den) * A.x;
+      var baseB = B.y - (mBC.num / mBC.den) * B.x;
+      var Hx = (baseB - altB) / ((mAlt.num / mAlt.den) - (mBC.num / mBC.den));
+      var Hy = (mAlt.num / mAlt.den) * Hx + altB;
+      var H = { x: Math.round(Hx), y: Math.round(Hy) };
+
+      var s1Html = '<p class="derivation-line">$A(' + A.x + ',' + A.y + '),\\ B(' + B.x + ',' + B.y + '),\\ C(' + C.x + ',' + C.y + ')$</p>';
+      s1Html += '<p class="dist-line">מחפשים את הגובה היוצא מקודקוד $A$, לכן מוצאים את שיפוע הצלע הנגדית - $BC$:</p>';
+      s1Html += '<p class="dist-line">$$m_{BC}=\\dfrac{y_C-y_B}{x_C-x_B}=\\dfrac{' + C.y + '-(' + B.y + ')}{' + C.x + '-(' + B.x + ')}=' + fracToLatex(mBC) + '$$</p>';
+      document.getElementById('step1Example').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s1Html + '</div></div>';
+
+      var s2Html = '<p class="dist-line">הגובה מ-$A$ מאונך ל-$BC$, לכן שיפועו:</p>';
+      s2Html += '<p class="dist-line">$$m_{\\text{גובה}}=-\\dfrac{1}{m_{BC}}=' + fracToLatex(mAlt) + '$$</p>';
+      document.getElementById('step2Example').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s2Html + '</div></div>';
+
+      var s3Html = '<p class="dist-line">משתמשים בקודקוד $A$ ובשיפוע הגובה כדי לכתוב את משוואתו:</p>';
+      s3Html += '<p class="dist-line">$$y-' + A.y + '=' + fracToLatex(mAlt) + '(x-' + A.x + ')$$</p>';
+      s3Html += '<p class="dist-line"><strong>$$y=' + fracToLatex(mAlt) + 'x+' + A.y + '$$</strong></p>';
+      document.getElementById('step3Example').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s3Html + '</div></div>';
+
+      var hA = { x: 1, y: 4 }, hB = { x: -3, y: -1 }, hC = { x: 3, y: -1 };
+      var hHtml = '<p class="derivation-line">$A(' + hA.x + ',' + hA.y + '),\\ B(' + hB.x + ',' + hB.y + '),\\ C(' + hC.x + ',' + hC.y + ')$</p>';
+      hHtml += '<p class="dist-line">$BC$ מקבילה לציר ה-x (שיפוע 0), לכן הגובה מ-$A$ אליה הוא אנכי:</p>';
+      hHtml += '<p class="dist-line"><strong>$$x=' + hA.x + '$$</strong></p>';
+      document.getElementById('step4ExampleH').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(hA, hB, hC, { x: hA.x, y: hB.y }) + '</div><div class="example-calc-wrap">' + hHtml + '</div></div>';
+
+      var vA = { x: -2, y: 1 }, vB = { x: 2, y: -3 }, vC = { x: 2, y: 3 };
+      var vHtml = '<p class="derivation-line">$A(' + vA.x + ',' + vA.y + '),\\ B(' + vB.x + ',' + vB.y + '),\\ C(' + vC.x + ',' + vC.y + ')$</p>';
+      vHtml += '<p class="dist-line">$BC$ מקבילה לציר ה-y (שיפוע לא מוגדר), לכן הגובה מ-$A$ אליה הוא אופקי:</p>';
+      vHtml += '<p class="dist-line"><strong>$$y=' + vA.y + '$$</strong></p>';
+      document.getElementById('step4ExampleV').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(vA, vB, vC, { x: vB.x, y: vA.y }) + '</div><div class="example-calc-wrap">' + vHtml + '</div></div>';
+
+      renderMathInElement(document.getElementById('step-1'), katexOptions);
+    })();
+
+    /* ---------- Step 2: draggable lab ---------- */
+
+    var LW = 460, LH = 460, LPAD = 34, LXMIN = -8, LXMAX = 8, LYMIN = -8, LYMAX = 8;
+    var lmx = function (x) { return LPAD + (x - LXMIN) / (LXMAX - LXMIN) * (LW - 2 * LPAD); };
+    var lmy = function (y) { return LH - LPAD - (y - LYMIN) / (LYMAX - LYMIN) * (LH - 2 * LPAD); };
+    var linvx = function (px) { return LXMIN + (px - LPAD) / (LW - 2 * LPAD) * (LXMAX - LXMIN); };
+    var linvy = function (py) { return LYMAX - (py - LPAD) / (LH - 2 * LPAD) * (LYMAX - LYMIN); };
+
+    var LAB_PRESETS = {
+      general: { A: { x: 0, y: 6 }, B: { x: -4, y: 3 }, C: { x: 2, y: 0 } },
+      horizontal: { A: { x: 1, y: 4 }, B: { x: -3, y: -1 }, C: { x: 3, y: -1 } },
+      vertical: { A: { x: -2, y: 1 }, B: { x: 2, y: -3 }, C: { x: 2, y: 3 } }
+    };
+    var trianglePoints = { A: { x: 0, y: 6 }, B: { x: -4, y: 3 }, C: { x: 2, y: 0 } };
+    var draggingKey = null;
+
+    function applyPreset(name) {
+      var preset = LAB_PRESETS[name];
+      trianglePoints.A = { x: preset.A.x, y: preset.A.y };
+      trianglePoints.B = { x: preset.B.x, y: preset.B.y };
+      trianglePoints.C = { x: preset.C.x, y: preset.C.y };
+      updateTriangleVisual();
+    }
+
+    function updateLabReadout() {
+      var A = trianglePoints.A, B = trianglePoints.B, C = trianglePoints.C;
+      var readout = document.getElementById('triReadout');
+      readout.classList.remove('status-none', 'status-success');
+
+      if (isDegenerate(A, B, C)) {
+        readout.classList.add('status-none');
+        readout.innerHTML = 'שלוש הנקודות על ישר אחד (או חופפות) - גררו קודקוד ליצירת משולש תקין.';
+        return;
       }
-    };
+      readout.classList.add('status-success');
 
-    function quadSvgMarkup(name) { return renderShapeSVG(QUAD_DEFS[name]); }
-
-    /* ---------- Step 1: family cards ---------- */
-
-    var QUAD_PROP_LIST = {
-      'מקבילית': { sides: ['צלעות נגדיות מקבילות (שני זוגות)', 'צלעות נגדיות שוות (שני זוגות)'], diagonals: ['האלכסונים חוצים זה את זה'] },
-      'מלבן': { sides: ['כל תכונות המקבילית', '<span class="prop-angle-exception-inline">כל הזוויות בין הצלעות ישרות (90°)</span>'], diagonals: ['האלכסונים חוצים זה את זה', 'האלכסונים שווים זה לזה'] },
-      'מעוין': { sides: ['כל תכונות המקבילית', 'כל ארבע הצלעות שוות זו לזו'], diagonals: ['האלכסונים חוצים זה את זה', '<span class="prop-angle-exception-inline">האלכסונים מאונכים זה לזה</span>'] },
-      'ריבוע': { sides: ['כל תכונות המלבן וכל תכונות המעוין', 'כל הצלעות שוות, <span class="prop-angle-exception-inline">כל הזוויות ישרות</span>'], diagonals: ['האלכסונים חוצים זה את זה, שווים, <span class="prop-angle-exception-inline">ומאונכים</span>'] },
-      'טרפז': { sides: ['זוג אחד בלבד של צלעות נגדיות מקבילות (הבסיסים)'], diagonals: ['אין קשר מיוחד בין האלכסונים (אינם חוצים זה את זה)'] },
-      'טרפז שווה שוקיים': { sides: ['זוג אחד בלבד של צלעות נגדיות מקבילות', 'השוקיים שוות זו לזו'], diagonals: ['האלכסונים שווים זה לזה (אך אינם חוצים זה את זה)'] },
-      'טרפז ישר זווית': { sides: ['זוג אחד בלבד של צלעות נגדיות מקבילות'], diagonals: ['אין קשר מיוחד בין האלכסונים'], extra: '<span class="prop-angle-exception-inline">שוק אחת מאונכת לבסיסים — יוצרת שתי זוויות ישרות</span>' }
-    };
-
-    function buildQuadCard(name) {
-      var pl = QUAD_PROP_LIST[name];
-      var items = pl.sides.map(function (s) { return '<li>' + s + '</li>'; }).join('') +
-        pl.diagonals.map(function (s) { return '<li>' + s + '</li>'; }).join('') +
-        (pl.extra ? '<li>' + pl.extra + '</li>' : '');
-      return '<div class="quad-card">' +
-        '<div class="quad-svg-wrap">' + quadSvgMarkup(name) + '</div>' +
-        '<h4>' + name + '</h4>' +
-        '<ul class="quad-props">' + items + '</ul>' +
-        '</div>';
+      var mBC = slopeOrNull(B, C);
+      var mAlt = perpSlopeOrNull(mBC);
+      var html = '<p class="dist-line"><strong>שיפוע הבסיס BC:</strong> ' + (mBC === null ? 'לא מוגדר (אנכי)' : '$' + fmt2(mBC) + '$') + '</p>';
+      html += '<p class="dist-line"><strong>שיפוע הגובה מ-A:</strong> ' + (mAlt === null ? 'לא מוגדר (אנכי)' : '$' + fmt2(mAlt) + '$') + '</p>';
+      if (mAlt === null) {
+        html += '<p class="dist-line"><strong>משוואת הגובה:</strong> $x=' + fmt2(A.x) + '$</p>';
+        html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: הבסיס אנכי, לכן הגובה אופקי!</span></div>';
+      } else if (mAlt === 0) {
+        html += '<p class="dist-line"><strong>משוואת הגובה:</strong> $y=' + fmt2(A.y) + '$</p>';
+        html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: הבסיס אופקי, לכן הגובה אנכי!</span></div>';
+      } else {
+        html += '<p class="dist-line"><strong>משוואת הגובה:</strong> $y=' + fmt2(mAlt) + 'x+' + fmt2(A.y - mAlt * A.x) + '$</p>';
+      }
+      readout.innerHTML = html;
+      renderMathInElement(readout, katexOptions);
     }
 
-    document.getElementById('familyParallelogram').innerHTML =
-      '<div class="family-title">משפחת המקביליות</div>' +
-      '<div class="family-subtitle">מלבן ומעוין הם מקביליות מיוחדות; ריבוע הוא גם מלבן וגם מעוין בו-זמנית.</div>' +
-      '<div class="quad-grid">' + ['מקבילית', 'מלבן', 'מעוין', 'ריבוע'].map(buildQuadCard).join('') + '</div>';
+    function updateTriangleVisual() {
+      var A = trianglePoints.A, B = trianglePoints.B, C = trianglePoints.C;
+      document.getElementById('markerA').setAttribute('cx', lmx(A.x)); document.getElementById('markerA').setAttribute('cy', lmy(A.y));
+      document.getElementById('markerAHit').setAttribute('cx', lmx(A.x)); document.getElementById('markerAHit').setAttribute('cy', lmy(A.y));
+      document.getElementById('markerB').setAttribute('cx', lmx(B.x)); document.getElementById('markerB').setAttribute('cy', lmy(B.y));
+      document.getElementById('markerBHit').setAttribute('cx', lmx(B.x)); document.getElementById('markerBHit').setAttribute('cy', lmy(B.y));
+      document.getElementById('markerC').setAttribute('cx', lmx(C.x)); document.getElementById('markerC').setAttribute('cy', lmy(C.y));
+      document.getElementById('markerCHit').setAttribute('cx', lmx(C.x)); document.getElementById('markerCHit').setAttribute('cy', lmy(C.y));
+      document.getElementById('labelA').setAttribute('x', lmx(A.x) + 13); document.getElementById('labelA').setAttribute('y', lmy(A.y) - 10);
+      document.getElementById('labelB').setAttribute('x', lmx(B.x) + 13); document.getElementById('labelB').setAttribute('y', lmy(B.y) - 10);
+      document.getElementById('labelC').setAttribute('x', lmx(C.x) + 13); document.getElementById('labelC').setAttribute('y', lmy(C.y) - 10);
+      document.getElementById('triPoly').setAttribute('points',
+        lmx(A.x) + ',' + lmy(A.y) + ' ' + lmx(B.x) + ',' + lmy(B.y) + ' ' + lmx(C.x) + ',' + lmy(C.y));
 
-    document.getElementById('familyTrapezoid').innerHTML =
-      '<div class="family-title">משפחת הטרפזים</div>' +
-      '<div class="family-subtitle">בכל טרפז יש בדיוק זוג אחד של צלעות מקבילות (בסיסים) — לא שניים כמו במקבילית.</div>' +
-      '<div class="quad-grid">' + ['טרפז', 'טרפז שווה שוקיים', 'טרפז ישר זווית'].map(buildQuadCard).join('') + '</div>';
+      document.getElementById('edgeAB').setAttribute('x1', lmx(A.x)); document.getElementById('edgeAB').setAttribute('y1', lmy(A.y));
+      document.getElementById('edgeAB').setAttribute('x2', lmx(B.x)); document.getElementById('edgeAB').setAttribute('y2', lmy(B.y));
+      document.getElementById('edgeBC').setAttribute('x1', lmx(B.x)); document.getElementById('edgeBC').setAttribute('y1', lmy(B.y));
+      document.getElementById('edgeBC').setAttribute('x2', lmx(C.x)); document.getElementById('edgeBC').setAttribute('y2', lmy(C.y));
+      document.getElementById('edgeCA').setAttribute('x1', lmx(C.x)); document.getElementById('edgeCA').setAttribute('y1', lmy(C.y));
+      document.getElementById('edgeCA').setAttribute('x2', lmx(A.x)); document.getElementById('edgeCA').setAttribute('y2', lmy(A.y));
+      document.getElementById('edgeAB').setAttribute('stroke', '#94a3b8');
+      document.getElementById('edgeBC').setAttribute('stroke', COLOR_BASE);
+      document.getElementById('edgeCA').setAttribute('stroke', '#94a3b8');
 
-    /* ---------- Step 2: properties lab ---------- */
-
-    var labMode = 'propToShape';
-    var activeProp = null;
-    var activeShape = null;
-
-    function buildShapeGrid() {
-      document.getElementById('shapeGrid').innerHTML = QUADS.map(function (name) {
-        return '<div class="shape-card" data-shape="' + name + '">' + quadSvgMarkup(name) +
-          '<div class="shape-name">' + name + '</div></div>';
-      }).join('');
+      updateLabReadout();
     }
 
-    function buildPropButtons() {
-      document.getElementById('propBtnGrid').innerHTML = PROP_DEFS.map(function (p) {
-        return '<button type="button" class="prop-btn" data-prop="' + p.key + '">' + p.text + '</button>';
-      }).join('');
-      document.querySelectorAll('.prop-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          document.querySelectorAll('.prop-btn').forEach(function (b) { b.classList.remove('prop-active'); });
-          this.classList.add('prop-active');
-          activeProp = this.dataset.prop;
-          applyPropHighlight();
+    function buildTriangleSkeleton() {
+      var markup = buildGridMarkup(lmx, lmy, LXMIN, LXMAX, LYMIN, LYMAX);
+      markup += '<polygon id="triPoly" points="" class="tri-poly-fill"/>';
+      markup += '<line id="edgeAB" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<line id="edgeBC" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<line id="edgeCA" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<text id="labelA" class="vertex-label">A</text>';
+      markup += '<text id="labelB" class="vertex-label">B</text>';
+      markup += '<text id="labelC" class="vertex-label">C</text>';
+      markup += '<circle id="markerAHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
+      markup += '<circle id="markerBHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
+      markup += '<circle id="markerCHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerC" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
+      document.getElementById('triSvg').innerHTML = markup;
+
+      VERTEX_KEYS.forEach(function (key) {
+        var marker = document.getElementById('marker' + key + 'Hit');
+        marker.addEventListener('pointerdown', function (e) {
+          draggingKey = key;
+          marker.setPointerCapture(e.pointerId);
+          marker.style.cursor = 'grabbing';
+          e.preventDefault();
+        });
+        marker.addEventListener('pointermove', function (e) {
+          if (draggingKey !== key) return;
+          e.preventDefault();
+          var svg = document.getElementById('triSvg');
+          var rect = svg.getBoundingClientRect();
+          var scaleX = LW / rect.width, scaleY = LH / rect.height;
+          var px = (e.clientX - rect.left) * scaleX;
+          var py = (e.clientY - rect.top) * scaleY;
+          trianglePoints[key].x = clamp(Math.round(linvx(px)), LXMIN, LXMAX);
+          trianglePoints[key].y = clamp(Math.round(linvy(py)), LYMIN, LYMAX);
+          updateTriangleVisual();
+        });
+        marker.addEventListener('pointerup', function () {
+          draggingKey = null;
+          marker.style.cursor = 'grab';
         });
       });
+
+      updateTriangleVisual();
     }
 
-    function buildShapeSelect() {
-      var sel = document.getElementById('shapeSelect');
-      sel.innerHTML = '<option value="">בחרו מרובע...</option>' + QUADS.map(function (name) {
-        return '<option value="' + name + '">' + name + '</option>';
-      }).join('');
-      sel.addEventListener('change', function () {
-        activeShape = this.value || null;
-        applyShapeHighlight();
+    buildTriangleSkeleton();
+    document.getElementById('presetGeneral').addEventListener('click', function () { applyPreset('general'); });
+    document.getElementById('presetHorizontal').addEventListener('click', function () { applyPreset('horizontal'); });
+    document.getElementById('presetVertical').addEventListener('click', function () { applyPreset('vertical'); });
+
+    /* ---------- Step 3: quiz generators ---------- */
+
+    function buildDistractorSet(correctStr, rawCandidates) {
+      var seen = {}; seen[correctStr] = true;
+      var out = [];
+      rawCandidates.forEach(function (v) {
+        var s = typeof v === 'string' ? v : String(v);
+        if (!seen[s]) { seen[s] = true; out.push(s); }
       });
-    }
-
-    function clearShapeVisuals() {
-      document.querySelectorAll('.shape-card').forEach(function (card) {
-        card.classList.remove('shape-highlighted', 'shape-dimmed');
-      });
-    }
-
-    function applyPropHighlight() {
-      clearShapeVisuals();
-      if (!activeProp) {
-        document.getElementById('labReadout').textContent = 'בחרו תכונה מהרשימה למעלה כדי להתחיל.';
-        return;
+      var numericBase = parseFloat(correctStr);
+      if (!isNaN(numericBase) && /^-?\d+(\.\d+)?$/.test(correctStr)) {
+        var bump = 1, guard = 0;
+        while (out.length < 3 && guard < 30) {
+          guard++;
+          var filler = String(numericBase + bump * (out.length % 2 === 0 ? 1 : -1));
+          if (!seen[filler]) { seen[filler] = true; out.push(filler); }
+          bump++;
+        }
       }
-      var matching = QUADS.filter(function (name) { return SHAPE_PROPS[name][activeProp] === true; });
-      document.querySelectorAll('.shape-card').forEach(function (card) {
-        var name = card.dataset.shape;
-        if (matching.indexOf(name) !== -1) card.classList.add('shape-highlighted');
-        else card.classList.add('shape-dimmed');
-      });
-      var propText = PROP_DEFS.filter(function (p) { return p.key === activeProp; })[0].text;
-      document.getElementById('labReadout').innerHTML = 'תכונה: <strong>' + propText + '</strong><br>מרובעים שמקיימים אותה: <strong>' + matching.join(', ') + '</strong>';
+      return out.slice(0, 3);
     }
 
-    function applyShapeHighlight() {
-      clearShapeVisuals();
-      if (!activeShape) {
-        document.getElementById('labReadout').textContent = 'בחרו מרובע מהרשימה כדי לראות את תכונותיו.';
-        return;
-      }
-      document.querySelectorAll('.shape-card').forEach(function (card) {
-        if (card.dataset.shape === activeShape) card.classList.add('shape-highlighted');
-        else card.classList.add('shape-dimmed');
-      });
-      var props = SHAPE_PROPS[activeShape];
-      var matchingProps = PROP_DEFS.filter(function (p) { return props[p.key] === true; });
-      var listHtml = matchingProps.map(function (p) { return '<li>' + p.text + '</li>'; }).join('');
-      document.getElementById('labReadout').innerHTML = 'תכונות ' + activeShape + ':<ul>' + listHtml + '</ul>';
+    var SLOPE_CHOICES = [[1, 2], [1, 3], [2, 3], [3, 2], [2, 1], [1, 4], [3, 4], [3, 1]];
+    function buildAltitudeTriangle() {
+      var pick = randChoice(SLOPE_CHOICES);
+      var mBC = makeFrac(pick[0] * randChoice([1, -1]), pick[1]);
+      var B = { x: randInt(-4, 0), y: randInt(-4, 4) };
+      var C = { x: B.x + mBC.den, y: B.y + mBC.num };
+      var scale = randInt(2, 3);
+      C = { x: B.x + mBC.den * scale, y: B.y + mBC.num * scale };
+      var A;
+      var attempts = 0;
+      do { A = { x: randInt(-4, 4), y: randInt(-4, 4) }; attempts++; } while (isDegenerate(A, B, C) && attempts < 40);
+      var mAlt = fracNeg(fracDiv(intFrac(1), mBC));
+      return { A: A, B: B, C: C, mBC: mBC, mAlt: mAlt };
     }
 
-    document.querySelectorAll('.mode-tab-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        document.querySelectorAll('.mode-tab-btn').forEach(function (b) { b.classList.remove('tab-active'); });
-        this.classList.add('tab-active');
-        labMode = this.dataset.mode;
-        document.getElementById('propModePanel').hidden = (labMode !== 'propToShape');
-        document.getElementById('shapeModePanel').hidden = (labMode !== 'shapeToProp');
-        clearShapeVisuals();
-        if (labMode === 'propToShape') applyPropHighlight();
-        else applyShapeHighlight();
-      });
-    });
-
-    buildShapeGrid();
-    buildPropButtons();
-    buildShapeSelect();
-    document.getElementById('labReadout').textContent = 'בחרו תכונה מהרשימה למעלה כדי להתחיל.';
-
-    /* ---------- Step 3: quiz question banks ---------- */
-
-    var COMBO_BANK = [
-      { promptText: 'באיזה מרובע האלכסונים חוצים זה את זה, אך אינם שווים ואינם מאונכים?', correct: 'מקבילית', explain: 'חציה הדדית מתקיימת בכל המקביליות (מקבילית, מלבן, מעוין, ריבוע). שוללים את מלבן וריבוע (שם האלכסונים גם שווים) ואת מעוין וריבוע (שם האלכסונים גם מאונכים) — נשארת רק מקבילית.' },
-      { promptText: 'באיזה מרובע האלכסונים חוצים זה את זה וגם שווים, אך אינם מאונכים?', correct: 'מלבן', explain: 'חציה הדדית מתקיימת בכל המקביליות. שוויון האלכסונים מצמצם למלבן וריבוע. מכיוון שבריבוע האלכסונים גם מאונכים ואנחנו שוללים זאת — נשאר מלבן.' },
-      { promptText: 'באיזה מרובע האלכסונים חוצים זה את זה ומאונכים, אך אינם שווים?', correct: 'מעוין', explain: 'חציה הדדית מתקיימת בכל המקביליות. אלכסונים מאונכים מצמצם למעוין וריבוע. מכיוון שבריבוע האלכסונים גם שווים ואנחנו שוללים זאת — נשאר מעוין.' },
-      { promptText: 'באיזה מרובע כל ארבע הצלעות שוות וגם כל הזוויות ישרות?', correct: 'ריבוע', explain: 'כל הצלעות שוות מתקיים במעוין ובריבוע בלבד. מביניהם, רק בריבוע כל הזוויות גם ישרות — לכן זהו ריבוע.' },
-      { promptText: 'איזה מהמרובעים הוא טרפז שבו השוקיים אינן שוות, האלכסונים אינם שווים, ואין בו זווית ישרה בין שוק לבסיס?', correct: 'טרפז', explain: 'זהו טרפז "רגיל" (כללי) — לא שווה-שוקיים (השוקיים לא שוות ואין אלכסונים שווים) ולא ישר-זווית (אין זווית ישרה בין שוק לבסיס).' },
-      { promptText: 'באיזה טרפז השוקיים שוות זו לזו והאלכסונים שווים זה לזה?', correct: 'טרפז שווה שוקיים', explain: 'זהו סימן ההיכר של טרפז שווה שוקיים: שוקיים שוות ואלכסונים שווים (אך אינם חוצים זה את זה).' },
-      { promptText: 'באיזה טרפז יש שוק אחת המאונכת לבסיסים (יוצרת שתי זוויות ישרות)?', correct: 'טרפז ישר זווית', explain: 'זהו סימן ההיכר של טרפז ישר זווית: שוק אחת ניצבת לשני הבסיסים, ויוצרת שתי זוויות ישרות.' }
-    ];
-
-    var CLASSIC_BANK = [
-      { promptText: 'נתונה מקבילית שבה האלכסונים שווים זה לזה. איזה מרובע נוצר?', correct: 'מלבן', explain: 'זהו משפט ידוע: מקבילית שבה האלכסונים שווים היא מלבן.' },
-      { promptText: 'נתונה מקבילית שבה האלכסונים מאונכים זה לזה. איזה מרובע נוצר?', correct: 'מעוין', explain: 'זהו משפט ידוע: מקבילית שבה האלכסונים מאונכים היא מעוין.' },
-      { promptText: 'נתונה מקבילית שבה האלכסונים גם שווים וגם מאונכים זה לזה. איזה מרובע נוצר?', correct: 'ריבוע', explain: 'מקבילית עם אלכסונים שווים היא מלבן, ומקבילית עם אלכסונים מאונכים היא מעוין. מרובע שהוא גם מלבן וגם מעוין הוא ריבוע.' }
-    ];
-
-    var TF_BANK = [
-      { text: 'במקבילית האלכסונים חוצים זה את זה.', answer: true, explain: 'זו תכונת היסוד של כל מקבילית — האלכסונים חוצים זה את זה.' },
-      { text: 'בכל מלבן האלכסונים שווים זה לזה.', answer: true, explain: 'נכון — זו אחת מתכונות ההיכר של מלבן.' },
-      { text: 'בכל מעוין האלכסונים מאונכים זה לזה.', answer: true, explain: 'נכון — זו אחת מתכונות ההיכר של מעוין.' },
-      { text: 'בטרפז שווה שוקיים האלכסונים חוצים זה את זה.', answer: false, explain: 'לא נכון. בטרפז שווה שוקיים האלכסונים שווים זה לזה, אך אינם חוצים זה את זה (בניגוד למקבילית).' },
-      { text: 'בטרפז (כללי) יש שני זוגות של צלעות נגדיות מקבילות.', answer: false, explain: 'לא נכון. בטרפז יש בדיוק זוג אחד של צלעות נגדיות מקבילות (הבסיסים) — לא שניים.' },
-      { text: 'בריבוע כל ארבע הצלעות שוות זו לזו.', answer: true, explain: 'נכון — ריבוע הוא גם מעוין, ובמעוין כל הצלעות שוות.' },
-      { text: 'במקבילית (הכללית) כל ארבע הצלעות שוות זו לזו.', answer: false, explain: 'לא נכון. במקבילית הכללית רק זוגות הצלעות הנגדיות שוות זה לזה — לא כל הארבע (זו תכונה של מעוין וריבוע בלבד).' },
-      { text: 'בטרפז ישר זווית יש שתי זוויות ישרות בין שוק אחת לבסיסים.', answer: true, explain: 'נכון — זו ההגדרה של טרפז ישר זווית.' },
-      { text: 'בכל טרפז האלכסונים שווים זה לזה.', answer: false, explain: 'לא נכון. רק בטרפז שווה שוקיים האלכסונים שווים — לא בכל טרפז.' },
-      { text: 'אלכסוני המעוין חוצים זה את זה בנוסף להיותם מאונכים.', answer: true, explain: 'נכון — מעוין הוא גם מקבילית (ולכן אלכסוניו חוצים זה את זה), ובנוסף אלכסוניו מאונכים.' }
-    ];
-
-    function pickN(bank, n) {
-      var idxs = [];
-      var picks = [];
-      while (picks.length < Math.min(n, bank.length)) {
-        var idx = randInt(0, bank.length - 1);
-        if (idxs.indexOf(idx) !== -1) continue;
-        idxs.push(idx);
-        picks.push(bank[idx]);
-      }
-      return picks;
-    }
-
-    function makeShapeChoiceQuestion(item) {
-      var distractors = shuffle(QUADS.filter(function (s) { return s !== item.correct; })).slice(0, 3);
-      var options = shuffle([item.correct].concat(distractors));
+    function makeBaseSlopeQuestion() {
+      var t = buildAltitudeTriangle();
+      var correct = fracToStr(t.mBC);
+      var wrongs = buildDistractorSet(correct, [
+        fracToStr(fracNeg(t.mBC)),
+        fracToStr(fracDiv(intFrac(1), t.mBC)),
+        fracToStr(t.mAlt)
+      ]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">$$m_{BC}=\\dfrac{y_C-y_B}{x_C-x_B}=' + fracToLatex(t.mBC) + '$$</p>';
       return {
-        kind: 'choice', promptText: item.promptText,
-        options: options, correctIndex: options.indexOf(item.correct), explain: item.explain
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שיפוע הצלע ' + ltrToken('BC') + '?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
+      };
+    }
+
+    function makeAltitudeSlopeQuestion() {
+      var t = buildAltitudeTriangle();
+      var correct = fracToStr(t.mAlt);
+      var wrongs = buildDistractorSet(correct, [
+        fracToStr(t.mBC),
+        fracToStr(fracNeg(t.mBC)),
+        fracToStr(fracDiv(intFrac(1), t.mBC))
+      ]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">$$m_{BC}=' + fracToLatex(t.mBC) + ' \\;\\Rightarrow\\; m_{\\text{גובה}}=-\\dfrac{1}{m_{BC}}=' + fracToLatex(t.mAlt) + '$$</p>';
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שיפוע הגובה היוצא מקודקוד ' + ltrToken('A') + ' לצלע ' + ltrToken('BC') + '?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
+      };
+    }
+
+    function makeAltitudeIntersectionQuestion() {
+      var t = buildAltitudeTriangle();
+      var mNum = t.mAlt.num / t.mAlt.den;
+      var n = t.A.y - mNum * t.A.x;
+      var correct = fracToStr(makeFrac(Math.round(n * t.mAlt.den), t.mAlt.den));
+      var wrongs = buildDistractorSet(correct, [
+        String(t.A.y),
+        String(-parseFloat(correct)),
+        fracToStr(makeFrac(Math.round(n * t.mAlt.den) + t.mAlt.den, t.mAlt.den))
+      ]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">שיפוע הגובה: $m=' + fracToLatex(t.mAlt) + '$</p><p class="dist-line">$$y-' + t.A.y + '=' + fracToLatex(t.mAlt) + '(x-' + t.A.x + ') \\;\\Rightarrow\\; y=' + fracToLatex(t.mAlt) + 'x+' + correct + '$$</p>';
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. במשוואת הגובה היוצא מקודקוד ' + ltrToken('A') + ' בצורה $y=mx+n$, מהו $n$?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
+      };
+    }
+
+    function buildHorizontalBaseTriangle() {
+      var y0 = randInt(-3, 3), x0 = randInt(-4, -1);
+      var baseLen = randInt(3, 6);
+      var B = { x: x0, y: y0 }, C = { x: x0 + baseLen, y: y0 };
+      var A = { x: randInt(x0, x0 + baseLen), y: y0 + randInt(2, 5) * randChoice([1, -1]) };
+      return { A: A, B: B, C: C };
+    }
+    function makeHorizontalCaseQuestion() {
+      var t = buildHorizontalBaseTriangle();
+      var correct = 'x=' + t.A.x;
+      var wrongs = buildDistractorSet(correct, [
+        'y=' + t.A.y,
+        'x=' + t.B.x,
+        'x=' + (t.A.x + 1)
+      ]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-x (שיפוע 0), לכן הגובה מ-' + ltrToken('A') + ' אליה הוא אנכי - ישר העובר דרך $A$:</p><p class="dist-line"><strong>$$' + correct + '$$</strong></p>';
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-x). מהי משוואת הגובה היוצא מקודקוד ' + ltrToken('A') + '?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
+      };
+    }
+
+    function buildVerticalBaseTriangle() {
+      var x0 = randInt(-3, 3), y0 = randInt(-4, -1);
+      var baseLen = randInt(3, 6);
+      var B = { x: x0, y: y0 }, C = { x: x0, y: y0 + baseLen };
+      var A = { x: x0 + randInt(2, 5) * randChoice([1, -1]), y: randInt(y0, y0 + baseLen) };
+      return { A: A, B: B, C: C };
+    }
+    function makeVerticalCaseQuestion() {
+      var t = buildVerticalBaseTriangle();
+      var correct = 'y=' + t.A.y;
+      var wrongs = buildDistractorSet(correct, [
+        'x=' + t.A.x,
+        'y=' + t.B.y,
+        'y=' + (t.A.y + 1)
+      ]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-y (שיפוע לא מוגדר), לכן הגובה מ-' + ltrToken('A') + ' אליה הוא אופקי - ישר העובר דרך $A$:</p><p class="dist-line"><strong>$$' + correct + '$$</strong></p>';
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-y). מהי משוואת הגובה היוצא מקודקוד ' + ltrToken('A') + '?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
       };
     }
 
     function generateQuizQuestions() {
-      var qs = [];
-
-      pickN(COMBO_BANK, 4).forEach(function (item) { qs.push(makeShapeChoiceQuestion(item)); });
-      CLASSIC_BANK.forEach(function (item) { qs.push(makeShapeChoiceQuestion(item)); });
-      pickN(TF_BANK, 3).forEach(function (item) {
-        var opts = shuffle(['נכון', 'לא נכון']);
-        var correctLabel = item.answer ? 'נכון' : 'לא נכון';
-        qs.push({
-          kind: 'choice', promptText: item.text,
-          options: opts, correctIndex: opts.indexOf(correctLabel), explain: item.explain
-        });
-      });
-
+      var qs = [
+        makeBaseSlopeQuestion(),
+        makeAltitudeSlopeQuestion(),
+        makeAltitudeIntersectionQuestion(),
+        makeHorizontalCaseQuestion(),
+        makeVerticalCaseQuestion()
+      ];
       qs.forEach(function (q, i) { q.id = 'shp-04-q' + (i + 1); });
       return shuffle(qs);
     }
 
-    /* ---------- Step 3: quiz rendering ---------- */
-
     function buildQuizDotsSkeleton() {
       var wrap = document.getElementById('quizDots');
       wrap.innerHTML = '';
-      for (var i = 0; i < 10; i++) {
+      for (var i = 0; i < QUIZ_SIZE; i++) {
         var dot = document.createElement('span');
         dot.className = 'quiz-dot';
         wrap.appendChild(dot);
@@ -735,8 +866,7 @@
       feedbackEl.innerHTML = '';
       document.getElementById('btnNextQuestion').hidden = true;
 
-      var html = '';
-      if (q.promptText) html += '<p class="quiz-instruction">' + q.promptText + '</p>';
+      var html = '<p class="quiz-instruction">' + q.promptText + '</p>';
       html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
         return '<button type="button" class="quiz-option-btn" data-index="' + i + '">' + opt + '</button>';
       }).join('') + '</div>';
@@ -750,6 +880,8 @@
           submitAnswer(q.options[idx] === q.options[q.correctIndex], this);
         });
       });
+
+      renderMathInElement(document.getElementById('quizBody'), katexOptions);
     }
 
     function showFeedback(isCorrect, explain) {
@@ -757,6 +889,7 @@
       el.hidden = false;
       el.className = 'quiz-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
       el.innerHTML = '<strong>' + (isCorrect ? 'תשובה נכונה!' : 'לא נכון.') + '</strong><div class="feedback-explain">' + (explain || '') + '</div>';
+      renderMathInElement(el, katexOptions);
     }
 
     function submitAnswer(isCorrect, clickedBtn) {
@@ -788,24 +921,10 @@
       renderQuizQuestion();
     }
 
-    /* ---------- Step 4: results, summary table & certificate ---------- */
-
-    var SUMMARY_TABLE = [
-      { name: 'מקבילית', sides: 'שני זוגות נגדיים מקבילים ושווים', diagonals: 'חוצים זה את זה' },
-      { name: 'מלבן', sides: 'כמו מקבילית + כל הזוויות ישרות', diagonals: 'חוצים זה את זה ושווים' },
-      { name: 'מעוין', sides: 'כמו מקבילית + כל הצלעות שוות', diagonals: 'חוצים זה את זה ומאונכים' },
-      { name: 'ריבוע', sides: 'כל הצלעות שוות + כל הזוויות ישרות', diagonals: 'חוצים, שווים ומאונכים' },
-      { name: 'טרפז', sides: 'זוג אחד בלבד מקביל (בסיסים)', diagonals: 'ללא קשר מיוחד' },
-      { name: 'טרפז שווה שוקיים', sides: 'זוג אחד מקביל + שוקיים שוות', diagonals: 'שווים (אך לא חוצים)' },
-      { name: 'טרפז ישר זווית', sides: 'זוג אחד מקביל + שוק מאונכת לבסיסים', diagonals: 'ללא קשר מיוחד' }
-    ];
-
-    document.getElementById('summaryTableBody').innerHTML = SUMMARY_TABLE.map(function (row) {
-      return '<tr><td>' + row.name + '</td><td>' + row.sides + '</td><td>' + row.diagonals + '</td></tr>';
-    }).join('');
+    /* ---------- Step 4: results & certificate ---------- */
 
     function renderResults() {
-      var total = 10;
+      var total = QUIZ_SIZE;
       var correct = state.quiz.score;
       var pct = Math.round((correct / total) * 100);
       document.getElementById('resultsCorrect').textContent = correct;
@@ -829,7 +948,7 @@
         grade: 'י\'',
         level: '4 יח"ל',
         mainTopic: 'גיאומטריה אנליטית - צורות גיאומטריות',
-        subTopic: 'תכונות המרובעים',
+        subTopic: 'גובה במשולש ומציאת משוואתו',
         mode: 'תרגול',
         time: quizTiming.totalSeconds,
         score: pct
@@ -867,7 +986,7 @@
       if (currentStep === 3) {
         var quizDone = state.quiz.questions.length > 0 && state.quiz.index >= state.quiz.questions.length;
         btnNext.disabled = !quizDone;
-        btnNext.title = quizDone ? '' : 'השלימו את כל 10 השאלות כדי להמשיך';
+        btnNext.title = quizDone ? '' : 'השלימו את כל 5 השאלות כדי להמשיך';
       } else {
         btnNext.disabled = false;
         btnNext.title = '';
@@ -906,7 +1025,7 @@
       if (state.quiz.index < state.quiz.questions.length) {
         renderQuizQuestion();
       } else {
-        document.getElementById('quizBody').innerHTML = '<p class="quiz-complete-msg">כל הכבוד! סיימתם את כל 10 השאלות. לחצו על "הבא" כדי לראות את הסיכום שלכם.</p>';
+        document.getElementById('quizBody').innerHTML = '<p class="quiz-complete-msg">כל הכבוד! סיימתם את כל 5 השאלות. לחצו על "הבא" כדי לראות את הסיכום שלכם.</p>';
         document.getElementById('quizFeedback').hidden = true;
         document.getElementById('btnNextQuestion').hidden = true;
         if (quizTiming.startTime) {
@@ -973,6 +1092,7 @@
 
     populateTeacherDatalist();
     updateNavButtons();
+    renderMathInElement(document.body, katexOptions);
   </script>
 </body>
 </html>
