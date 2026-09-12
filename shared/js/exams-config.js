@@ -86,6 +86,7 @@ function resolveExamConfig(code) {
   return {
     code: code,
     title: cfg.title,
+    timeLimit: cfg.timeLimit || null,
     questionsCount: cfg.questionsCount,
     grade: course.grade,
     level: course.level,

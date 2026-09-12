@@ -48,6 +48,16 @@
     }
     .code-gate-success h4 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; }
 
+    /* Step 2: exam confirmation / lobby card */
+    .exam-confirm-card { max-width: 420px; margin: 20px auto; text-align: center; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 28px 22px; }
+    .exam-confirm-card h3 { font-size: 1.15rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 16px; }
+    .exam-confirm-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; }
+    .exam-confirm-row span:first-child { color: var(--text-muted); font-weight: 700; }
+    .exam-confirm-row span:last-child { font-weight: 700; color: var(--blue-deep); }
+    .exam-confirm-notice { margin-top: 16px; background: var(--red-soft); border: 1px solid var(--red-error); color: #8f2323; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 0.88rem; font-weight: 700; }
+    .exam-confirm-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .exam-confirm-actions .btn { flex: 1; }
+
     /* Name gate (reused pattern from standard lessons) */
     .name-gate { max-width: 420px; margin: 20px auto; text-align: center; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 28px 22px; }
     .name-gate-text { font-weight: 700; margin-bottom: 16px; color: var(--blue-deep); }
@@ -154,7 +164,7 @@
   </div>
 
   <div class="lesson-container">
-    <step-progress id="examProgress" current-step="1" labels="קוד מבדק,זיהוי,מבחן,סיכום"></step-progress>
+    <step-progress id="examProgress" current-step="1" labels="קוד מבדק,אישור,זיהוי,מבחן,סיכום"></step-progress>
 
     <div class="lesson-card">
 
@@ -164,16 +174,28 @@
 
         <div class="code-gate">
           <div class="code-gate-error" id="codeError" hidden>קוד המבדק אינו תקין. אנא בדקו עם המורה ונסו שוב.</div>
-          <div class="code-gate-success" id="codeSuccess" hidden>
-            <h4 id="codeSuccessTitle"></h4>
-            <p id="codeSuccessMeta"></p>
-          </div>
           <input type="text" id="examCodeInput" class="code-gate-input" placeholder="לדוגמה: GEO-101" autocomplete="off">
           <button type="button" id="btnValidateCode" class="btn btn-primary">אמת קוד</button>
         </div>
       </section>
 
       <section class="step-panel" id="step-2" data-step="2" hidden>
+        <h2 class="step-heading">אישור מבדק</h2>
+        <p class="step-intro">בדקו את פרטי המבדק לפני שממשיכים</p>
+
+        <div class="exam-confirm-card">
+          <h3 id="confirmExamTitle"></h3>
+          <div class="exam-confirm-row"><span>משך זמן</span><span id="confirmTimeLimit"></span></div>
+          <div class="exam-confirm-row"><span>מספר שאלות</span><span id="confirmQuestionCount"></span></div>
+          <div class="exam-confirm-notice">שימו לב: אנא ודאו עם המורה שזהו המבחן הנכון לפני תחילת העבודה.</div>
+          <div class="exam-confirm-actions">
+            <button type="button" id="btnSwitchCode" class="btn btn-secondary">החלף קוד</button>
+            <button type="button" id="btnConfirmStart" class="btn btn-primary">התחל מבחן</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-3" data-step="3" hidden>
         <h2 class="step-heading">זיהוי תלמיד/ה</h2>
         <p class="step-intro" id="step2ExamTitle"></p>
 
@@ -187,7 +209,7 @@
         </div>
       </section>
 
-      <section class="step-panel" id="step-3" data-step="3" hidden>
+      <section class="step-panel" id="step-4" data-step="4" hidden>
         <h2 class="step-heading">מבחן</h2>
 
         <div class="exam-loading" id="examLoading">טוען שאלות מהמבדק...</div>
@@ -215,7 +237,7 @@
         </div>
       </section>
 
-      <section class="step-panel" id="step-4" data-step="4" hidden>
+      <section class="step-panel" id="step-5" data-step="5" hidden>
         <h2 class="step-heading">סיכום המבדק</h2>
 
         <div class="printable-area">
@@ -297,9 +319,7 @@
     function validateExamCode() {
       var code = document.getElementById('examCodeInput').value.trim();
       var errorEl = document.getElementById('codeError');
-      var successEl = document.getElementById('codeSuccess');
       errorEl.hidden = true;
-      successEl.hidden = true;
 
       if (!code || !isValidExamCode(code)) {
         errorEl.hidden = false;
@@ -307,13 +327,15 @@
       }
 
       examConfig = resolveExamConfig(code);
-      document.getElementById('codeSuccessTitle').textContent = examConfig.title;
-      document.getElementById('codeSuccessMeta').textContent = examConfig.grade + ' · ' + examConfig.level + ' · ' + examConfig.questionsCount + ' שאלות';
-      successEl.hidden = false;
       document.title = examConfig.title + ' | מבדק כיתתי';
       document.getElementById('step2ExamTitle').textContent = examConfig.title;
 
-      setTimeout(function () { goToStep(2); }, 900);
+      document.getElementById('confirmExamTitle').textContent = examConfig.title;
+      document.getElementById('confirmTimeLimit').textContent =
+        examConfig.timeLimit ? (examConfig.timeLimit + ' דקות') : 'ללא הגבלת זמן';
+      document.getElementById('confirmQuestionCount').textContent = examConfig.questionsCount;
+
+      goToStep(2);
     }
 
     document.getElementById('btnValidateCode').addEventListener('click', validateExamCode);
@@ -321,7 +343,20 @@
       if (e.key === 'Enter') validateExamCode();
     });
 
-    /* ---------- Step 2: student + teacher identification ---------- */
+    /* ---------- Step 2: exam confirmation / lobby ---------- */
+
+    document.getElementById('btnConfirmStart').addEventListener('click', function () {
+      goToStep(3);
+    });
+
+    document.getElementById('btnSwitchCode').addEventListener('click', function () {
+      document.getElementById('examCodeInput').value = '';
+      document.getElementById('codeError').hidden = true;
+      goToStep(1);
+      document.getElementById('examCodeInput').focus();
+    });
+
+    /* ---------- Step 3: student + teacher identification ---------- */
 
     document.getElementById('btnStartExam').addEventListener('click', function () {
       studentName = document.getElementById('studentNameInput').value.trim();
@@ -336,7 +371,7 @@
 
       examTiming.startTime = Date.now();
       examTiming.totalSeconds = null;
-      goToStep(3);
+      goToStep(4);
       loadExamQuestions();
     });
 
@@ -481,7 +516,7 @@
         if (examState.answers[i] === q.correctIndex) correct++;
       });
       renderExamResults(correct, examState.questions.length);
-      goToStep(4);
+      goToStep(5);
     });
 
     /* ---------- Step 4: results + certificate ---------- */
