@@ -475,6 +475,9 @@
       var marker = document.getElementById('freeMarker');
       marker.setAttribute('cx', lmx(freePoint.x));
       marker.setAttribute('cy', lmy(freePoint.y));
+      var markerHit = document.getElementById('freeMarkerHit');
+      markerHit.setAttribute('cx', lmx(freePoint.x));
+      markerHit.setAttribute('cy', lmy(freePoint.y));
 
       var bFrac = fracSub(intFrac(freePoint.y), fracMul(GIVEN_M2, intFrac(freePoint.x)));
       var perpPts = clipLineToGrid({ x: freePoint.x, y: freePoint.y }, { x: GIVEN_M2.den, y: GIVEN_M2.num }, LXMIN, LXMAX, LYMIN, LYMAX);
@@ -511,17 +514,20 @@
       markup += '<line x1="' + lmx(givenPts[0].x) + '" y1="' + lmy(givenPts[0].y) + '" x2="' + lmx(givenPts[1].x) + '" y2="' + lmy(givenPts[1].y) + '" class="given-line"/>';
       markup += '<line id="perpLine" x1="0" y1="0" x2="0" y2="0" class="perp-line"/>';
       markup += '<polyline id="rightAngleMark" class="right-angle-mark"/>';
-      markup += '<circle id="freeMarker" cx="0" cy="0" r="9" class="drag-marker"/>';
+      markup += '<circle id="freeMarkerHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="freeMarker" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
       document.getElementById('perpSvg').innerHTML = markup;
 
-      var marker = document.getElementById('freeMarker');
+      var marker = document.getElementById('freeMarkerHit');
       marker.addEventListener('pointerdown', function (e) {
         draggingPoint = true;
         marker.setPointerCapture(e.pointerId);
         marker.style.cursor = 'grabbing';
+        e.preventDefault();
       });
       marker.addEventListener('pointermove', function (e) {
         if (!draggingPoint) return;
+        e.preventDefault();
         var svg = document.getElementById('perpSvg');
         var rect = svg.getBoundingClientRect();
         var scaleX = LW / rect.width, scaleY = LH / rect.height;

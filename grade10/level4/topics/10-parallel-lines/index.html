@@ -444,6 +444,9 @@
       var mPoint = document.getElementById('freeMarker');
       mPoint.setAttribute('cx', lmx(freePoint.x));
       mPoint.setAttribute('cy', lmy(freePoint.y));
+      var mPointHit = document.getElementById('freeMarkerHit');
+      mPointHit.setAttribute('cx', lmx(freePoint.x));
+      mPointHit.setAttribute('cy', lmy(freePoint.y));
 
       var newB = freePoint.y - GIVEN_M * freePoint.x;
       var parallelPts = clipLineToGrid({ x: freePoint.x, y: freePoint.y }, { x: 1, y: GIVEN_M }, LXMIN, LXMAX, LYMIN, LYMAX);
@@ -459,17 +462,20 @@
       var givenPts = clipLineToGrid({ x: 0, y: GIVEN_B }, { x: 1, y: GIVEN_M }, LXMIN, LXMAX, LYMIN, LYMAX);
       markup += '<line x1="' + lmx(givenPts[0].x) + '" y1="' + lmy(givenPts[0].y) + '" x2="' + lmx(givenPts[1].x) + '" y2="' + lmy(givenPts[1].y) + '" class="given-line"/>';
       markup += '<line id="parallelLine" x1="0" y1="0" x2="0" y2="0" class="parallel-line"/>';
-      markup += '<circle id="freeMarker" cx="0" cy="0" r="9" class="drag-marker"/>';
+      markup += '<circle id="freeMarkerHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="freeMarker" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
       document.getElementById('parallelSvg').innerHTML = markup;
 
-      var marker = document.getElementById('freeMarker');
+      var marker = document.getElementById('freeMarkerHit');
       marker.addEventListener('pointerdown', function (e) {
         draggingPoint = true;
         marker.setPointerCapture(e.pointerId);
         marker.style.cursor = 'grabbing';
+        e.preventDefault();
       });
       marker.addEventListener('pointermove', function (e) {
         if (!draggingPoint) return;
+        e.preventDefault();
         var svg = document.getElementById('parallelSvg');
         var rect = svg.getBoundingClientRect();
         var scaleX = LW / rect.width, scaleY = LH / rect.height;

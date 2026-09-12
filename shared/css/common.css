@@ -116,3 +116,13 @@ body {
 .card-badges-row .module-id-badge {
   margin-inline-start: 0;
 }
+
+/* גלוי-שקוף, גדול מהנקודה הנראית - מבטיח שטח מגע נוח לאצבע (~40-44px גם
+   במסכי מובייל צרים) בלי לשנות את הגודל החזותי הקטן והמדויק של הנקודה עצמה.
+   הנקודה הנראית מקבלת pointer-events:none כדי שהאזור הגדול הזה יהיה
+   היעד היחיד והחד-משמעי לאירועי מצביע/מגע. */
+.drag-hit-area {
+  fill: transparent;
+  touch-action: none;
+  cursor: grab;
+}

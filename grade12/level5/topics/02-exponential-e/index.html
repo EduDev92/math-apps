@@ -266,6 +266,7 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-sm);
       direction: ltr;
+      touch-action: none;
     }
 
     .graph-svg text {
@@ -1215,9 +1216,11 @@
       svg.addEventListener('pointerdown', function (evt) {
         dragging = true;
         moveToEvent(evt);
+        evt.preventDefault();
       });
       window.addEventListener('pointermove', function (evt) {
         if (!dragging) return;
+        evt.preventDefault();
         moveToEvent(evt);
       });
       window.addEventListener('pointerup', function () {

@@ -437,6 +437,8 @@
       var corner = { x: st.pB.x, y: st.pA.y };
       var mA = document.getElementById('markerA');
       var mB = document.getElementById('markerB');
+      var mAHit = document.getElementById('markerAHit');
+      var mBHit = document.getElementById('markerBHit');
       var hyp = document.getElementById('hypLine');
       var legH = document.getElementById('legH');
       var legV = document.getElementById('legV');
@@ -445,7 +447,9 @@
       var rightAngleGroup = document.getElementById('rightAngleGroup');
 
       mA.setAttribute('cx', lmx(st.pA.x)); mA.setAttribute('cy', lmy(st.pA.y));
+      mAHit.setAttribute('cx', lmx(st.pA.x)); mAHit.setAttribute('cy', lmy(st.pA.y));
       mB.setAttribute('cx', lmx(st.pB.x)); mB.setAttribute('cy', lmy(st.pB.y));
+      mBHit.setAttribute('cx', lmx(st.pB.x)); mBHit.setAttribute('cy', lmy(st.pB.y));
       hyp.setAttribute('x1', lmx(st.pA.x)); hyp.setAttribute('y1', lmy(st.pA.y));
       hyp.setAttribute('x2', lmx(st.pB.x)); hyp.setAttribute('y2', lmy(st.pB.y));
       legH.setAttribute('x1', lmx(st.pA.x)); legH.setAttribute('y1', lmy(st.pA.y));
@@ -472,14 +476,16 @@
 
     function attachDragHandlers() {
       ['A', 'B'].forEach(function (id) {
-        var marker = document.getElementById('marker' + id);
+        var marker = document.getElementById('marker' + id + 'Hit');
         marker.addEventListener('pointerdown', function (e) {
           draggingId = id;
           marker.setPointerCapture(e.pointerId);
           marker.style.cursor = 'grabbing';
+          e.preventDefault();
         });
         marker.addEventListener('pointermove', function (e) {
           if (draggingId !== id) return;
+          e.preventDefault();
           var svg = document.getElementById('distSvg');
           var rect = svg.getBoundingClientRect();
           var scaleX = LW / rect.width, scaleY = LH / rect.height;
@@ -503,8 +509,10 @@
       markup += '<line id="legV" x1="0" y1="0" x2="0" y2="0" class="leg-line"/>';
       markup += '<line id="hypLine" x1="0" y1="0" x2="0" y2="0" class="hyp-line"/>';
       markup += '<g id="rightAngleGroup"></g>';
-      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker"/>';
-      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker"/>';
+      markup += '<circle id="markerAHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
+      markup += '<circle id="markerBHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
       markup += '<text id="labelA" class="point-drag-label"></text>';
       markup += '<text id="labelB" class="point-drag-label"></text>';
       document.getElementById('distSvg').innerHTML = markup;

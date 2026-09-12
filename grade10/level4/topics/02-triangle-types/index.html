@@ -84,7 +84,7 @@
     .grid-svg-wrap { max-width: 380px; width: 100%; }
     .graph-svg {
       width: 100%; height: auto; display: block; background: #fff;
-      border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; touch-action: none;
     }
     .graph-svg text { font-family: var(--font-family); }
 
@@ -741,8 +741,11 @@
     function updateTriangleVisual() {
       var A = trianglePoints.A, B = trianglePoints.B, C = trianglePoints.C;
       document.getElementById('markerA').setAttribute('cx', lmx(A.x)); document.getElementById('markerA').setAttribute('cy', lmy(A.y));
+      document.getElementById('markerAHit').setAttribute('cx', lmx(A.x)); document.getElementById('markerAHit').setAttribute('cy', lmy(A.y));
       document.getElementById('markerB').setAttribute('cx', lmx(B.x)); document.getElementById('markerB').setAttribute('cy', lmy(B.y));
+      document.getElementById('markerBHit').setAttribute('cx', lmx(B.x)); document.getElementById('markerBHit').setAttribute('cy', lmy(B.y));
       document.getElementById('markerC').setAttribute('cx', lmx(C.x)); document.getElementById('markerC').setAttribute('cy', lmy(C.y));
+      document.getElementById('markerCHit').setAttribute('cx', lmx(C.x)); document.getElementById('markerCHit').setAttribute('cy', lmy(C.y));
       document.getElementById('labelA').setAttribute('x', lmx(A.x) + 13); document.getElementById('labelA').setAttribute('y', lmy(A.y) - 10);
       document.getElementById('labelB').setAttribute('x', lmx(B.x) + 13); document.getElementById('labelB').setAttribute('y', lmy(B.y) - 10);
       document.getElementById('labelC').setAttribute('x', lmx(C.x) + 13); document.getElementById('labelC').setAttribute('y', lmy(C.y) - 10);
@@ -776,20 +779,25 @@
       markup += '<text id="labelA" class="vertex-label">A</text>';
       markup += '<text id="labelB" class="vertex-label">B</text>';
       markup += '<text id="labelC" class="vertex-label">C</text>';
-      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker"/>';
-      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker"/>';
-      markup += '<circle id="markerC" cx="0" cy="0" r="9" class="drag-marker"/>';
+      markup += '<circle id="markerAHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
+      markup += '<circle id="markerBHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
+      markup += '<circle id="markerCHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerC" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
       document.getElementById('triSvg').innerHTML = markup;
 
       ['A', 'B', 'C'].forEach(function (key) {
-        var marker = document.getElementById('marker' + key);
+        var marker = document.getElementById('marker' + key + 'Hit');
         marker.addEventListener('pointerdown', function (e) {
           draggingKey = key;
           marker.setPointerCapture(e.pointerId);
           marker.style.cursor = 'grabbing';
+          e.preventDefault();
         });
         marker.addEventListener('pointermove', function (e) {
           if (draggingKey !== key) return;
+          e.preventDefault();
           var svg = document.getElementById('triSvg');
           var rect = svg.getBoundingClientRect();
           var scaleX = LW / rect.width, scaleY = LH / rect.height;

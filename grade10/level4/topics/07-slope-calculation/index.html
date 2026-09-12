@@ -429,12 +429,16 @@
       var st = labState;
       var mA = document.getElementById('markerA');
       var mB = document.getElementById('markerB');
+      var mAHit = document.getElementById('markerAHit');
+      var mBHit = document.getElementById('markerBHit');
       var seg = document.getElementById('segLine');
       var lA = document.getElementById('labelA');
       var lB = document.getElementById('labelB');
 
       mA.setAttribute('cx', lmx(st.pA.x)); mA.setAttribute('cy', lmy(st.pA.y));
+      mAHit.setAttribute('cx', lmx(st.pA.x)); mAHit.setAttribute('cy', lmy(st.pA.y));
       mB.setAttribute('cx', lmx(st.pB.x)); mB.setAttribute('cy', lmy(st.pB.y));
+      mBHit.setAttribute('cx', lmx(st.pB.x)); mBHit.setAttribute('cy', lmy(st.pB.y));
       seg.setAttribute('x1', lmx(st.pA.x)); seg.setAttribute('y1', lmy(st.pA.y));
       seg.setAttribute('x2', lmx(st.pB.x)); seg.setAttribute('y2', lmy(st.pB.y));
       lA.setAttribute('x', lmx(st.pA.x)); lA.setAttribute('y', lmy(st.pA.y) - 14); lA.textContent = 'A';
@@ -445,14 +449,16 @@
 
     function attachDragHandlers() {
       ['A', 'B'].forEach(function (id) {
-        var marker = document.getElementById('marker' + id);
+        var marker = document.getElementById('marker' + id + 'Hit');
         marker.addEventListener('pointerdown', function (e) {
           draggingId = id;
           marker.setPointerCapture(e.pointerId);
           marker.style.cursor = 'grabbing';
+          e.preventDefault();
         });
         marker.addEventListener('pointermove', function (e) {
           if (draggingId !== id) return;
+          e.preventDefault();
           var svg = document.getElementById('slopeCalcSvg');
           var rect = svg.getBoundingClientRect();
           var scaleX = LW / rect.width, scaleY = LH / rect.height;
@@ -473,8 +479,10 @@
     function buildSlopeCalcSkeleton() {
       var markup = buildGridMarkup(lmx, lmy, LXMIN, LXMAX, LYMIN, LYMAX);
       markup += '<line id="segLine" x1="0" y1="0" x2="0" y2="0" class="seg-line"/>';
-      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker"/>';
-      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker"/>';
+      markup += '<circle id="markerAHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerA" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
+      markup += '<circle id="markerBHit" cx="0" cy="0" r="40" class="drag-hit-area"/>';
+      markup += '<circle id="markerB" cx="0" cy="0" r="9" class="drag-marker" style="pointer-events:none;"/>';
       markup += '<text id="labelA" class="point-drag-label"></text>';
       markup += '<text id="labelB" class="point-drag-label"></text>';
       document.getElementById('slopeCalcSvg').innerHTML = markup;
