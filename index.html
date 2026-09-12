@@ -86,6 +86,85 @@
       background: #e2e8f0;
       color: #64748b;
     }
+    .unit-heading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 26px 0 16px;
+    }
+    .unit-heading:first-of-type {
+      margin-top: 4px;
+    }
+    .unit-heading h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--blue-deep);
+    }
+    .unit-tag {
+      display: inline-block;
+      background: var(--blue-soft);
+      color: var(--blue-deep);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .topic-block {
+      margin-bottom: 22px;
+    }
+    .topic-block-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--blue-primary);
+      margin-bottom: 14px;
+    }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      counter-reset: card-num;
+    }
+    .app-card {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+      counter-increment: card-num;
+    }
+    .app-card h4::before {
+      content: counter(card-num) ". ";
+    }
+    .app-card h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .app-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      flex-grow: 1;
+    }
+    .app-card-link {
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+    }
+    .app-card-link:hover {
+      border-color: var(--blue-primary);
+      box-shadow: var(--shadow-card);
+      transform: translateY(-2px);
+    }
+    .app-card-soon {
+      text-decoration: none;
+      color: inherit;
+      cursor: default;
+      opacity: 0.65;
+    }
     .course-card-link {
       text-decoration: none;
       color: inherit;
@@ -259,16 +338,158 @@
             <h3>3 יח"ל</h3>
             <p>התוכן בהכנה ויעלה בקרוב.</p>
           </a>
-          <a class="course-card course-card-link" href="grade10/level4/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>4 יח"ל</h3>
-            <p>מרחב למידה לתלמידי 4 יחידות לימוד.</p>
-          </a>
           <a class="course-card course-card-soon" href="#">
             <span class="badge badge-soon">בקרוב</span>
             <h3>5 יח"ל</h3>
             <p>התוכן בהכנה ויעלה בקרוב.</p>
           </a>
+        </div>
+
+        <div class="unit-heading">
+          <span class="unit-tag">4 יח"ל</span>
+          <h3>מרחב תרגול - גיאומטריה אנליטית</h3>
+        </div>
+
+        <div class="topic-block">
+          <h4 class="topic-block-title">נושא 1: גיאומטריה אנליטית - הקו הישר</h4>
+          <div class="apps-grid">
+            <a class="app-card app-card-link" href="topics/line/line-01.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-01</span>
+              </div>
+              <h4>מערכת צירים ושיבוץ נקודות</h4>
+              <p>היכרות עם צירי ה-x וה-y, ראשית הצירים, וקריאה/כתיבה של שיעורי נקודה במישור.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-02.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-02</span>
+              </div>
+              <h4>מרחק המקביל לצירים</h4>
+              <p>חישוב אורך קטע אופקי ואנכי.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-03.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-03</span>
+              </div>
+              <h4>נוסחת המרחק</h4>
+              <p>חישוב מרחק בין שתי נקודות, המקרה הכללי.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-04.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-04</span>
+              </div>
+              <h4>אמצע קטע</h4>
+              <p>מציאת שיעורי נקודת האמצע של קטע.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-05.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-05</span>
+              </div>
+              <h4>קצה אמצע קצה</h4>
+              <p>מציאת קצה נעלם כאשר נתונים קצה שני ואמצע.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-06.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-06</span>
+              </div>
+              <h4>מושג השיפוע</h4>
+              <p>יחס השתנות, עלייה וירידה, ישרים מקבילים לצירים.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-07.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-07</span>
+              </div>
+              <h4>חישוב שיפוע</h4>
+              <p>מציאת שיפוע בעזרת שתי נקודות.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-08.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-08</span>
+              </div>
+              <h4>משוואת הישר: שיפוע ונקודה</h4>
+              <p>הרכבת משוואת ישר נתון שיפוע ונקודה עליו.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-09.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-09</span>
+              </div>
+              <h4>משוואת הישר: שתי נקודות</h4>
+              <p>מציאת שיפוע ובניית משוואה משתי נקודות.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-10.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-10</span>
+              </div>
+              <h4>ישרים מקבילים</h4>
+              <p>תנאי ההקבלה ובניית משוואה לישר מקביל.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-11.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-11</span>
+              </div>
+              <h4>ישרים מאונכים</h4>
+              <p>תנאי הניצבות ומכפלת שיפועים.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/line/line-12.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">line-12</span>
+              </div>
+              <h4>חיתוך ישרים</h4>
+              <p>נקודות חיתוך עם הצירים ובין שני ישרים.</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="topic-block">
+          <h4 class="topic-block-title">נושא 2: גיאומטריה אנליטית - צורות גיאומטריות</h4>
+          <div class="apps-grid">
+            <a class="app-card app-card-link" href="topics/shapes/shp-01.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">shp-01</span>
+              </div>
+              <h4>משולש ישר זווית</h4>
+              <p>זיהוי משולש ישר-זווית וקודקוד הזווית הישרה באמצעות מכפלת שיפועים.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/shapes/shp-02.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">shp-02</span>
+              </div>
+              <h4>משולש שווה-שוקיים ושווה-צלעות</h4>
+              <p>סיווג משולשים לפי אורכי צלעות באמצעות נוסחת המרחק.</p>
+            </a>
+            <a class="app-card app-card-soon" href="#" data-units="3,4,5">
+              <span class="badge badge-soon">בקרוב</span>
+              <h4>שטחים והיקפים של משולשים</h4>
+              <p>חישוב שטח והיקף של משולש במערכת הצירים.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/shapes/shp-04.html" data-units="3,4,5">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">shp-04</span>
+              </div>
+              <h4>תכונות מרובעים</h4>
+              <p>לומדת סיכום: צלעות ואלכסונים במקבילית, מלבן, מעוין, ריבוע וטרפזים על סוגיהם — היכרות, מעבדת תכונות אינטראקטיבית ותרגול.</p>
+            </a>
+            <a class="app-card app-card-soon" href="#" data-units="3,4,5">
+              <span class="badge badge-soon">בקרוב</span>
+              <h4>מרובעים במערכת הצירים</h4>
+              <p>הוכחה וחישובים אנליטיים של מקבילית, מלבן, מעוין ועוד.</p>
+            </a>
+          </div>
         </div>
       </section>
 
@@ -306,11 +527,95 @@
             <h3>4 יח"ל (שאלון 472)</h3>
             <p>התוכן בהכנה ויעלה בקרוב.</p>
           </a>
-          <a class="course-card course-card-link" href="grade12/level5/index.html">
-            <span class="badge badge-available">זמין לתרגול</span>
-            <h3>5 יח"ל (שאלון 572)</h3>
-            <p>מרחב למידה והכנה לבגרות.</p>
-          </a>
+        </div>
+
+        <div class="unit-heading">
+          <span class="unit-tag">5 יח"ל (שאלון 572)</span>
+          <h3>מרחב תרגול והכנה לבגרות</h3>
+        </div>
+
+        <div class="topic-block">
+          <h4 class="topic-block-title">נושא 4: הפונקציה המעריכית</h4>
+          <div class="apps-grid">
+            <a class="app-card app-card-link" href="topics/exp/exp-01.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-01</span>
+              </div>
+              <h4>1. מבוא ומאפייני הפונקציה המעריכית</h4>
+              <p>גדילה ודעיכה מעריכית, קצב שינוי, אסימפטוטה אופקית, והבסיס e.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/exp/exp-02.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-02</span>
+              </div>
+              <h4>2. פלא המספר e ופונקציית האקספוננט</h4>
+              <p>סיפור הריבית דריבית, גילוי המספר e, והתכונה הייחודית: שיפוע המשיק שווה לערך הפונקציה.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/exp/exp-03.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-03</span>
+              </div>
+              <h4>3. טרנספורמציות בפונקציה מעריכית</h4>
+              <p>הזזות, שיקופים ביחס לצירים, מתיחה אנכית וטרנספורמציית ערך מוחלט.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/exp/exp-04.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-04</span>
+              </div>
+              <h4>4. משוואות מעריכיות</h4>
+              <p>השוואת בסיסים, הוצאת גורם משותף ופתרון בעזרת הצבת משתנה עזר t.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/exp/exp-05.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-05</span>
+              </div>
+              <h4>5. אי-שוויונות מעריכיים</h4>
+              <p>פתרון אלגברי וגרפי, דגש על היפוך סימן בבסיס שברי, ואי-שוויונות ריבועיים.</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="topic-block">
+          <h4 class="topic-block-title">קדם אנליזה וחקירת פונקציה מעריכית</h4>
+          <div class="apps-grid">
+            <a class="app-card app-card-link" href="topics/exp/exp-06.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-06</span>
+              </div>
+              <h4>6. תחום הגדרה ונקודות חיתוך</h4>
+              <p>מגבלות על תחום ההגדרה ממכנים ומשורשים, והתזכורת ש-e בחזקת כל דבר הוא חיובי.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/exp/exp-07.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-07</span>
+              </div>
+              <h4>7. זוגיות, אי-זוגיות וסימן הפונקציה</h4>
+              <p>סימטריה סביב ציר y וסביב הראשית, ואיפה הפונקציה חיובית ואיפה שלילית.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/exp/exp-08.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-08</span>
+              </div>
+              <h4>8. התנהגות בקצוות: אסימפטוטות ו"חורים"</h4>
+              <p>אסימפטוטה אנכית מול "חור" בגרף, ובדיקת גבולות בנפרד כש-x שואף לאינסוף ולמינוס אינסוף.</p>
+            </a>
+            <a class="app-card app-card-link" href="topics/exp/exp-09.html">
+              <div class="card-badges-row">
+                <span class="badge badge-available">זמין לתרגול</span>
+                <span class="module-id-badge">exp-09</span>
+              </div>
+              <h4>9. קדם אנליזה והתאמת גרפים</h4>
+              <p>סינתזה של כל שלבי החקירה כדי לבחור את הגרף הנכון מבין כמה שרטוטים מוצעים.</p>
+            </a>
+          </div>
         </div>
       </section>
     </main>
