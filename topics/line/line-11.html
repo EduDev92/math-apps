@@ -208,11 +208,11 @@
         <div class="method-grid">
           <div class="method-card">
             <h4>"הופכי ונגדי"</h4>
-            <p>כדי למצוא את השיפוע המאונך לשיפוע נתון, הופכים את השבר (מונה↔מכנה) <strong>וגם</strong> מחליפים סימן. לדוגמה: אם שיפוע אחד הוא <span class="math-ltr">2/3</span>, השיפוע המאונך לו הוא <span class="math-ltr">-3/2</span>.</p>
+            <p>כדי למצוא את השיפוע המאונך לשיפוע נתון, הופכים את השבר (מונה↔מכנה) <strong>וגם</strong> מחליפים סימן. לדוגמה: אם שיפוע אחד הוא $\dfrac{2}{3}$, השיפוע המאונך לו הוא $-\dfrac{3}{2}$.</p>
           </div>
           <div class="method-card">
             <h4>שתי הטעויות הנפוצות</h4>
-            <p>לוקחים רק <strong>נגדי</strong> בלי הופכי (<span class="math-ltr">-2/3</span> — טעות!), או רק <strong>הופכי</strong> בלי נגדי (<span class="math-ltr">3/2</span> — גם טעות!). צריך את שניהם ביחד.</p>
+            <p>לוקחים רק <strong>נגדי</strong> בלי הופכי ($-\dfrac{2}{3}$ — טעות!), או רק <strong>הופכי</strong> בלי נגדי ($\dfrac{3}{2}$ — גם טעות!). צריך את שניהם ביחד.</p>
           </div>
         </div>
 
@@ -445,6 +445,11 @@
         '<p class="derivation-line"><strong>$' + fracEquationLatex(m2, bFrac) + '$</strong></p>';
       renderMathInElement(el, katexOptions);
     })();
+
+    /* Renders the static prose fractions in the "הופכי ונגדי" / "שתי הטעויות
+       הנפוצות" method-cards above (not covered by the two targeted calls
+       above, which only render #mainFormula/#exampleDerivation). */
+    renderMathInElement(document.getElementById('step-1'), katexOptions);
 
     /* ---------- Step 2: perpendicular lab ---------- */
 

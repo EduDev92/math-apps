@@ -501,7 +501,7 @@
           <div class="method-card">
             <span class="method-num">1</span>
             <h4>השוואת בסיסים ומעריכים</h4>
-            <div class="math-ltr-block">$$a^{f(x)} = a^{g(x)} \iff f(x) = g(x)$$</div>
+            <div class="math-ltr-block">$$\begin{aligned}&a^{f(x)} = a^{g(x)}\\&\iff f(x) = g(x)\end{aligned}$$</div>
             <p>בתנאי $a>0$ וגם $a\neq1$. משתמשים בחוקי חזקות כדי להביא את שני האגפים לאותו בסיס.</p>
             <div class="method-example">$8^{x+1} = 4^{2x-1} \Rightarrow 2^{3(x+1)}=2^{2(2x-1)}$</div>
             <p>וגם: $\dfrac{1}{27} = 3^{-3}$ — הפיכת שבר לחזקה שלילית של אותו בסיס.</p>
@@ -618,7 +618,7 @@
 
           <div class="content-block highlight-block">
             <h3>סיכום עקרונות הפתרון</h3>
-            <p><strong>1. השוואת בסיסים:</strong> $a^{f(x)}=a^{g(x)} \iff f(x)=g(x)$.</p>
+            <p><strong>1. השוואת בסיסים:</strong> $a^{f(x)}=a^{g(x)}$ $\iff$ $f(x)=g(x)$.</p>
             <p><strong>2. הוצאת גורם משותף:</strong> לעולם לא מחברים מעריכים — מוציאים גורם משותף ופותרים.</p>
             <p><strong>3. הצבת t:</strong> $t=a^x$ תמיד חיובי — כל פתרון שלילי של $t$ נפסל אוטומטית.</p>
           </div>
@@ -759,28 +759,28 @@
     var SUBSTITUTION_EXAMPLES = [
       {
         equationLatex: '4^{2x} - 4^x - 12 = 0',
-        step1: 't = 4^x \\quad\\Rightarrow\\quad t^2 - t - 12 = 0',
+        step1: '\\begin{aligned}&t = 4^x\\\\&\\Rightarrow\\ t^2 - t - 12 = 0\\end{aligned}',
         step2: '(t-4)(t+3) = 0 \\quad\\Rightarrow\\quad t=4 \\ \\text{או}\\ t=-3',
         roots: [{ t: 4, valid: true }, { t: -3, valid: false }],
         final: 't=4 \\ \\text{תקף} \\quad\\Rightarrow\\quad 4^x=4 \\quad\\Rightarrow\\quad x=1'
       },
       {
         equationLatex: '9^x - 4\\cdot3^x + 3 = 0',
-        step1: 't = 3^x \\quad\\Rightarrow\\quad t^2 - 4t + 3 = 0',
+        step1: '\\begin{aligned}&t = 3^x\\\\&\\Rightarrow\\ t^2 - 4t + 3 = 0\\end{aligned}',
         step2: '(t-1)(t-3) = 0 \\quad\\Rightarrow\\quad t=1 \\ \\text{או}\\ t=3',
         roots: [{ t: 1, valid: true }, { t: 3, valid: true }],
         final: 't=1 \\Rightarrow x=0 \\quad , \\quad t=3 \\Rightarrow x=1'
       },
       {
         equationLatex: '4^x - 6\\cdot2^x - 16 = 0',
-        step1: 't = 2^x \\quad\\Rightarrow\\quad t^2 - 6t - 16 = 0',
+        step1: '\\begin{aligned}&t = 2^x\\\\&\\Rightarrow\\ t^2 - 6t - 16 = 0\\end{aligned}',
         step2: '(t-8)(t+2) = 0 \\quad\\Rightarrow\\quad t=8 \\ \\text{או}\\ t=-2',
         roots: [{ t: 8, valid: true }, { t: -2, valid: false }],
         final: 't=8 \\ \\text{תקף} \\quad\\Rightarrow\\quad 2^x=8 \\quad\\Rightarrow\\quad x=3'
       },
       {
         equationLatex: '9^x - 10\\cdot3^x + 9 = 0',
-        step1: 't = 3^x \\quad\\Rightarrow\\quad t^2 - 10t + 9 = 0',
+        step1: '\\begin{aligned}&t = 3^x\\\\&\\Rightarrow\\ t^2 - 10t + 9 = 0\\end{aligned}',
         step2: '(t-1)(t-9) = 0 \\quad\\Rightarrow\\quad t=1 \\ \\text{או}\\ t=9',
         roots: [{ t: 1, valid: true }, { t: 9, valid: true }],
         final: 't=1 \\Rightarrow x=0 \\quad , \\quad t=9 \\Rightarrow x=2'

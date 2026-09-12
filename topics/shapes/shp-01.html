@@ -686,7 +686,11 @@
         return '<p class="slope-line">בקודקוד ' + ltrToken(vertexLabel) + ': אחת הצלעות אנכית (שיפוע לא מוגדר) - הזווית בקודקוד זה אינה ישרה.</p>';
       }
       var product = fracMul(pair.red, pair.green);
-      var body = '\\text{בקודקוד ' + vertexLabel + ':}\\quad \\textcolor{' + COLOR_LEG_RED + '}{' + fracLatexMaybeParen(pair.red) + '} \\cdot \\textcolor{' + COLOR_LEG_GREEN + '}{' + fracLatexMaybeParen(pair.green) + '} = ' + fracToLatex(product);
+      /* Stacked - with two multi-digit fractions (e.g. dragged to a corner)
+         the Hebrew label + both colored fractions + result on one line is
+         wider than a phone card; the label doesn't need to share a row with
+         the computation itself. */
+      var body = '\\begin{aligned}&\\text{בקודקוד ' + vertexLabel + ':}\\\\&\\textcolor{' + COLOR_LEG_RED + '}{' + fracLatexMaybeParen(pair.red) + '} \\cdot \\textcolor{' + COLOR_LEG_GREEN + '}{' + fracLatexMaybeParen(pair.green) + '} = ' + fracToLatex(product) + '\\end{aligned}';
       return '<p class="slope-line">$$' + body + '$$</p>';
     }
 

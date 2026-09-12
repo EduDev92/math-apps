@@ -370,7 +370,7 @@
     /* ---------- Step 1: formula + intro graph ---------- */
 
     document.getElementById('mainFormula').innerHTML =
-      '$$x_m = \\dfrac{x_1+x_2}{2} \\;\\Rightarrow\\; x_2 = 2x_m - x_1 \\qquad\\qquad y_m = \\dfrac{y_1+y_2}{2} \\;\\Rightarrow\\; y_2 = 2y_m - y_1$$';
+      '$$\\begin{aligned}&x_m = \\dfrac{x_1+x_2}{2}\\\\&\\Rightarrow\\; x_2 = 2x_m - x_1\\\\&y_m = \\dfrac{y_1+y_2}{2}\\\\&\\Rightarrow\\; y_2 = 2y_m - y_1\\end{aligned}$$';
 
     function buildGridMarkup(mx, my, xmin, xmax, ymin, ymax) {
       var markup = '';
@@ -451,7 +451,7 @@
         readout.innerHTML = '<span class="math-ltr">A' + pointLabel(EX_A) + ',&nbsp; M' + pointLabel(EX_M) + '</span><br>לחצו על "בצע קפיצה ראשונה" כדי להתחיל.';
       } else if (jumpStage === 1) {
         readout.innerHTML = '<span class="math-ltr">A' + pointLabel(EX_A) + ' → M' + pointLabel(EX_M) + '</span>' +
-          '$$x_m - x_A = ' + EX_STEP.x + ', \\quad y_m - y_A = ' + EX_STEP.y + '$$' +
+          '$$\\begin{aligned}&x_m - x_A = ' + EX_STEP.x + '\\\\&y_m - y_A = ' + EX_STEP.y + '\\end{aligned}$$' +
           'עכשיו נבצע את אותה קפיצה שוב מ-M.';
       } else {
         readout.innerHTML = '<span class="math-ltr">M' + pointLabel(EX_M) + ' → B' + pointLabel(EX_B) + '</span>' +

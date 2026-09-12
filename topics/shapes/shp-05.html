@@ -566,8 +566,9 @@
       var xA = { x: 0, y: 4 }, xB = { x: -3, y: -1 }, xC = { x: 3, y: -1 };
       var xBase = Math.abs(xC.x - xB.x), xHeight = Math.abs(xA.y - xB.y);
       var xArea = 0.5 * xBase * xHeight;
-      var s3Html = '<p class="derivation-line">$A(' + xA.x + ',' + xA.y + '),\\ B(' + xB.x + ',' + xB.y + '),\\ C(' + xC.x + ',' + xC.y + ')$</p>';
-      s3Html += '<p class="dist-line">$BC$ מקבילה לציר ה-x: $$\\text{בסיס}=|x_C-x_B|=' + xBase + ',\\quad \\text{גובה}=|y_A-y_B|=' + xHeight + '$$</p>';
+      var s3Html = '<p class="derivation-line">$A(' + xA.x + ',' + xA.y + ')$,&nbsp; $B(' + xB.x + ',' + xB.y + ')$,&nbsp; $C(' + xC.x + ',' + xC.y + ')$</p>';
+      s3Html += '<p class="dist-line">$BC$ מקבילה לציר ה-x:</p>';
+      s3Html += '<p class="dist-line">$$\\begin{aligned}&\\text{בסיס}=|x_C-x_B|=' + xBase + '\\\\&\\text{גובה}=|y_A-y_B|=' + xHeight + '\\end{aligned}$$</p>';
       s3Html += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + xBase + '\\cdot ' + xHeight + '=' + fmtNum(xArea) + '$$</strong></p>';
       document.getElementById('step3Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAxisAreaSVG(xA, xB, xC) + '</div><div class="example-calc-wrap">' + s3Html + '</div></div>';
@@ -575,8 +576,9 @@
       var yA = { x: 4, y: 0 }, yB = { x: -1, y: -3 }, yC = { x: -1, y: 3 };
       var yBase = Math.abs(yC.y - yB.y), yHeight = Math.abs(yA.x - yB.x);
       var yArea = 0.5 * yBase * yHeight;
-      var s4Html = '<p class="derivation-line">$A(' + yA.x + ',' + yA.y + '),\\ B(' + yB.x + ',' + yB.y + '),\\ C(' + yC.x + ',' + yC.y + ')$</p>';
-      s4Html += '<p class="dist-line">$BC$ מקבילה לציר ה-y: $$\\text{בסיס}=|y_C-y_B|=' + yBase + ',\\quad \\text{גובה}=|x_A-x_B|=' + yHeight + '$$</p>';
+      var s4Html = '<p class="derivation-line">$A(' + yA.x + ',' + yA.y + ')$,&nbsp; $B(' + yB.x + ',' + yB.y + ')$,&nbsp; $C(' + yC.x + ',' + yC.y + ')$</p>';
+      s4Html += '<p class="dist-line">$BC$ מקבילה לציר ה-y:</p>';
+      s4Html += '<p class="dist-line">$$\\begin{aligned}&\\text{בסיס}=|y_C-y_B|=' + yBase + '\\\\&\\text{גובה}=|x_A-x_B|=' + yHeight + '\\end{aligned}$$</p>';
       s4Html += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + yBase + '\\cdot ' + yHeight + '=' + fmtNum(yArea) + '$$</strong></p>';
       document.getElementById('step4Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAxisAreaSVG(yA, yB, yC) + '</div><div class="example-calc-wrap">' + s4Html + '</div></div>';
