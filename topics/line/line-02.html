@@ -418,7 +418,7 @@
       L = Math.abs(v2 - v1);
       var readout = document.getElementById('distReadout');
       readout.innerHTML = '<span class="math-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span><br>' +
-        'אורך = |' + axisLabel + '| = <span class="math-ltr">|' + v2 + ' − (' + v1 + ')| = ' + L + '</span>';
+        'אורך ' + ltrToken('AB') + ' = |' + axisLabel + '| = <span class="math-ltr">|' + v2 + ' − (' + v1 + ')| = ' + L + '</span>';
     }
 
     function updateLabVisual() {
