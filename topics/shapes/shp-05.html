@@ -463,11 +463,18 @@
       var dx = P2.x - P1.x, dy = P2.y - P1.y;
       var dxSq = Math.round(dx * dx), dySq = Math.round(dy * dy);
       var sumSq = dxSq + dySq;
+      var bareSqrt = '\\sqrt{' + sumSq + '}';
+      var simplified = sqrtToLatex(sumSq);
+      /* sqrtToLatex leaves a square-free sumSq (e.g. 10) exactly as "\sqrt{10}" -
+         appending "= \sqrt{10}" again would show the identical term twice with
+         nothing simplified. Only show the extra "=" step when it actually adds
+         new information (sumSq is a perfect square or has a square factor). */
+      var lastRow = (simplified === bareSqrt) ? ('&= ' + bareSqrt) : ('&= ' + bareSqrt + ' = ' + simplified);
       var rows = [
         'd_{' + labelPair + '} &= \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}',
         '&= \\sqrt{\\left(' + P2.x + '-(' + P1.x + ')\\right)^2+\\left(' + P2.y + '-(' + P1.y + ')\\right)^2}',
         '&= \\sqrt{' + dxSq + '+' + dySq + '}',
-        '&= \\sqrt{' + sumSq + '} = ' + sqrtToLatex(sumSq)
+        lastRow
       ];
       var body = '\\begin{aligned}' + rows.join(' \\\\ ') + '\\end{aligned}';
       if (color) body = '\\textcolor{' + color + '}{' + body + '}';

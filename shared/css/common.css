@@ -68,6 +68,26 @@ body {
   overflow-y: hidden;
   padding: 4px 0;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* רשת ביטחון גלובלית עבור נוסחאות KaTeX: כל לומדה בונה את שורות הנוסחה
+   שלה בסגנון מעט שונה (.derivation-line / .dist-line / .formula-display
+   וכו', כל אחת עם ה-CSS המקומי שלה) - ולכן במקום להסתמך על ש-27 קבצי
+   הלומדות יגדירו בעצמם עם overflow-x:auto בכל מקום, התיקון הזה תופס כל
+   <p> שמכיל ביטוי KaTeX כלשהו (ישיר או עטוף ב-strong/em וכדומה) ומבטיח
+   לו גלילה אופקית בטוחה. כך גם אם קונטיינר-אב כלשהו (כמו .lesson-card
+   במסכים צרים, למטה) מגדיר overflow-x:hidden כרשת ביטחון כללית משלו,
+   נוסחה ארוכה תמיד תישאר ניתנת לגלילה בתוך השורה שלה ולא תיחתך בשקט. */
+.katex,
+p:has(.katex) {
+  max-width: 100%;
+}
+p:has(.katex) {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
 }
 
 /* Math formulas get a touch smaller under 600px so long KaTeX expressions
@@ -83,7 +103,14 @@ body {
 @media (max-width: 480px) {
   .lesson-card {
     padding: 14px 10px;
-    overflow-x: hidden;
+    /* Deliberately NOT overflow-x:hidden here (used to be): every KaTeX-bearing
+       <p> now gets its own overflow-x:auto (rule above), and .katex-display
+       already had it too, so this card-level clip was never needed for
+       formulas - it only risked silently truncating anything that *wasn't*
+       already self-scrolling (e.g. a future coordinate-header line with no
+       local overflow rule) instead of letting it scroll. Confirmed via an
+       automated audit (drag-stress + static, all 27 lessons, 375px) that
+       removing it introduces zero horizontal page-scroll regressions. */
   }
 }
 
