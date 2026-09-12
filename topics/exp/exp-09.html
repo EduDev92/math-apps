@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>קדם אנליזה והתאמת גרפים | לומדה 9</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../shared/css/common.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <style>
+    :root {
+      --orange-strong: #c2650b;
+      --orange-soft: #fdecd2;
+      --purple-strong: #7c3aed;
+      --purple-soft: #ede9fe;
+    }
+
+    body { background: var(--bg-main); }
+
+    .topbar { background: #ffffff; border-bottom: 1px solid var(--border-subtle); padding: 14px 20px; }
+    .back-link { color: var(--blue-primary); font-weight: 700; font-size: 0.95rem; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+
+    .lesson-container { max-width: 980px; margin: 0 auto; padding: 24px 20px 60px; }
+    .lesson-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 32px; }
+    .step-panel[hidden] { display: none; }
+
+    .step-heading { font-size: 1.6rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
+    .step-intro { color: var(--text-muted); margin-bottom: 20px; font-size: 0.98rem; }
+
+    .content-block { margin-bottom: 26px; }
+    .content-block h3 { font-size: 1.15rem; font-weight: 700; color: var(--blue-primary); margin-bottom: 10px; }
+    .content-block p { margin-bottom: 8px; }
+
+    .highlight-block { background: var(--blue-soft); border-radius: var(--radius-md); padding: 18px 20px; }
+    .highlight-block h3 { color: var(--blue-deep); }
+
+    .warning-block {
+      background: var(--red-soft);
+      border: 1px solid var(--red-error);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-top: 10px;
+    }
+    .warning-block strong { color: #8f2323; }
+
+    .flow-steps { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+    .flow-step {
+      display: flex; align-items: flex-start; gap: 14px; background: #f8fafc;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 16px 18px;
+    }
+    .flow-num {
+      flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--blue-primary); color: #fff; font-weight: 800; font-size: 1rem;
+    }
+    .flow-body h4 { font-size: 1.02rem; font-weight: 700; color: var(--blue-deep); margin-bottom: 4px; }
+    .flow-body p { font-size: 0.94rem; color: var(--text-main); }
+    .flow-arrow { text-align: center; color: var(--blue-primary); font-size: 1.2rem; font-weight: 800; }
+
+    .method-example {
+      direction: ltr; text-align: center; background: #fff;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+      padding: 10px; margin: 8px 0; font-size: 0.98rem; max-width: 100%; overflow-x: auto;
+    }
+
+    /* Step 2: sketch tool */
+    .lab-block { background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; margin-bottom: 24px; }
+    .lab-block h3 { font-size: 1.2rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
+    .explorer-layout { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; margin-top: 14px; }
+    .graph-panel { min-width: 0; }
+
+    .graph-svg {
+      width: 100%; height: auto; display: block; background: #fff;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr;
+    }
+    .graph-svg text { font-family: var(--font-family); }
+
+    .grid-line { stroke: var(--border-subtle); stroke-width: 1; }
+    .axis-line { stroke: #94a3b8; stroke-width: 1.5; }
+    .axis-label { font-size: 11px; fill: var(--text-muted); text-anchor: middle; }
+    .axis-label-y { text-anchor: end; }
+
+    .curve-main { fill: none; stroke-width: 3; stroke-linecap: round; stroke: var(--blue-primary); }
+    .asymptote-line { stroke: var(--purple-strong); stroke-width: 2; stroke-dasharray: 6, 4; }
+    .point-marker { fill: var(--orange-strong); stroke: #fff; stroke-width: 2; }
+
+    .controls-panel { display: flex; flex-direction: column; gap: 4px; }
+    .param-row { margin-bottom: 14px; }
+    .param-row label { display: block; font-weight: 700; color: var(--text-main); margin-bottom: 6px; font-size: 0.92rem; }
+    input[type="range"] { width: 100%; accent-color: var(--blue-primary); }
+    select.param-select {
+      width: 100%; padding: 8px 10px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
+      font-family: var(--font-family); font-size: 0.95rem; background: #fff;
+    }
+
+    .solution-readout {
+      background: #fff; border: 2px solid var(--blue-soft); border-radius: var(--radius-md);
+      padding: 14px; text-align: center; font-weight: 700; margin-bottom: 14px; font-size: 0.92rem;
+    }
+
+    /* Step 3 quiz */
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; font-size: 0.95rem; color: var(--text-muted); }
+    .quiz-dots { display: flex; gap: 6px; margin-bottom: 20px; }
+    .quiz-dot { width: 12px; height: 12px; border-radius: 50%; background: #dbe3ee; transition: all 0.2s; }
+    .quiz-dot.dot-current { box-shadow: 0 0 0 3px var(--blue-soft); background: var(--blue-primary); }
+    .quiz-dot.dot-correct { background: var(--green-success); }
+    .quiz-dot.dot-incorrect { background: var(--red-error); }
+
+    .quiz-body { min-height: 160px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
+    .quiz-instruction { font-weight: 700; margin-bottom: 12px; }
+    .quiz-id-tag { margin-top: 14px; text-align: center; font-size: 0.72rem; color: #b8c2d1; font-family: monospace; direction: ltr; }
+    .quiz-formula { direction: ltr; text-align: center; font-size: 1.3rem; margin: 14px 0; max-width: 100%; overflow-x: auto; }
+
+    .quiz-options { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+    .quiz-option-btn {
+      padding: 12px 20px; border-radius: var(--radius-sm); border: 2px solid var(--border-subtle);
+      background: #fff; font-family: var(--font-family); font-size: 1rem; font-weight: 700;
+      cursor: pointer; min-width: 120px; transition: all 0.15s;
+    }
+    .quiz-option-btn:hover:not(:disabled) { border-color: var(--blue-primary); background: var(--blue-soft); }
+    .quiz-option-btn:disabled { cursor: default; }
+    .option-correct { background: var(--green-soft) !important; border-color: var(--green-success) !important; color: #1f7a41; }
+    .option-incorrect { background: var(--red-soft) !important; border-color: var(--red-error) !important; color: #8f2323; }
+
+    .quiz-graph-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 14px; max-width: 560px; margin-inline: auto; }
+    .quiz-graph-btn {
+      border: 2px solid var(--border-subtle); border-radius: var(--radius-md); background: #fff;
+      padding: 8px; cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .quiz-graph-btn:hover:not(:disabled) { border-color: var(--blue-primary); background: var(--blue-soft); }
+    .quiz-graph-btn:disabled { cursor: default; }
+    .quiz-graph-svg { width: 100%; height: auto; display: block; direction: ltr; background: #fff; }
+    .quiz-graph-label { font-weight: 800; color: var(--blue-deep); margin-top: 4px; font-size: 0.95rem; }
+
+    .quiz-complete-msg { text-align: center; font-weight: 700; color: var(--blue-deep); padding: 30px 10px; }
+
+    .quiz-feedback { margin-top: 16px; padding: 14px 18px; border-radius: var(--radius-sm); font-size: 0.95rem; }
+    .feedback-correct { background: var(--green-soft); border: 1px solid var(--green-success); color: #1f7a41; }
+    .feedback-incorrect { background: var(--red-soft); border: 1px solid var(--red-error); color: #8f2323; }
+    .feedback-explain { margin-top: 6px; font-weight: 400; }
+
+    .quiz-actions { display: flex; justify-content: center; margin-top: 18px; }
+
+    .btn { padding: 12px 26px; border-radius: var(--radius-sm); border: none; font-family: var(--font-family); font-weight: 700; font-size: 0.98rem; cursor: pointer; transition: all 0.15s; }
+    .btn-primary { background: var(--blue-primary); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--blue-deep); }
+    .btn-primary:disabled { background: #a9bcd8; cursor: not-allowed; }
+    .btn-secondary { background: #eef2f9; color: var(--blue-primary); border: 1px solid var(--border-subtle); }
+    .btn-secondary:hover { background: var(--blue-soft); }
+
+    .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-subtle); }
+
+    .results-card { border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 26px; text-align: center; margin-bottom: 26px; transition: all 0.2s; }
+    .results-good { border-color: var(--green-success); background: var(--green-soft); }
+    .results-mid { border-color: var(--orange-strong); background: var(--orange-soft); }
+    .results-low { border-color: var(--red-error); background: var(--red-soft); }
+    .results-number { font-size: 3rem; font-weight: 800; color: var(--blue-deep); }
+    .results-label { color: var(--text-muted); font-weight: 600; margin-bottom: 10px; }
+    .results-percent-row { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .results-verdict { font-size: 1.05rem; font-weight: 700; color: var(--blue-deep); }
+
+    .table-wrap { overflow-x: auto; margin-bottom: 10px; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .data-table th, .data-table td { border: 1px solid var(--border-subtle); padding: 12px 14px; text-align: center; }
+    .data-table th { background: var(--blue-soft); color: var(--blue-deep); font-weight: 700; }
+    .data-table td:first-child { background: #f8fafc; font-weight: 700; color: var(--text-muted); }
+
+    .name-gate {
+      max-width: 480px; margin: 30px auto; text-align: center; background: #f8fafc;
+      border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 28px 22px;
+    }
+    .name-gate-text { font-weight: 700; margin-bottom: 16px; color: var(--blue-deep); }
+    .name-gate-input {
+      width: 100%; padding: 12px 14px; border: 2px solid var(--border-subtle); border-radius: var(--radius-sm);
+      font-family: var(--font-family); font-size: 1rem; margin-bottom: 14px; text-align: center; box-sizing: border-box;
+    }
+    .name-gate-input:focus { outline: none; border-color: var(--blue-primary); }
+    .name-gate-error { color: var(--red-error); background: var(--red-soft); border: 1px solid var(--red-error); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 0.88rem; font-weight: 700; margin: -6px 0 14px; }
+
+    .certificate-card {
+      position: relative; background: linear-gradient(135deg, #fffbea 0%, #ffffff 60%);
+      border: 3px solid #d4af37; border-radius: var(--radius-lg); padding: 34px 26px 26px;
+      text-align: center; max-width: 560px; margin: 10px auto 0; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+    }
+    .certificate-card::before {
+      content: ''; position: absolute; inset: 8px; border: 1px solid #e9d38a;
+      border-radius: calc(var(--radius-lg) - 6px); pointer-events: none;
+    }
+    .certificate-trophy { font-size: 48px; line-height: 1; margin: 0 auto 10px; text-align: center; }
+    .certificate-title { font-size: 1.2rem; font-weight: 800; color: #92660b; margin-bottom: 16px; }
+    .certificate-line { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 2px; }
+    .certificate-student-name { font-size: 1.55rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 12px; }
+    .certificate-lesson-name { font-size: 0.92rem; color: var(--text-main); margin-bottom: 8px; font-weight: 600; }
+    .certificate-score { font-size: 1.1rem; font-weight: 800; color: #1f7a41; margin-bottom: 18px; }
+    .certificate-quote { font-style: italic; font-size: 0.96rem; color: var(--blue-primary); padding: 0 10px; margin-bottom: 16px; line-height: 1.6; }
+    .certificate-ref { position: absolute; bottom: 8px; left: 14px; font-size: 0.68rem; color: #b8b8b8; direction: ltr; }
+    .btn-download-cert { max-width: 420px; }
+    .encouragement-card { background: var(--orange-soft); border: 2px dashed var(--orange-strong); border-radius: var(--radius-lg); padding: 32px 24px; text-align: center; max-width: 480px; margin: 10px auto 0; }
+    .encouragement-icon { font-size: 44px; margin-bottom: 12px; }
+    .encouragement-text { font-size: 1.02rem; color: var(--text-main); font-weight: 600; margin-bottom: 20px; line-height: 1.6; }
+    .btn-retry-fail { font-size: 1.05rem; padding: 14px 32px; }
+    .summary-actions[hidden] { display: none; }
+
+    .summary-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 780px) {
+      .explorer-layout { grid-template-columns: 1fr; }
+      .lesson-card { padding: 20px; }
+      .quiz-graph-options { grid-template-columns: 1fr 1fr; max-width: 100%; }
+      .certificate-card { padding: 26px 16px 20px; }
+      .certificate-title { font-size: 1.05rem; }
+      .certificate-student-name { font-size: 1.3rem; }
+      .summary-actions { flex-direction: column; align-items: stretch; }
+      .summary-actions .btn { width: 100%; }
+    }
+
+    @media print {
+      .topbar, .nav-buttons, step-progress, #step-1, #step-2, #step-3, .summary-actions { display: none !important; }
+      body { background: #fff; }
+      .lesson-card { box-shadow: none; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <a href="../../grade12/level5/index.html" class="back-link">→ חזרה לעץ הנושאים</a>
+    <span class="module-id-badge">exp-09</span>
+  </div>
+
+  <div class="lesson-container">
+    <step-progress id="stepProgress" current-step="1"></step-progress>
+
+    <div class="lesson-card">
+
+      <section class="step-panel" id="step-1" data-step="1">
+        <h2 class="step-heading">שלב 1: מכירים</h2>
+        <p class="step-intro">איך מזהים את הגרף הנכון מבין כמה שרטוטים מוצעים? עוברים על סדר בדיקה קבוע, ופוסלים כל שרטוט שסותר תכונה אחת של הפונקציה.</p>
+
+        <div class="content-block">
+          <h3>סדר החקירה המומלץ</h3>
+          <div class="flow-steps">
+            <div class="flow-step">
+              <span class="flow-num">1</span>
+              <div class="flow-body">
+                <h4>תחום הגדרה</h4>
+                <p>איפה הפונקציה בכלל מוגדרת? (מכנים שמתאפסים, ביטויים תחת שורש) — כל שרטוט שמראה גרף בנקודה אסורה, נפסל.</p>
+              </div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <span class="flow-num">2</span>
+              <div class="flow-body">
+                <h4>זוגיות, אי-זוגיות וסימן</h4>
+                <p>הגרף סימטרי סביב ציר y? סביב הראשית? חיובי לכל x? כל שרטוט שסותר תכונת סימטריה או סימן שהוכחה אלגברית, נפסל.</p>
+              </div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <span class="flow-num">3</span>
+              <div class="flow-body">
+                <h4>נקודות חיתוך עם הצירים</h4>
+                <p>מה הערך ב-$x=0$? היכן הגרף חותך את ציר ה-x (אם בכלל)? כל שרטוט עם נקודת חיתוך שגויה, נפסל.</p>
+              </div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+              <span class="flow-num">4</span>
+              <div class="flow-body">
+                <h4>אסימפטוטות בקצוות</h4>
+                <p>מה קורה כש-$x\to\infty$ וכש-$x\to-\infty$? יש אסימפטוטה אנכית? כל שרטוט עם התנהגות קצה שגויה, נפסל.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-block highlight-block">
+          <h3>הכלל המרכזי</h3>
+          <p>לא צריך "לצייר" את הגרף לגמרי כדי לבחור נכון — <strong>מספיק למצוא תכונה אחת</strong> (מתוך ה-4 שלמעלה) שהשרטוט המוצע סותר, כדי לפסול אותו. עוברים על השרטוטים אחד-אחד, ולכל אחד שואלים: "האם הוא סותר משהו שאני יודע/ת בוודאות על הפונקציה?"</p>
+        </div>
+
+        <div class="content-block">
+          <h3>דוגמה</h3>
+          <p>נתונה $f(x) = \dfrac{1}{e^{x}+1}$. אנחנו יודעים: מוגדרת לכל $x$ (המכנה $e^x+1>0$ תמיד), חיובית לכל $x$, יורדת מ-1 (כש-$x\to-\infty$) ל-0 (כש-$x\to\infty$), וש-$f(0)=\dfrac12$.</p>
+          <div class="method-example">שרטוט שמראה גרף שלילי, או גרף עולה, או גרף שאינו מוגדר בנקודה מסוימת — פסול על הסתירה הראשונה שמוצאים, בלי צורך לבדוק את שאר התכונות.</div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-2" data-step="2" hidden>
+        <h2 class="step-heading">שלב 2: חוקרים</h2>
+        <p class="step-intro">כלי שרטוט: בחרו את האסימפטוטה בכל צד ואת מיקום המעבר, וצפו כיצד הגרף "נבנה" מהתכונות בלבד — בלי נוסחה!</p>
+
+        <div class="lab-block">
+          <h3>כלי בניית שרטוט מתכונות</h3>
+          <div class="explorer-layout">
+            <div class="graph-panel">
+              <svg id="sketchSvg" viewBox="0 0 600 400" class="graph-svg"></svg>
+            </div>
+            <div class="controls-panel">
+              <div class="solution-readout" id="sketchReadout"></div>
+              <div class="param-row">
+                <label for="leftAsymSelect">אסימפטוטה כש-$x\to-\infty$ (שמאל):</label>
+                <select id="leftAsymSelect" class="param-select">
+                  <option value="0">y = 0</option>
+                  <option value="1" selected>y = 1</option>
+                  <option value="2">y = 2</option>
+                </select>
+              </div>
+              <div class="param-row">
+                <label for="rightAsymSelect">אסימפטוטה כש-$x\to\infty$ (ימין):</label>
+                <select id="rightAsymSelect" class="param-select">
+                  <option value="0" selected>y = 0</option>
+                  <option value="1">y = 1</option>
+                  <option value="2">y = 2</option>
+                </select>
+              </div>
+              <div class="param-row">
+                <label for="shiftSlider">מיקום המעבר (משפיע על נקודת החיתוך עם ציר y): <span id="shiftValue">0</span></label>
+                <input type="range" id="shiftSlider" min="-3" max="3" step="0.5" value="0">
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-3" data-step="3" hidden>
+        <h2 class="step-heading">שלב 3: מתרגלים</h2>
+
+        <div class="name-gate" id="nameGate">
+          <p class="name-gate-text">הקלידו את שמכם המלא כדי להתחיל בתרגול ולקבל תעודת סיום אישית</p>
+          <input type="text" id="studentNameInput" class="name-gate-input" placeholder="לדוגמה: ישראל ישראלי" autocomplete="name">
+          <input type="text" id="teacherNameInput" class="name-gate-input" list="teachers-list" placeholder="שם המורה" autocomplete="off">
+          <datalist id="teachers-list"></datalist>
+          <p class="name-gate-error" id="teacherNameError" hidden>אנא בחר שם מורה תקין מתוך הרשימה</p>
+          <button type="button" id="btnStartQuiz" class="btn btn-primary" disabled>בואו נתחיל</button>
+        </div>
+
+        <div id="quizContent" hidden>
+          <div class="quiz-header">
+            <div>שאלה <span id="qIndex">1</span> מתוך 10</div>
+            <div>ציון מצטבר: <span id="qScore">0</span>/10</div>
+          </div>
+          <div class="quiz-dots" id="quizDots"></div>
+          <div class="quiz-body" id="quizBody"></div>
+          <div class="quiz-feedback" id="quizFeedback" hidden></div>
+          <div class="quiz-actions">
+            <button id="btnCheckAnswer" class="btn btn-primary" type="button" hidden>בדיקת תשובה</button>
+            <button id="btnNextQuestion" class="btn btn-primary" type="button" hidden>לשאלה הבאה ←</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="step-panel" id="step-4" data-step="4" hidden>
+        <h2 class="step-heading">שלב 4: מסכמים</h2>
+
+        <div class="printable-area">
+          <div class="results-card" id="resultsCard">
+            <div class="results-number" id="resultsCorrect">0</div>
+            <div class="results-label">תשובות נכונות מתוך 10</div>
+            <div class="results-percent-row">אחוז הצלחה: <span id="resultsPercent">0%</span></div>
+            <div class="results-verdict" id="resultsVerdict"></div>
+          </div>
+
+          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: תהליך חקירת פונקציה</h3>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead><tr><th>שלב</th><th>שאלה מנחה</th><th>שימוש בפסילת גרפים</th></tr></thead>
+              <tbody>
+                <tr><td>1. תחום הגדרה</td><td>איפה מוגדרת?</td><td>פוסל גרף המוצג בנקודה אסורה</td></tr>
+                <tr><td>2. זוגיות/סימן</td><td>סימטרית? חיובית?</td><td>פוסל גרף לא-סימטרי או בסימן שגוי</td></tr>
+                <tr><td>3. חיתוך צירים</td><td>מה $f(0)$?</td><td>פוסל גרף עם נקודת חיתוך שגויה</td></tr>
+                <tr><td>4. אסימפטוטות</td><td>מה קורה בקצוות?</td><td>פוסל גרף עם התנהגות קצה שגויה</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="certificate-card" id="certificateCard">
+            <div class="certificate-trophy" id="certIcon" aria-hidden="true">🏆</div>
+            <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות והערכה במתמטיקה - 5 יח"ל</h3>
+            <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
+            <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
+            <p class="certificate-lesson-name" id="certLessonName">לומדה: קדם אנליזה והתאמת גרפים</p>
+            <p class="certificate-score" id="certScore">ציון סופי: 0 (0/10)</p>
+            <p class="certificate-quote" id="certQuote"></p>
+            <div class="certificate-ref" id="certTime">Time: 0s</div>
+          </div>
+
+          <div class="encouragement-card" id="encouragementCard" hidden>
+            <div class="encouragement-icon" aria-hidden="true">💪</div>
+            <p class="encouragement-text">לא נורא! כדי להרוויח את התעודה, יש לקבל ציון עובר (60 ומעלה). חזרו לתרגל ונסו שוב.</p>
+            <button id="btnRetryFail" class="btn btn-primary btn-retry-fail" type="button">נסה שוב</button>
+          </div>
+        </div>
+
+        <div class="summary-actions" id="summaryActions">
+          <button id="btnRestart" class="btn btn-secondary" type="button">התחל מחדש</button>
+          <button id="btnDownloadCert" class="btn btn-primary btn-download-cert" type="button">שמירת התעודה כתמונה (לשליחה בוואטסאפ / קלאסרום)</button>
+        </div>
+      </section>
+
+      <div class="nav-buttons">
+        <button id="btnPrev" class="btn btn-secondary" type="button">→ הקודם</button>
+        <button id="btnNext" class="btn btn-primary" type="button">הבא ←</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../shared/components/step-progress.js"></script>
+  <script src="../../shared/js/score-tracker.js"></script>
+  <script src="../../shared/js/bidi-utils.js"></script>
+  <script src="../../shared/components/math-input-pad.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    var katexOptions = {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    };
+
+    var LESSON_NAME = 'קדם אנליזה והתאמת גרפים';
+
+    var currentStep = 1;
+    var studentName = '';
+    var teacherName = '';
+    var quizStarted = false;
+    var quizTiming = { startTime: null, totalSeconds: null };
+    var state = {
+      quiz: { questions: [], index: 0, score: 0, answers: [], locked: false }
+    };
+
+    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = randInt(0, i);
+        var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+      }
+      return a;
+    }
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    /* ---------- Step 2: property-driven sketch tool ---------- */
+
+    var SW = 600, SH = 400, SPAD = 44, SXMIN = -6, SXMAX = 6, SYMIN = -0.6, SYMAX = 2.6;
+    var smx = function (x) { return SPAD + (x - SXMIN) / (SXMAX - SXMIN) * (SW - 2 * SPAD); };
+    var smy = function (y) { return SH - SPAD - (y - SYMIN) / (SYMAX - SYMIN) * (SH - 2 * SPAD); };
+
+    function sketchFn(x, L, R, shift) {
+      var sig = 1 / (1 + Math.exp(-(x - shift)));
+      return L + (R - L) * sig;
+    }
+
+    function buildSketchPath(L, R, shift) {
+      var steps = 200;
+      var d = '';
+      for (var i = 0; i <= steps; i++) {
+        var x = SXMIN + (SXMAX - SXMIN) * i / steps;
+        var y = sketchFn(x, L, R, shift);
+        var px = smx(x), py = smy(clamp(y, SYMIN, SYMAX));
+        d += (i === 0 ? 'M' : 'L') + px.toFixed(2) + ',' + py.toFixed(2) + ' ';
+      }
+      return d.trim();
+    }
+
+    function drawSketchTool() {
+      var L = parseFloat(document.getElementById('leftAsymSelect').value);
+      var R = parseFloat(document.getElementById('rightAsymSelect').value);
+      var shift = parseFloat(document.getElementById('shiftSlider').value);
+      document.getElementById('shiftValue').textContent = shift;
+
+      var markup = '';
+      for (var gx = Math.ceil(SXMIN); gx <= Math.floor(SXMAX); gx += 2) {
+        markup += '<line x1="' + smx(gx) + '" y1="' + smy(SYMIN) + '" x2="' + smx(gx) + '" y2="' + smy(SYMAX) + '" class="grid-line"/>';
+        if (gx !== 0) markup += '<text x="' + smx(gx) + '" y="' + (smy(0) + 16) + '" class="axis-label">' + gx + '</text>';
+      }
+      for (var gy = 0; gy <= 2; gy += 1) {
+        markup += '<line x1="' + smx(SXMIN) + '" y1="' + smy(gy) + '" x2="' + smx(SXMAX) + '" y2="' + smy(gy) + '" class="grid-line"/>';
+        markup += '<text x="' + (smx(SXMIN) - 8) + '" y="' + (smy(gy) + 4) + '" class="axis-label axis-label-y">' + gy + '</text>';
+      }
+      markup += '<line x1="' + smx(SXMIN) + '" y1="' + smy(0) + '" x2="' + smx(SXMAX) + '" y2="' + smy(0) + '" class="axis-line"/>';
+      markup += '<line x1="' + smx(0) + '" y1="' + smy(SYMIN) + '" x2="' + smx(0) + '" y2="' + smy(SYMAX) + '" class="axis-line"/>';
+
+      markup += '<line x1="' + smx(SXMIN) + '" y1="' + smy(L) + '" x2="' + smx(SXMAX) + '" y2="' + smy(L) + '" class="asymptote-line"/>';
+      markup += '<line x1="' + smx(SXMIN) + '" y1="' + smy(R) + '" x2="' + smx(SXMAX) + '" y2="' + smy(R) + '" class="asymptote-line"/>';
+
+      markup += '<path d="' + buildSketchPath(L, R, shift) + '" class="curve-main"/>';
+
+      var yIntercept = sketchFn(0, L, R, shift);
+      markup += '<circle cx="' + smx(0) + '" cy="' + smy(clamp(yIntercept, SYMIN, SYMAX)) + '" r="7" class="point-marker"/>';
+
+      document.getElementById('sketchSvg').innerHTML = markup;
+
+      var readoutEl = document.getElementById('sketchReadout');
+      var trend = R > L ? 'עולה' : (R < L ? 'יורדת' : 'קבועה');
+      readoutEl.innerHTML = 'הפונקציה ' + trend + ', עם אסימפטוטות $y=' + L + '$ (משמאל) ו-$y=' + R + '$ (מימין), וחותכת את ציר ה-y בנקודה $(0,\\;' + yIntercept.toFixed(2) + ')$.';
+      renderMathInElement(readoutEl, katexOptions);
+    }
+
+    document.getElementById('leftAsymSelect').addEventListener('change', drawSketchTool);
+    document.getElementById('rightAsymSelect').addEventListener('change', drawSketchTool);
+    document.getElementById('shiftSlider').addEventListener('input', drawSketchTool);
+
+    /* ---------- Step 3: mini-graph thumbnail rendering ---------- */
+
+    var TW = 160, TH = 110, TPAD = 12;
+
+    function renderMiniGraphSVG(fn, xmin, xmax, ymin, ymax) {
+      var tmx = function (x) { return TPAD + (x - xmin) / (xmax - xmin) * (TW - 2 * TPAD); };
+      var tmy = function (y) { return TH - TPAD - (y - ymin) / (ymax - ymin) * (TH - 2 * TPAD); };
+      var markup = '<svg viewBox="0 0 ' + TW + ' ' + TH + '" class="quiz-graph-svg">';
+      if (0 >= xmin && 0 <= xmax) markup += '<line x1="' + tmx(0) + '" y1="0" x2="' + tmx(0) + '" y2="' + TH + '" class="axis-line"/>';
+      if (0 >= ymin && 0 <= ymax) markup += '<line x1="0" y1="' + tmy(0) + '" x2="' + TW + '" y2="' + tmy(0) + '" class="axis-line"/>';
+      var steps = 90;
+      var d = '';
+      for (var i = 0; i <= steps; i++) {
+        var x = xmin + (xmax - xmin) * i / steps;
+        var y = fn(x);
+        var yc = clamp(y, ymin - (ymax - ymin) * 0.3, ymax + (ymax - ymin) * 0.3);
+        var px = tmx(x), py = tmy(clamp(yc, ymin - (ymax - ymin) * 2, ymax + (ymax - ymin) * 2));
+        py = clamp(py, -20, TH + 20);
+        d += (i === 0 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1) + ' ';
+      }
+      markup += '<path d="' + d.trim() + '" class="curve-main"/>';
+      markup += '</svg>';
+      return markup;
+    }
+
+    /* ---------- Step 3: graph-matching question bank ---------- */
+
+    var GRAPH_BANK = [
+      {
+        promptLatex: 'f(x) = \\dfrac{1}{e^{x}+1}',
+        window: { xmin: -5, xmax: 5, ymin: -0.3, ymax: 1.3 },
+        correct: { key: 'g1c', fn: function (x) { return 1 / (Math.exp(x) + 1); } },
+        distractors: [
+          { key: 'g1d1', fn: function (x) { return Math.exp(x) / (Math.exp(x) + 1); } },
+          { key: 'g1d2', fn: function (x) { return 2 / (Math.exp(x) + 1); } },
+          { key: 'g1d3', fn: function (x) { return -1 / (Math.exp(x) + 1); } }
+        ],
+        explain: 'כש-$x\\to\\infty$: $e^x\\to\\infty \\Rightarrow f(x)\\to0$. כש-$x\\to-\\infty$: $e^x\\to0 \\Rightarrow f(x)\\to1$. הפונקציה חיובית לכל $x$, יורדת מ-1 (משמאל) ל-0 (מימין), ו-$f(0)=\\dfrac12$. זהו הגרף היורד בטווח $(0,1)$.'
+      },
+      {
+        promptLatex: 'f(x) = \\dfrac{e^{x}}{e^{x}+1}',
+        window: { xmin: -5, xmax: 5, ymin: -0.3, ymax: 1.3 },
+        correct: { key: 'g2c', fn: function (x) { return Math.exp(x) / (Math.exp(x) + 1); } },
+        distractors: [
+          { key: 'g2d1', fn: function (x) { return 1 / (Math.exp(x) + 1); } },
+          { key: 'g2d2', fn: function (x) { return 2 * Math.exp(x) / (Math.exp(x) + 1); } },
+          { key: 'g2d3', fn: function (x) { return -Math.exp(x) / (Math.exp(x) + 1); } }
+        ],
+        explain: 'כש-$x\\to\\infty$: מחלקים ב-$e^x$ ומקבלים $f(x)\\to1$. כש-$x\\to-\\infty$: $e^x\\to0 \\Rightarrow f(x)\\to0$. הפונקציה חיובית לכל $x$, עולה מ-0 (משמאל) ל-1 (מימין), ו-$f(0)=\\dfrac12$. זהו הגרף העולה בטווח $(0,1)$.'
+      },
+      {
+        promptLatex: 'f(x) = x\\cdot e^{-x^2}',
+        window: { xmin: -3, xmax: 3, ymin: -0.7, ymax: 0.7 },
+        correct: { key: 'g3c', fn: function (x) { return x * Math.exp(-x * x); } },
+        distractors: [
+          { key: 'g3d1', fn: function (x) { return Math.exp(-x * x); } },
+          { key: 'g3d2', fn: function (x) { return -x * Math.exp(-x * x); } },
+          { key: 'g3d3', fn: function (x) { return x * Math.exp(x * x) / 40; } }
+        ],
+        explain: 'הפונקציה אי-זוגית ($f(-x)=-f(x)$), מתאפסת ב-$x=0$, חיובית עבור $x>0$ ושלילית עבור $x<0$, ומתקרבת ל-0 בשני הקצוות (כי $e^{-x^2}$ שואפת לאפס מהר מאוד). זהו הגרף עם "גבשושית" חיובית מימין לאפס ו"גבשושית" שלילית משמאלה.'
+      },
+      {
+        promptLatex: 'f(x) = e^{x^2}',
+        window: { xmin: -2.3, xmax: 2.3, ymin: 0, ymax: 9 },
+        correct: { key: 'g4c', fn: function (x) { return Math.exp(x * x); } },
+        distractors: [
+          { key: 'g4d1', fn: function (x) { return Math.exp(-x * x) * 8 + 1; } },
+          { key: 'g4d2', fn: function (x) { return x * Math.exp(x * x) / 3; } },
+          { key: 'g4d3', fn: function (x) { return Math.exp(x * x - 3); } }
+        ],
+        explain: 'הפונקציה זוגית (סימטרית סביב ציר y), מקבלת ערך מינימלי 1 ב-$x=0$ (כי $e^0=1$), וגדלה ללא הגבלה משני הצדדים — אין לה אסימפטוטה אופקית. זהו הגרף בצורת "קערה" שמתחיל בגובה 1 ועולה בשני הצדדים.'
+      },
+      {
+        promptLatex: 'f(x) = \\dfrac{2^{x}}{2^{x}+4}',
+        window: { xmin: -6, xmax: 6, ymin: -0.3, ymax: 1.3 },
+        correct: { key: 'g5c', fn: function (x) { return Math.pow(2, x) / (Math.pow(2, x) + 4); } },
+        distractors: [
+          { key: 'g5d1', fn: function (x) { return 4 / (Math.pow(2, x) + 4); } },
+          { key: 'g5d2', fn: function (x) { return 2 * Math.pow(2, x) / (Math.pow(2, x) + 4); } },
+          { key: 'g5d3', fn: function (x) { return -Math.pow(2, x) / (Math.pow(2, x) + 4); } }
+        ],
+        explain: 'כש-$x\\to\\infty$: $f(x)\\to1$. כש-$x\\to-\\infty$: $2^x\\to0 \\Rightarrow f(x)\\to0$. הפונקציה חיובית, עולה מ-0 ל-1, ו-$f(0)=\\dfrac{1}{5}=0.2$ — נקודת חיתוך קרובה לאפס. זהו הגרף העולה שמתחיל קרוב מאוד ל-0.'
+      },
+      {
+        promptLatex: 'f(x) = 1 - e^{-x^2}',
+        window: { xmin: -3, xmax: 3, ymin: -1.3, ymax: 1.3 },
+        correct: { key: 'g6c', fn: function (x) { return 1 - Math.exp(-x * x); } },
+        distractors: [
+          { key: 'g6d1', fn: function (x) { return Math.exp(-x * x); } },
+          { key: 'g6d2', fn: function (x) { return -Math.exp(-x * x); } },
+          { key: 'g6d3', fn: function (x) { return 1 - Math.exp(-x); } }
+        ],
+        explain: 'הפונקציה זוגית, מקבלת ערך מינימלי 0 ב-$x=0$, ושואפת ל-1 בשני הקצוות (כי $e^{-x^2}\\to0$) — אסימפטוטה אופקית $y=1$ משני הצדדים. זהו הגרף שמתחיל מ-0 ועולה כלפי מעלה לכיוון הקו $y=1$ משני הצדדים בצורה סימטרית.'
+      }
+    ];
+
+    var TYPE_Z_BANK = [
+      { text: 'לפני שבודקים אסימפטוטות, יש לבדוק תחילה את תחום ההגדרה של הפונקציה.', answer: true, explain: 'תחום ההגדרה קובע איפה הפונקציה בכלל קיימת — בלעדיו לא ניתן לדעת אילו ערכי x רלוונטיים לבדיקת אסימפטוטות.' },
+      { text: 'אם פונקציה זוגית, מספיק לשרטט אותה עבור $x\\geq0$ ולשקף סביב ציר y כדי לקבל את הגרף המלא.', answer: true, explain: 'זוגיות ($f(-x)=f(x)$) פירושה שהצד השמאלי הוא שיקוף מראה מדויק של הצד הימני סביב ציר y.' },
+      { text: 'אם פונקציה אי-זוגית, מספיק לשרטט אותה עבור $x\\geq0$ ולסבב 180° סביב הראשית כדי לקבל את הגרף המלא.', answer: true, explain: 'אי-זוגיות ($f(-x)=-f(x)$) פירושה שהצד השמאלי מתקבל מהצד הימני בסיבוב של 180° סביב נקודת הראשית.' },
+      { text: 'בדיקת נקודת החיתוך עם ציר ה-y אינה שלב שימושי בפסילת גרפים מוצעים.', answer: false, explain: 'נקודת החיתוך עם ציר ה-y ($f(0)$) היא בדיקה מהירה ויעילה מאוד לפסילת שרטוטים שגויים.' },
+      { text: 'כדי לפסול שרטוט מוצע לפונקציה נתונה, מספיק למצוא תכונה אחת (למשל תחום הגדרה שגוי) שהוא סותר.', answer: true, explain: 'זהו הכלל המרכזי בלומדה: תכונה סותרת אחת מספיקה כדי לפסול שרטוט, בלי צורך לבדוק את כל שאר התכונות.' },
+      { text: 'הסדר המקובל לחקירת פונקציה הוא: אסימפטוטות ← זוגיות ← תחום הגדרה ← חיתוך עם הצירים.', answer: false, explain: 'הסדר הנכון הוא: תחום הגדרה ← זוגיות/סימן ← נקודות חיתוך ← אסימפטוטות — קודם קובעים איפה הפונקציה קיימת, ורק בסוף בודקים התנהגות קצה.' }
+    ];
+
+    function pickN(bank, n) {
+      var idxs = [];
+      var picks = [];
+      while (picks.length < Math.min(n, bank.length)) {
+        var idx = randInt(0, bank.length - 1);
+        if (idxs.indexOf(idx) !== -1) continue;
+        idxs.push(idx);
+        picks.push(bank[idx]);
+      }
+      return picks;
+    }
+
+    function makeGraphQuestion(item) {
+      var candidates = shuffle([item.correct].concat(item.distractors));
+      var correctIndex = -1;
+      candidates.forEach(function (c, i) { if (c.key === item.correct.key) correctIndex = i; });
+      var options = candidates.map(function (c) {
+        return { key: c.key, svg: renderMiniGraphSVG(c.fn, item.window.xmin, item.window.xmax, item.window.ymin, item.window.ymax) };
+      });
+      return {
+        type: 'G', kind: 'graph',
+        promptText: 'נתונה הפונקציה. בחרו את השרטוט המתאים לה מבין 4 האפשרויות (I, II, III, IV):',
+        promptLatex: item.promptLatex,
+        options: options, correctIndex: correctIndex, explain: item.explain
+      };
+    }
+
+    function generateQuizQuestions() {
+      var qs = [];
+
+      pickN(GRAPH_BANK, 6).forEach(function (item) {
+        qs.push(makeGraphQuestion(item));
+      });
+
+      pickN(TYPE_Z_BANK, 4).forEach(function (item) {
+        var opts = shuffle(['נכון', 'לא נכון']);
+        var correctLabel = item.answer ? 'נכון' : 'לא נכון';
+        qs.push({
+          type: 'Z', kind: 'choice',
+          promptText: item.text, promptLatex: null,
+          options: opts, correctIndex: opts.indexOf(correctLabel), explain: item.explain
+        });
+      });
+
+      qs.forEach(function (q, i) { q.id = 'exp-09-q' + (i + 1); });
+      return shuffle(qs);
+    }
+
+    /* ---------- Step 3: quiz rendering ---------- */
+
+    var ROMAN = ['I', 'II', 'III', 'IV'];
+
+    function buildQuizDotsSkeleton() {
+      var wrap = document.getElementById('quizDots');
+      wrap.innerHTML = '';
+      for (var i = 0; i < 10; i++) {
+        var dot = document.createElement('span');
+        dot.className = 'quiz-dot';
+        wrap.appendChild(dot);
+      }
+      updateQuizDots();
+    }
+
+    function updateQuizDots() {
+      var dots = document.querySelectorAll('#quizDots .quiz-dot');
+      dots.forEach(function (dot, i) {
+        dot.classList.remove('dot-current', 'dot-correct', 'dot-incorrect');
+        if (i === state.quiz.index) dot.classList.add('dot-current');
+        if (state.quiz.answers[i] === true) dot.classList.add('dot-correct');
+        else if (state.quiz.answers[i] === false) dot.classList.add('dot-incorrect');
+      });
+    }
+
+    function renderQuizQuestion() {
+      var q = state.quiz.questions[state.quiz.index];
+      document.getElementById('qIndex').textContent = state.quiz.index + 1;
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+
+      var feedbackEl = document.getElementById('quizFeedback');
+      feedbackEl.hidden = true;
+      feedbackEl.innerHTML = '';
+
+      var checkBtn = document.getElementById('btnCheckAnswer');
+      var nextBtn = document.getElementById('btnNextQuestion');
+      nextBtn.hidden = true;
+      checkBtn.hidden = true;
+
+      var html = '';
+      if (q.promptText) html += '<p class="quiz-instruction">' + q.promptText + '</p>';
+      if (q.promptLatex) html += '<div class="quiz-formula">$$' + q.promptLatex + '$$</div>';
+
+      if (q.kind === 'graph') {
+        html += '<div class="quiz-graph-options">' + q.options.map(function (opt, i) {
+          return '<button type="button" class="quiz-graph-btn" data-index="' + i + '" data-key="' + opt.key + '">' +
+            opt.svg + '<div class="quiz-graph-label">' + ROMAN[i] + '</div></button>';
+        }).join('') + '</div>';
+      } else {
+        html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
+          return '<button type="button" class="quiz-option-btn" data-index="' + i + '">' + opt + '</button>';
+        }).join('') + '</div>';
+      }
+
+      document.getElementById('quizBody').innerHTML = html + '<p class="quiz-id-tag">' + q.id + '</p>';
+
+      if (q.kind === 'graph') {
+        document.querySelectorAll('#quizBody .quiz-graph-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (state.quiz.locked) return;
+            var key = this.dataset.key;
+            submitAnswer(key === q.options[q.correctIndex].key, this, '.quiz-graph-btn');
+          });
+        });
+      } else {
+        document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            if (state.quiz.locked) return;
+            var idx = parseInt(this.dataset.index, 10);
+            submitAnswer(q.options[idx] === q.options[q.correctIndex], this, '.quiz-option-btn');
+          });
+        });
+      }
+
+      renderMathInElement(document.getElementById('quizBody'), katexOptions);
+    }
+
+    function showFeedback(isCorrect, explain) {
+      var el = document.getElementById('quizFeedback');
+      el.hidden = false;
+      el.className = 'quiz-feedback ' + (isCorrect ? 'feedback-correct' : 'feedback-incorrect');
+      el.innerHTML = '<strong>' + (isCorrect ? 'תשובה נכונה!' : 'לא נכון.') + '</strong><div class="feedback-explain">' + (explain || '') + '</div>';
+      renderMathInElement(el, katexOptions);
+    }
+
+    function submitAnswer(isCorrect, clickedBtn, selector) {
+      state.quiz.locked = true;
+      var q = state.quiz.questions[state.quiz.index];
+      state.quiz.answers[state.quiz.index] = isCorrect;
+      if (isCorrect) state.quiz.score++;
+
+      if (selector === '.quiz-graph-btn') {
+        document.querySelectorAll('#quizBody ' + selector).forEach(function (b) {
+          b.disabled = true;
+          if (b.dataset.key === q.options[q.correctIndex].key) b.classList.add('option-correct');
+          else if (b === clickedBtn) b.classList.add('option-incorrect');
+        });
+      } else if (selector) {
+        document.querySelectorAll('#quizBody ' + selector).forEach(function (b) {
+          b.disabled = true;
+          var idx = parseInt(b.dataset.index, 10);
+          if (q.options && q.options[idx] === q.options[q.correctIndex]) b.classList.add('option-correct');
+          else if (b === clickedBtn) b.classList.add('option-incorrect');
+        });
+      }
+
+      showFeedback(isCorrect, q.explain);
+      document.getElementById('qScore').textContent = state.quiz.score;
+      updateQuizDots();
+      document.getElementById('btnCheckAnswer').hidden = true;
+      document.getElementById('btnNextQuestion').hidden = false;
+    }
+
+    function startQuiz() {
+      state.quiz.questions = generateQuizQuestions();
+      state.quiz.index = 0;
+      state.quiz.score = 0;
+      state.quiz.answers = [];
+      state.quiz.locked = false;
+      buildQuizDotsSkeleton();
+      renderQuizQuestion();
+    }
+
+    /* ---------- Step 4: results & certificate ---------- */
+
+    function renderResults() {
+      var total = 10;
+      var correct = state.quiz.score;
+      var pct = Math.round((correct / total) * 100);
+      document.getElementById('resultsCorrect').textContent = correct;
+      document.getElementById('resultsPercent').textContent = pct + '%';
+      var verdict, cardClass;
+      if (pct >= 90) { verdict = 'מצוין! שליטה מלאה בחומר.'; cardClass = 'results-good'; }
+      else if (pct >= 60) { verdict = 'כל הכבוד, עברתם בהצלחה!'; cardClass = 'results-mid'; }
+      else { verdict = 'עדיין לא עברתם את סף המעבר (60). חזרו לתרגל ונסו שוב.'; cardClass = 'results-low'; }
+      document.getElementById('resultsVerdict').textContent = verdict;
+      document.getElementById('resultsCard').className = 'results-card ' + cardClass;
+
+      var passed = pct >= 60;
+      document.getElementById('certificateCard').hidden = !passed;
+      document.getElementById('encouragementCard').hidden = passed;
+      document.getElementById('summaryActions').hidden = !passed;
+
+      if (passed) renderCertificate(pct, correct, total);
+      sendScoreToSheet({
+        studentName: studentName,
+        teacherName: teacherName,
+        grade: 'יב\'',
+        level: '5 יח"ל (שאלון 572)',
+        mainTopic: 'הפונקציה המעריכית',
+        subTopic: 'קדם אנליזה והתאמת גרפים',
+        mode: 'תרגול',
+        time: quizTiming.totalSeconds,
+        score: pct
+      });
+    }
+
+    function renderCertificate(pct, correct, total) {
+      document.getElementById('certStudentName').textContent = studentName || 'תלמיד/ה';
+      document.getElementById('certLessonName').textContent = 'לומדה: ' + LESSON_NAME;
+      document.getElementById('certScore').textContent = 'ציון סופי: ' + pct + ' (' + correct + '/' + total + ')';
+      var icon, title, quote;
+      if (pct >= 90) {
+        icon = '🏆'; title = 'תעודת הצטיינות';
+        quote = '"ההצלחה היא סך כל המאמצים הקטנים שנעשים יום אחרי יום."';
+      } else {
+        icon = '🏅'; title = 'תעודת סיום בהצלחה';
+        quote = '"טעויות הן שכר הלימוד של ההצלחה הבאה שלך. המשיכו לחקור!"';
+      }
+      document.getElementById('certIcon').textContent = icon;
+      document.getElementById('certTitleText').textContent = title;
+      document.getElementById('certQuote').textContent = quote;
+      var timeText = (typeof quizTiming.totalSeconds === 'number') ? 'Time: ' + quizTiming.totalSeconds + 's' : '';
+      document.getElementById('certTime').textContent = timeText;
+    }
+
+    /* ---------- Navigation ---------- */
+
+    function updateNavButtons() {
+      var btnPrev = document.getElementById('btnPrev');
+      var btnNext = document.getElementById('btnNext');
+      var navRow = document.querySelector('.nav-buttons');
+      btnPrev.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+      navRow.style.display = currentStep === 4 ? 'none' : 'flex';
+
+      if (currentStep === 3) {
+        var quizDone = state.quiz.questions.length > 0 && state.quiz.index >= state.quiz.questions.length;
+        btnNext.disabled = !quizDone;
+        btnNext.title = quizDone ? '' : 'השלימו את כל 10 השאלות כדי להמשיך';
+      } else {
+        btnNext.disabled = false;
+        btnNext.title = '';
+      }
+    }
+
+    function goToStep(n) {
+      document.querySelectorAll('.step-panel').forEach(function (panel) {
+        panel.hidden = (parseInt(panel.dataset.step, 10) !== n);
+      });
+      currentStep = n;
+      document.getElementById('stepProgress').setAttribute('current-step', n);
+
+      if (n === 3) {
+        document.getElementById('nameGate').hidden = quizStarted;
+        document.getElementById('quizContent').hidden = !quizStarted;
+      }
+      if (n === 4) renderResults();
+
+      updateNavButtons();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ---------- Init & event wiring ---------- */
+
+    document.getElementById('btnNext').addEventListener('click', function () {
+      if (currentStep < 4) goToStep(currentStep + 1);
+    });
+    document.getElementById('btnPrev').addEventListener('click', function () {
+      if (currentStep > 1) goToStep(currentStep - 1);
+    });
+
+    document.getElementById('btnNextQuestion').addEventListener('click', function () {
+      state.quiz.index++;
+      state.quiz.locked = false;
+      if (state.quiz.index < state.quiz.questions.length) {
+        renderQuizQuestion();
+      } else {
+        document.getElementById('quizBody').innerHTML = '<p class="quiz-complete-msg">כל הכבוד! סיימתם את כל 10 השאלות. לחצו על "הבא" כדי לראות את הסיכום שלכם.</p>';
+        document.getElementById('quizFeedback').hidden = true;
+        document.getElementById('btnCheckAnswer').hidden = true;
+        document.getElementById('btnNextQuestion').hidden = true;
+        if (quizTiming.startTime) {
+          quizTiming.totalSeconds = Math.round((Date.now() - quizTiming.startTime) / 1000);
+        }
+        updateNavButtons();
+      }
+    });
+
+    document.getElementById('studentNameInput').addEventListener('input', function () {
+      document.getElementById('btnStartQuiz').disabled = this.value.trim().length < 2;
+    });
+
+    document.getElementById('btnStartQuiz').addEventListener('click', function () {
+      studentName = document.getElementById('studentNameInput').value.trim();
+      if (studentName.length < 2) return;
+      var teacherInputVal = document.getElementById('teacherNameInput').value.trim();
+      if (!isValidTeacherName(teacherInputVal)) {
+        document.getElementById('teacherNameError').hidden = false;
+        return;
+      }
+      document.getElementById('teacherNameError').hidden = true;
+      teacherName = teacherInputVal;
+      quizStarted = true;
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      document.getElementById('nameGate').hidden = true;
+      document.getElementById('quizContent').hidden = false;
+      startQuiz();
+    });
+
+    function restartQuiz() {
+      quizTiming.startTime = Date.now();
+      quizTiming.totalSeconds = null;
+      startQuiz();
+      goToStep(3);
+    }
+    document.getElementById('btnRestart').addEventListener('click', restartQuiz);
+    var btnRetryFail = document.getElementById('btnRetryFail');
+    if (btnRetryFail) btnRetryFail.addEventListener('click', restartQuiz);
+
+    document.getElementById('btnDownloadCert').addEventListener('click', function () {
+      var btn = this;
+      var originalText = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = 'מכינים תמונה...';
+      html2canvas(document.getElementById('certificateCard'), { backgroundColor: '#ffffff', scale: 2 }).then(function (canvas) {
+        var safeStudent = (studentName || 'תלמיד').replace(/[\\/:*?"<>|]/g, '').trim();
+        var link = document.createElement('a');
+        link.download = 'תעודה_' + safeStudent + '_' + LESSON_NAME + '.png';
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }).catch(function (err) {
+        console.error(err);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        alert('אירעה שגיאה ביצירת התמונה. נסו שוב.');
+      });
+    });
+
+    drawSketchTool();
+    populateTeacherDatalist();
+    updateNavButtons();
+    renderMathInElement(document.body, katexOptions);
+  </script>
+</body>
+</html>

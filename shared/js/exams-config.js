@@ -1,14 +1,21 @@
-/* Builds a module list for a course whose canonical ids follow the new
+/* Builds a module list for a course whose canonical ids follow the
    "<prefix>-01", "<prefix>-02", ... scheme (position-based, zero-padded to 2
-   digits). A `null` slug means that position's lesson isn't built yet - it
-   still gets a real id so a future lesson can fill the slot in place without
-   shifting every id after it. */
-function seqModules(prefix, slugs) {
-  return slugs.map(function (slug, i) {
-    var n = i + 1;
-    var padded = n < 10 ? '0' + n : String(n);
-    return { id: prefix + '-' + padded, slug: slug };
-  });
+   digits). Since the flattening pass (each lesson is now a standalone file
+   named exactly "<id>.html" directly inside its topic folder), `slug` is
+   just `id` again for a built lesson - kept as a separate field (rather than
+   collapsing to a single string) so an unbuilt position can still hold a
+   real, permanent id with `slug: null`, letting resolveExamConfig() refuse
+   to resolve it instead of producing a broken path. `unbuiltPositions` is a
+   1-based list of positions that don't have a real lesson yet. */
+function seqModules(prefix, count, unbuiltPositions) {
+  unbuiltPositions = unbuiltPositions || [];
+  var out = [];
+  for (var i = 1; i <= count; i++) {
+    var n = i < 10 ? '0' + i : String(i);
+    var id = prefix + '-' + n;
+    out.push({ id: id, slug: unbuiltPositions.indexOf(i) !== -1 ? null : id });
+  }
+  return out;
 }
 
 const MODULE_REGISTRY = {
@@ -16,84 +23,30 @@ const MODULE_REGISTRY = {
     grade: "י'",
     level: '4 יח"ל',
     mainTopic: 'גיאומטריה אנליטית - הקו הישר',
-    basePath: 'grade10/level4/topics/',
-    /* line-01..line-12, one per topics/NN-* folder in curriculum order (same
-       order the folders are already numbered in, so id position == folder
-       number here). */
-    modules: seqModules('line', [
-      '01-coordinate-system',
-      '02-parallel-distance',
-      '03-distance-formula',
-      '04-midpoint',
-      '05-endpoint',
-      '06-slope-concept',
-      '07-slope-calculation',
-      '08-line-equation-point-slope',
-      '09-line-equation-two-points',
-      '10-parallel-lines',
-      '11-perpendicular-lines',
-      '12-intersecting-lines'
-    ])
+    basePath: 'topics/line/',
+    modules: seqModules('line', 12)
   },
   'grade10-level4-shapes': {
     grade: "י'",
     level: '4 יח"ל',
     mainTopic: 'גיאומטריה אנליטית - צורות גיאומטריות',
-    basePath: 'grade10/level4/topics/',
+    basePath: 'topics/shapes/',
     /* shp-01..shp-05 - full planned 5-lesson roadmap, positions fixed so ids
-       stay stable as content is built. A `null` slug is a lesson that
-       doesn't exist yet; resolveExamConfig() refuses to resolve any
-       sourceModules entry that lands on one.
-       shp-01: משולש ישר זווית (זיהוי קודקוד הזווית הישרה לפי מכפלת שיפועים) -
-          existing lesson ("02-triangle-types" - folder numbered by
-          shapes-topic build order, not curriculum position; its own
-          question ids use the "shp-01" prefix too, e.g. shp-01-qK; 5
-          questions per quiz, not 10, each rendering its own dynamic
-          triangle SVG). Prior to this file's id-standardization pass this
-          module's question ids used a separate "tri-m1" prefix - now unified
-          with its module id.
-       shp-02: משולש שווה-שוקיים ושווה-צלעות (סיווג לפי אורכי צלעות, נוסחת
-          המרחק) - existing lesson ("03-isosceles-equilateral"; question ids
-          now "shp-02-qK", previously "tri-m2-qK"). This position previously
-          held a placeholder for "תיכונים וגבהים במשולש" in planning notes;
-          the user redirected this lesson to isosceles/equilateral
-          classification instead, so medians/altitudes isn't currently
-          scheduled at any position in this roadmap.
+       stay stable as content is built.
+       shp-01: משולש ישר זווית (זיהוי קודקוד הזווית הישרה לפי מכפלת שיפועים).
+       shp-02: משולש שווה-שוקיים ושווה-צלעות (סיווג לפי אורכי צלעות, נוסחת המרחק).
        shp-03: שטחים והיקפים של משולשים במערכת הצירים - not yet built.
-       shp-04: לומדת סיכום: תכונות מרובעים - existing lesson (folder kept as
-          "01-quadrilaterals", its original build-order name, to avoid
-          breaking any existing links; question ids now "shp-04-qK",
-          previously "shapes-m4-qK").
+       shp-04: לומדת סיכום: תכונות מרובעים.
        shp-05: מרובעים במערכת הצירים (הוכחה וחישובים אנליטיים) - not yet
           built; this cluster may grow past a single lesson once scoped. */
-    modules: seqModules('shp', [
-      '02-triangle-types',
-      '03-isosceles-equilateral',
-      null,
-      '01-quadrilaterals',
-      null
-    ])
+    modules: seqModules('shp', 5, [3, 5])
   },
   'grade12-level5': {
     grade: "יב'",
     level: '5 יח"ל (שאלון 572)',
     mainTopic: 'הפונקציה המעריכית',
-    basePath: 'grade12/level5/topics/',
-    /* Not in scope for the line/shp id-standardization - ids stay "exp-mN"
-       (unlike line/shp, kept as-is rather than renamed), just wrapped in the
-       same {id, slug} shape so resolveExamConfig() can treat every course
-       uniformly. */
-    modules: [
-      { id: 'exp-m1', slug: '01-exponential-basic' },
-      { id: 'exp-m2', slug: '02-exponential-e' },
-      { id: 'exp-m3', slug: '03-exponential-transformations' },
-      { id: 'exp-m4', slug: '04-exponential-equations' },
-      { id: 'exp-m5', slug: '05-exponential-inequalities' },
-      { id: 'exp-m6', slug: '06-exponential-domain-intersections' },
-      { id: 'exp-m7', slug: '07-exponential-parity-positivity' },
-      { id: 'exp-m8', slug: '08-exponential-asymptotes' },
-      { id: 'exp-m9', slug: '09-exponential-graph-matching' }
-    ]
+    basePath: 'topics/exp/',
+    modules: seqModules('exp', 9)
   }
 };
 
@@ -126,7 +79,7 @@ function resolveExamConfig(code) {
   for (var i = 0; i < cfg.sourceModules.length; i++) {
     var mod = findModuleById(course, cfg.sourceModules[i]);
     if (!mod || !mod.slug) return null; /* unknown id, or referenced module isn't built yet */
-    modulePaths.push(course.basePath + mod.slug + '/index.html');
+    modulePaths.push(course.basePath + mod.slug + '.html');
   }
   return {
     code: code,
