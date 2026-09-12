@@ -65,7 +65,7 @@
     }
     .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
     .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
-    .dist-line-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .dist-line-wrap { direction: ltr; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .dist-line { margin: 10px 0; font-size: 0.92rem; max-width: 100%; }
     .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
     .tri-badge {
@@ -470,10 +470,15 @@
          nothing simplified. Only show the extra "=" step when it actually adds
          new information (sumSq is a perfect square or has a square factor). */
       var lastRow = (simplified === bareSqrt) ? ('&= ' + bareSqrt) : ('&= ' + bareSqrt + ' = ' + simplified);
+      /* The generic "d=sqrt((x2-x1)^2+(y2-y1)^2)" reminder row was dropped:
+         even alone (no substituted values) it's wider than a phone card at
+         this font-size, and since it's shown per side with identical wording
+         each time, the substitution rows below make the formula being
+         applied obvious without repeating it. */
       var rows = [
-        'd_{' + labelPair + '} &= \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}',
-        '&= \\sqrt{\\left(' + P2.x + '-(' + P1.x + ')\\right)^2+\\left(' + P2.y + '-(' + P1.y + ')\\right)^2}',
-        '&= \\sqrt{' + dxSq + '+' + dySq + '}',
+        '(x_2-x_1)^2 &= (' + P2.x + '-(' + P1.x + '))^2=' + dxSq,
+        '(y_2-y_1)^2 &= (' + P2.y + '-(' + P1.y + '))^2=' + dySq,
+        'd_{' + labelPair + '} &= \\sqrt{' + dxSq + '+' + dySq + '}',
         lastRow
       ];
       var body = '\\begin{aligned}' + rows.join(' \\\\ ') + '\\end{aligned}';

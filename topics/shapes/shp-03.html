@@ -65,7 +65,7 @@
     }
     .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
     .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
-    .dist-line-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .dist-line-wrap { direction: ltr; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .dist-line { margin: 10px 0; font-size: 0.92rem; max-width: 100%; }
     .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
     .tri-badge {
@@ -441,6 +441,15 @@
       if (f.den === 1 && f.num === -1) return '-x';
       return fracToLatex(f) + 'x';
     }
+    function eqRows(rows) {
+      /* Stacks a chain of substitution steps as separate right-aligned rows
+         instead of one long "a=b=c=d" inline chain. A single-line chain with
+         two dfrac terms is wider than a phone screen's card, and since the
+         overflow is centered (KaTeX's own .katex-display>.katex is
+         text-align:center + white-space:nowrap), the excess is silently
+         cropped off BOTH edges instead of scrolling into view. */
+      return '$$\\begin{aligned}' + rows.join('\\\\') + '\\end{aligned}$$';
+    }
 
     /* ---------- Core geometry ---------- */
 
@@ -547,13 +556,20 @@
 
       var s1Html = '<p class="derivation-line">$A(' + A.x + ',' + A.y + '),\\ B(' + B.x + ',' + B.y + '),\\ C(' + C.x + ',' + C.y + ')$</p>';
       s1Html += '<p class="dist-line">מחפשים את התיכון היוצא מקודקוד $A$, לכן מוצאים את שיעורי הנקודה $D$ - אמצע הצלע הנגדית $BC$:</p>';
-      s1Html += '<p class="dist-line">$$D=\\left(\\dfrac{' + B.x + PLUS(intFrac(C.x)) + '}{2},\\dfrac{' + B.y + PLUS(intFrac(C.y)) + '}{2}\\right)=\\left(' + fracToLatex(Dx) + ',' + fracToLatex(Dy) + '\\right)$$</p>';
+      s1Html += '<p class="dist-line">' + eqRows([
+        'D&=\\left(\\dfrac{' + B.x + PLUS(intFrac(C.x)) + '}{2},\\dfrac{' + B.y + PLUS(intFrac(C.y)) + '}{2}\\right)',
+        '&=\\left(' + fracToLatex(Dx) + ',' + fracToLatex(Dy) + '\\right)'
+      ]) + '</p>';
       s1Html += '<p class="dist-line">מכיוון ש-$D$ אמצע $BC$, מתקיים <strong>$BD=DC$</strong> (מסומן בסימני שוויון על הבסיס).</p>';
       document.getElementById('step1Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s1Html + '</div></div>';
 
       var s2Html = '<p class="dist-line">התיכון $AD$ עובר דרך $A$ ודרך $D$, לכן שיפועו:</p>';
-      s2Html += '<p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + fracToLatex(Dy) + MINUS(intFrac(A.y)) + '}{' + fracToLatex(Dx) + MINUS(intFrac(A.x)) + '}=' + fracToLatex(mMedian) + '$$</p>';
+      s2Html += '<p class="dist-line">' + eqRows([
+        'm_{AD}&=\\dfrac{y_D-y_A}{x_D-x_A}',
+        '&=\\dfrac{' + fracToLatex(Dy) + MINUS(intFrac(A.y)) + '}{' + fracToLatex(Dx) + MINUS(intFrac(A.x)) + '}',
+        '&=' + fracToLatex(mMedian)
+      ]) + '</p>';
       document.getElementById('step2Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, D) + '</div><div class="example-calc-wrap">' + s2Html + '</div></div>';
 
@@ -603,7 +619,10 @@
          never a decimal approximation, and never a glued "+-"/"1x" artifact. */
       var Dx = makeFrac(B.x + C.x, 2), Dy = makeFrac(B.y + C.y, 2);
       var html = '<p class="dist-line"><strong>שלב 1 - הנקודה D:</strong></p>';
-      html += '<p class="dist-line">$$D=\\left(\\dfrac{' + B.x + PLUS(intFrac(C.x)) + '}{2},\\dfrac{' + B.y + PLUS(intFrac(C.y)) + '}{2}\\right)=\\left(' + fracToLatex(Dx) + ',' + fracToLatex(Dy) + '\\right)$$</p>';
+      html += '<p class="dist-line">' + eqRows([
+        'D&=\\left(\\dfrac{' + B.x + PLUS(intFrac(C.x)) + '}{2},\\dfrac{' + B.y + PLUS(intFrac(C.y)) + '}{2}\\right)',
+        '&=\\left(' + fracToLatex(Dx) + ',' + fracToLatex(Dy) + '\\right)'
+      ]) + '</p>';
       html += '<p class="dist-line">' + ltrToken('BD = DC') + '</p>';
 
       var dxF = fracSub(Dx, intFrac(A.x));
@@ -614,10 +633,16 @@
         var dyF = fracSub(Dy, intFrac(A.y));
         var m = fracDiv(dyF, dxF);
         html += '<p class="dist-line"><strong>שלב 2 - שיפוע AD:</strong></p>';
-        html += '<p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + fracToLatex(Dy) + MINUS(intFrac(A.y)) + '}{' + fracToLatex(Dx) + MINUS(intFrac(A.x)) + '}=' + fracToLatex(m) + '$$</p>';
+        html += '<p class="dist-line">' + eqRows([
+          'm_{AD}&=\\dfrac{y_D-y_A}{x_D-x_A}',
+          '&=\\dfrac{' + fracToLatex(Dy) + MINUS(intFrac(A.y)) + '}{' + fracToLatex(Dx) + MINUS(intFrac(A.x)) + '}',
+          '&=' + fracToLatex(m)
+        ]) + '</p>';
         var n = fracSub(intFrac(A.y), fracMul(m, intFrac(A.x)));
         html += '<p class="dist-line"><strong>שלב 3 - משוואת AD:</strong></p>';
-        html += '<p class="dist-line">$$y' + MINUS(intFrac(A.y)) + '=' + fracToLatex(m) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)$$</p>';
+        html += '<p class="dist-line">' + eqRows([
+          'y' + MINUS(intFrac(A.y)) + '&=' + fracToLatex(m) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)'
+        ]) + '</p>';
         html += '<p class="dist-line"><strong>$$y=' + coefXLatex(m) + PLUS(n) + '$$</strong></p>';
       }
       readout.innerHTML = html;
@@ -781,7 +806,10 @@
         pointToStr(t.B)
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">$$D=\\left(\\dfrac{' + t.B.x + PLUS(intFrac(t.C.x)) + '}{2},\\dfrac{' + t.B.y + PLUS(intFrac(t.C.y)) + '}{2}\\right)=' + pointToLatex(D) + '$$</p><p class="dist-line">' + ltrToken('BD = DC') + '</p>';
+      var explain = '<p class="dist-line">' + eqRows([
+        'D&=\\left(\\dfrac{' + t.B.x + PLUS(intFrac(t.C.x)) + '}{2},\\dfrac{' + t.B.y + PLUS(intFrac(t.C.y)) + '}{2}\\right)',
+        '&=' + pointToLatex(D)
+      ]) + '</p><p class="dist-line">' + ltrToken('BD = DC') + '</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהם שיעורי הנקודה ' + ltrToken('D') + ' - אמצע הצלע ' + ltrToken('BC') + ' שממול לקודקוד ' + ltrToken('A') + '?',
@@ -807,7 +835,11 @@
         fracToStr(fracNeg(mFrac))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$</p><p class="dist-line">$$m_{AD}=\\dfrac{y_D-y_A}{x_D-x_A}=\\dfrac{' + coordPartToLatex(D.y) + MINUS(intFrac(t.A.y)) + '}{' + coordPartToLatex(D.x) + MINUS(intFrac(t.A.x)) + '}=' + fracToLatex(mFrac) + '$$</p>';
+      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$</p><p class="dist-line">' + eqRows([
+        'm_{AD}&=\\dfrac{y_D-y_A}{x_D-x_A}',
+        '&=\\dfrac{' + coordPartToLatex(D.y) + MINUS(intFrac(t.A.y)) + '}{' + coordPartToLatex(D.x) + MINUS(intFrac(t.A.x)) + '}',
+        '&=' + fracToLatex(mFrac)
+      ]) + '</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שיפוע התיכון ' + ltrToken('AD') + ' היוצא מקודקוד ' + ltrToken('A') + '?',
@@ -834,7 +866,10 @@
         fracToStr(fracAdd(nFrac, intFrac(1)))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$, שיפוע התיכון $m_{AD}=' + fracToLatex(mFrac) + '$</p><p class="dist-line">$$y' + MINUS(intFrac(t.A.y)) + '=' + fracToLatex(mFrac) + '\\left(x' + MINUS(intFrac(t.A.x)) + '\\right) \\;\\Rightarrow\\; y=' + coefXLatex(mFrac) + PLUS(nFrac) + '$$</p>';
+      var explain = '<p class="dist-line">' + ltrToken('D') + ' (אמצע $BC$): $D' + pointToStr(D) + '$, שיפוע התיכון $m_{AD}=' + fracToLatex(mFrac) + '$</p><p class="dist-line">' + eqRows([
+        'y' + MINUS(intFrac(t.A.y)) + '&=' + fracToLatex(mFrac) + '\\left(x' + MINUS(intFrac(t.A.x)) + '\\right)',
+        'y&=' + coefXLatex(mFrac) + PLUS(nFrac)
+      ]) + '</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. במשוואת התיכון ' + ltrToken('AD') + ' היוצא מקודקוד ' + ltrToken('A') + ' בצורה $y=mx+n$, מהו $n$?',

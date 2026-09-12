@@ -526,9 +526,9 @@
         '<div class="example-calc-wrap">' +
         '<p class="derivation-line">$A' + pointLabel(A) + ',\\ B' + pointLabel(B) + ',\\ C' + pointLabel(C) + '$</p>' +
         '<p class="stage-label">שיפוע הצלע <span style="color:' + EXAMPLE_COLOR_AB + ';">AB</span></p>' +
-        '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AB + '}{m_{AB} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + B.y + ' - (' + A.y + ')}{' + B.x + ' - (' + A.x + ')} = \\dfrac{' + (B.y - A.y) + '}{' + (B.x - A.x) + '} = ' + fracToLatex(mAB) + '}$</p>' +
+        '<p class="derivation-line">$$\\textcolor{' + EXAMPLE_COLOR_AB + '}{\\begin{aligned}m_{AB}&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + B.y + ' - (' + A.y + ')}{' + B.x + ' - (' + A.x + ')}\\\\&=\\dfrac{' + (B.y - A.y) + '}{' + (B.x - A.x) + '}\\\\&=' + fracToLatex(mAB) + '\\end{aligned}}$$</p>' +
         '<p class="stage-label">שיפוע הצלע <span style="color:' + EXAMPLE_COLOR_AC + ';">AC</span></p>' +
-        '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AC + '}{m_{AC} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + C.y + ' - (' + A.y + ')}{' + C.x + ' - (' + A.x + ')} = \\dfrac{' + (C.y - A.y) + '}{' + (C.x - A.x) + '} = ' + fracToLatex(mAC) + '}$</p>' +
+        '<p class="derivation-line">$$\\textcolor{' + EXAMPLE_COLOR_AC + '}{\\begin{aligned}m_{AC}&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + C.y + ' - (' + A.y + ')}{' + C.x + ' - (' + A.x + ')}\\\\&=\\dfrac{' + (C.y - A.y) + '}{' + (C.x - A.x) + '}\\\\&=' + fracToLatex(mAC) + '\\end{aligned}}$$</p>' +
         '<p class="stage-label">מכפלת השיפועים</p>' +
         '<p class="derivation-line">$\\textcolor{' + EXAMPLE_COLOR_AB + '}{' + fracLatexMaybeParen(mAB) + '} \\cdot \\textcolor{' + EXAMPLE_COLOR_AC + '}{' + fracLatexMaybeParen(mAC) + '} = ' + fracToLatex(fracMul(mAB, mAC)) + '$</p>' +
         '<p class="derivation-line"><strong>' + (vertex ? 'מכפלת השיפועים שווה ל-<span class="math-ltr">(-1)</span>, ולכן זווית $' + vertex + '$ היא זווית ישרה!' : 'הזווית אינה ישרה') + '</strong></p>' +
@@ -645,7 +645,18 @@
         return '<p class="slope-line">' + fromLabel + ' ו-' + toLabel + ' חולקות אותו שיעור x - <strong>m(' + labelPair + ') לא מוגדר</strong> (חילוק באפס)</p>';
       }
       var f = reduceFraction(dy, dx);
-      var body = 'm_{' + labelPair + '} = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + P2.y + ' - (' + P1.y + ')}{' + P2.x + ' - (' + P1.x + ')} = \\dfrac{' + dy + '}{' + dx + '} = ' + fracToLatex(f);
+      /* Stacked as separate rows rather than one long "a=b=c=d=e" chain -
+         a single-line chain with two dfrac terms is wider than a phone's
+         card width, and since KaTeX's own .katex-display>.katex is
+         text-align:center + white-space:nowrap, the excess bleeds off both
+         edges instead of scrolling into view. */
+      var rows = [
+        'm_{' + labelPair + '}&=\\dfrac{y_2-y_1}{x_2-x_1}',
+        '&=\\dfrac{' + P2.y + ' - (' + P1.y + ')}{' + P2.x + ' - (' + P1.x + ')}',
+        '&=\\dfrac{' + dy + '}{' + dx + '}',
+        '&=' + fracToLatex(f)
+      ];
+      var body = '\\begin{aligned}' + rows.join('\\\\') + '\\end{aligned}';
       if (color) body = '\\textcolor{' + color + '}{' + body + '}';
       return '<p class="slope-line">$$' + body + '$$</p>';
     }

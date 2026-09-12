@@ -448,6 +448,17 @@
       if (f.den === 1 && f.num === -1) return '-x';
       return fracToLatex(f) + 'x';
     }
+    function eqRows(rows) {
+      /* Stacks a chain of substitution steps as separate right-aligned rows
+         instead of one long "a=b=c=d" inline chain. A single-line chain with
+         two dfrac terms is wider than a phone screen's card, and since the
+         overflow is centered (KaTeX's own .katex-display>.katex is
+         text-align:center + white-space:nowrap), the excess is silently
+         cropped off BOTH edges instead of scrolling into view - stacking
+         vertically removes the horizontal overflow instead of relying on
+         users discovering they can scroll a clipped-looking box. */
+      return '$$\\begin{aligned}' + rows.join('\\\\') + '\\end{aligned}$$';
+    }
 
     /* ---------- Core geometry ---------- */
 
@@ -534,18 +545,27 @@
 
       var s1Html = '<p class="derivation-line">$A(' + A.x + ',' + A.y + '),\\ B(' + B.x + ',' + B.y + '),\\ C(' + C.x + ',' + C.y + ')$</p>';
       s1Html += '<p class="dist-line">מחפשים את הגובה היוצא מקודקוד $A$, לכן מוצאים את שיפוע הצלע הנגדית - $BC$:</p>';
-      s1Html += '<p class="dist-line">$$m_{BC}=\\dfrac{y_C-y_B}{x_C-x_B}=\\dfrac{' + C.y + '-(' + B.y + ')}{' + C.x + '-(' + B.x + ')}=' + fracToLatex(mBC) + '$$</p>';
+      s1Html += '<p class="dist-line">' + eqRows([
+        'm_{BC}&=\\dfrac{y_C-y_B}{x_C-x_B}',
+        '&=\\dfrac{' + C.y + '-(' + B.y + ')}{' + C.x + '-(' + B.x + ')}',
+        '&=' + fracToLatex(mBC)
+      ]) + '</p>';
       document.getElementById('step1Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s1Html + '</div></div>';
 
       var s2Html = '<p class="dist-line">הגובה מ-$A$ מאונך ל-$BC$, לכן שיפועו:</p>';
-      s2Html += '<p class="dist-line">$$m_{\\text{גובה}}=-\\dfrac{1}{m_{BC}}=' + fracToLatex(mAlt) + '$$</p>';
+      s2Html += '<p class="dist-line">' + eqRows([
+        'm_{\\text{גובה}}&=-\\dfrac{1}{m_{BC}}',
+        '&=' + fracToLatex(mAlt)
+      ]) + '</p>';
       document.getElementById('step2Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s2Html + '</div></div>';
 
       var nAlt = fracSub(intFrac(A.y), fracMul(mAlt, intFrac(A.x)));
       var s3Html = '<p class="dist-line">משתמשים בקודקוד $A$ ובשיפוע הגובה כדי לכתוב את משוואתו:</p>';
-      s3Html += '<p class="dist-line">$$y' + MINUS(intFrac(A.y)) + '=' + fracToLatex(mAlt) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)$$</p>';
+      s3Html += '<p class="dist-line">' + eqRows([
+        'y' + MINUS(intFrac(A.y)) + '&=' + fracToLatex(mAlt) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)'
+      ]) + '</p>';
       s3Html += '<p class="dist-line"><strong>$$y=' + coefXLatex(mAlt) + PLUS(nAlt) + '$$</strong></p>';
       document.getElementById('step3Example').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + s3Html + '</div></div>';
@@ -615,7 +635,11 @@
         html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: הבסיס אנכי, לכן הגובה אופקי!</span></div>';
       } else {
         var mBC = makeFrac(C.y - B.y, C.x - B.x);
-        html += '<p class="dist-line">$$m_{BC}=\\dfrac{y_C-y_B}{x_C-x_B}=\\dfrac{' + C.y + MINUS(intFrac(B.y)) + '}{' + C.x + MINUS(intFrac(B.x)) + '}=' + fracToLatex(mBC) + '$$</p>';
+        html += '<p class="dist-line">' + eqRows([
+          'm_{BC}&=\\dfrac{y_C-y_B}{x_C-x_B}',
+          '&=\\dfrac{' + C.y + MINUS(intFrac(B.y)) + '}{' + C.x + MINUS(intFrac(B.x)) + '}',
+          '&=' + fracToLatex(mBC)
+        ]) + '</p>';
         if (mBC.num === 0) {
           html += '<p class="dist-line"><strong>שלב 2-3 - הגובה מ-A:</strong> $BC$ אופקי, לכן הגובה אנכי:</p>';
           html += '<p class="dist-line"><strong>$$x=' + A.x + '$$</strong></p>';
@@ -623,10 +647,15 @@
         } else {
           var mAlt = fracNeg(fracDiv(intFrac(1), mBC));
           html += '<p class="dist-line"><strong>שלב 2 - שיפוע הגובה (תנאי הניצבות):</strong></p>';
-          html += '<p class="dist-line">$$m_{\\text{גובה}}=-\\dfrac{1}{m_{BC}}=' + fracToLatex(mAlt) + '$$</p>';
+          html += '<p class="dist-line">' + eqRows([
+            'm_{\\text{גובה}}&=-\\dfrac{1}{m_{BC}}',
+            '&=' + fracToLatex(mAlt)
+          ]) + '</p>';
           var nAlt = fracSub(intFrac(A.y), fracMul(mAlt, intFrac(A.x)));
           html += '<p class="dist-line"><strong>שלב 3 - משוואת הגובה:</strong></p>';
-          html += '<p class="dist-line">$$y' + MINUS(intFrac(A.y)) + '=' + fracToLatex(mAlt) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)$$</p>';
+          html += '<p class="dist-line">' + eqRows([
+            'y' + MINUS(intFrac(A.y)) + '&=' + fracToLatex(mAlt) + '\\left(x' + MINUS(intFrac(A.x)) + '\\right)'
+          ]) + '</p>';
           html += '<p class="dist-line"><strong>$$y=' + coefXLatex(mAlt) + PLUS(nAlt) + '$$</strong></p>';
         }
       }
@@ -797,7 +826,10 @@
         fracToStr(fracAdd(nFrac, intFrac(1)))
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">שיפוע הגובה: $m=' + fracToLatex(t.mAlt) + '$</p><p class="dist-line">$$y' + MINUS(intFrac(t.A.y)) + '=' + fracToLatex(t.mAlt) + '\\left(x' + MINUS(intFrac(t.A.x)) + '\\right) \\;\\Rightarrow\\; y=' + coefXLatex(t.mAlt) + PLUS(nFrac) + '$$</p>';
+      var explain = '<p class="dist-line">שיפוע הגובה: $m=' + fracToLatex(t.mAlt) + '$</p><p class="dist-line">' + eqRows([
+        'y' + MINUS(intFrac(t.A.y)) + '&=' + fracToLatex(t.mAlt) + '\\left(x' + MINUS(intFrac(t.A.x)) + '\\right)',
+        'y&=' + coefXLatex(t.mAlt) + PLUS(nFrac)
+      ]) + '</p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. במשוואת הגובה היוצא מקודקוד ' + ltrToken('A') + ' בצורה $y=mx+n$, מהו $n$?',

@@ -72,7 +72,12 @@
     }
     .preset-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
     .lab-hint { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px; }
-    .dist-line-wrap { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .dist-line-wrap { direction: ltr; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    @media (max-width: 480px) {
+      /* Extra shrink for the widest per-row substitution (two-digit coordinate
+         differences can still be a few px too wide otherwise). */
+      .dist-line-wrap .katex { font-size: 0.85em; }
+    }
     .dist-line { margin: 10px 0; font-size: 0.92rem; max-width: 100%; }
     .tri-badges { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
     .tri-badge {
@@ -491,8 +496,13 @@
       var sumSq = dxSq + dySq;
       // Broken into discrete aligned steps (rather than one long "a = b = c = d = e"
       // chain) so each row stays short enough to read without horizontal scrolling
-      // on narrow phones - the wrapping .dist-line container still scrolls as a
-      // fallback for the widest row (the raw-substitution step).
+      // on narrow phones. The combined-substitution row ("=sqrt((x2-x1)^2+(y2-y1)^2)")
+      // is itself too wide to fit even after that split - and unlike a flat "=" chain,
+      // its content can't be pulled apart mid-sqrt across aligned rows. Squaring each
+      // difference on its OWN row first (rather than showing the raw, possibly
+      // irrational a+b*sqrt(3) difference itself) keeps every row short while still
+      // being exact - dxSq/dySq are always clean integers even when the coordinates
+      // themselves aren't.
       var bareSqrt = '\\sqrt{' + sumSq + '}';
       var simplified = sqrtToLatex(sumSq);
       /* sqrtToLatex leaves a square-free sumSq (e.g. 10) exactly as "\sqrt{10}" -
@@ -500,10 +510,15 @@
          nothing simplified. Only show the extra "=" step when it actually adds
          new information (sumSq is a perfect square or has a square factor). */
       var lastRow = (simplified === bareSqrt) ? ('&= ' + bareSqrt) : ('&= ' + bareSqrt + ' = ' + simplified);
+      /* The generic "d=sqrt((x2-x1)^2+(y2-y1)^2)" reminder row was dropped:
+         even alone (no substituted values) it's wider than a phone card at
+         this font-size, and since it's shown 3 times per triangle (once per
+         side) with identical wording each time, the substitution rows below
+         make the formula being applied obvious without repeating it. */
       var rows = [
-        'd_{' + labelPair + '} &= \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}',
-        '&= \\sqrt{\\left(' + fmtCoord(P2.x) + '-(' + fmtCoord(P1.x) + ')\\right)^2+\\left(' + fmtCoord(P2.y) + '-(' + fmtCoord(P1.y) + ')\\right)^2}',
-        '&= \\sqrt{' + dxSq + '+' + dySq + '}',
+        '(x_2-x_1)^2 &= (' + fmtCoord(P2.x) + '-(' + fmtCoord(P1.x) + '))^2=' + dxSq,
+        '(y_2-y_1)^2 &= (' + fmtCoord(P2.y) + '-(' + fmtCoord(P1.y) + '))^2=' + dySq,
+        'd_{' + labelPair + '} &= \\sqrt{' + dxSq + '+' + dySq + '}',
         lastRow
       ];
       var body = '\\begin{aligned}' + rows.join(' \\\\ ') + '\\end{aligned}';

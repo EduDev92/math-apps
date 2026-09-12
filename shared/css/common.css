@@ -84,6 +84,15 @@ p:has(.katex) {
   max-width: 100%;
 }
 p:has(.katex) {
+  /* direction:ltr הוא חובה כאן, לא קוסמטי: בלעדיו ה-<p> עצמו נשאר
+     direction:rtl (יורש מ-body) בעוד התוכן שלו (.katex) הוא LTR - אותה
+     אי-התאמה שגורמת ל-Chrome לחשב scrollWidth שגוי (ר' ההערה ליד
+     .katex-display למעלה). התוצאה בפועל: overflow-x:auto לא "נדלק" כי
+     הדפדפן חושב שאין גלישה, והנוסחה פשוט נחתכת בשקט מעבר לגבול הכרטיס
+     במקום לקבל פס גלילה. אושר ריפרודוקציה: shp-04.html, שורת "שלב 1 -
+     שיפוע הבסיס BC" בתוך #triReadout, שקטע את חלק המסקנה של השבר.
+     direction:ltr כאן מתקן את חישוב ה-scrollWidth ומאפשר גלילה אמיתית. */
+  direction: ltr;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;

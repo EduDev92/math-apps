@@ -420,8 +420,13 @@
         return;
       }
       var f = reduceFraction(dy, dx);
+      /* Stacked as separate rows rather than one long "a=b=c=d" chain - a
+         single-line chain with two dfrac terms is wider than a phone's card,
+         and since KaTeX's own .katex-display>.katex is text-align:center +
+         white-space:nowrap, the excess bleeds off both edges instead of
+         scrolling into view. */
       readout.innerHTML = '<span class="math-ltr">A(x₁,y₁)' + pointLabel(st.pA) + ',&nbsp; B(x₂,y₂)' + pointLabel(st.pB) + '</span>' +
-        '$$m = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + st.pB.y + ' - (' + st.pA.y + ')}{' + st.pB.x + ' - (' + st.pA.x + ')} = \\dfrac{' + dy + '}{' + dx + '} = ' + (f.den === 1 ? f.num : '\\dfrac{' + f.num + '}{' + f.den + '}') + '$$';
+        '$$\\begin{aligned}m&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + st.pB.y + ' - (' + st.pA.y + ')}{' + st.pB.x + ' - (' + st.pA.x + ')}\\\\&=\\dfrac{' + dy + '}{' + dx + '}\\\\&=' + (f.den === 1 ? f.num : '\\dfrac{' + f.num + '}{' + f.den + '}') + '\\end{aligned}$$';
       renderMathInElement(readout, katexOptions);
     }
 
@@ -544,7 +549,7 @@
       var correctIndex = -1;
       options.forEach(function (f, i) { if (fractionKey(f) === fractionKey(g.correct)) correctIndex = i; });
 
-      var explain = '$$m = \\dfrac{y_2-y_1}{x_2-x_1} = \\dfrac{' + g.B.y + ' - (' + g.A.y + ')}{' + g.B.x + ' - (' + g.A.x + ')} = \\dfrac{' + g.dy + '}{' + g.dx + '} = ' + fractionLabel(g.correct) + '$$';
+      var explain = '$$\\begin{aligned}m&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + g.B.y + ' - (' + g.A.y + ')}{' + g.B.x + ' - (' + g.A.x + ')}\\\\&=\\dfrac{' + g.dy + '}{' + g.dx + '}\\\\&=' + fractionLabel(g.correct) + '\\end{aligned}$$';
 
       var q = {
         kind: 'choice',
