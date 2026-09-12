@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>שטחי משולשים וגבהים | לומדה 3</title>
+  <title>קווים מיוחדים במשולש: תיכון וגובה | לומדה 3</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -218,70 +218,63 @@
 
       <section class="step-panel" id="step-1" data-step="1">
         <h2 class="step-heading">שלב 1: מכירים</h2>
-        <p class="step-intro">כשיש לנו משולש נתון על ידי קדקודיו במערכת צירים, יש כמה שיטות לחשב את שטחו - הבחירה בשיטה תלויה בצורת המשולש ובמיקומו ביחס לצירים.</p>
+        <p class="step-intro">מציאת משוואות תיכון וגובה, עקב הגובה, ואורכי הקטעים במערכת צירים.</p>
 
         <div class="content-block">
-          <h3>שיטה 1: בסיס מקביל לציר (גובה ישיר)</h3>
-          <p>אם אחת מצלעות המשולש <strong>מקבילה לציר ה-x</strong> (אופקית) או <strong>מקבילה לציר ה-y</strong> (אנכית), אפשר לקחת אותה כבסיס. אורך הבסיס וגובה המשולש אליו נקראים אז <strong>ישירות</strong> מהפרש קואורדינטות, בלי צורך בנוסחת המרחק:</p>
+          <h3>תיכון (Median)</h3>
+          <p><strong>תיכון</strong> במשולש הוא קטע היוצא מקודקוד ומחבר אותו אל <strong>אמצע הצלע שמולו</strong>. כדי למצוא את משוואת התיכון היוצא מקודקוד נתון: מוצאים את אמצע הצלע הנגדית (נוסחת אמצע קטע), ואז כותבים את משוואת הישר העובר דרך הקודקוד ודרך נקודת האמצע. את אורך התיכון מחשבים בעזרת נוסחת המרחק בין הקודקוד לנקודת האמצע.</p>
           <div class="highlight-block">
-            <h4>נוסחה</h4>
-            <p>$$S=\dfrac{1}{2}\cdot \text{בסיס}\cdot \text{גובה}$$</p>
+            <h4>שיטת העבודה</h4>
+            <p>1. אמצע הצלע הנגדית: $$M=\left(\dfrac{x_1+x_2}{2},\dfrac{y_1+y_2}{2}\right)$$<br>
+            2. משוואת התיכון: הישר העובר דרך הקודקוד ודרך $M$.<br>
+            3. אורך התיכון: נוסחת המרחק בין הקודקוד ל-$M$.</p>
           </div>
-          <div class="derivation-block" id="method1Example"></div>
+          <div class="derivation-block" id="medianExample"></div>
         </div>
 
         <div class="content-block">
-          <h3>שיטה 2: משולש ישר-זווית ונוסחת המרחק</h3>
-          <p>אם יש במשולש <strong>זווית ישרה</strong>, אבל שני הניצבים שלה <strong>אינם מקבילים לצירים</strong> - מחשבים את אורכי שני הניצבים בעזרת <strong>נוסחת המרחק</strong>, ואז השטח הוא מכפלת הניצבים חלקי 2 (בדיוק כמו בסיס וגובה, כי הניצבים מאונכים זה לזה):</p>
+          <h3>גובה (Altitude)</h3>
+          <p><strong>גובה</strong> במשולש הוא הקטע היוצא מקודקוד ו<strong>מאונך</strong> לצלע שמולו (או להמשכה). כדי למצוא את משוואת הגובה: מוצאים את שיפוע הבסיס (הצלע הנגדית), ולפי <strong>תנאי הניצבות</strong> - מכפלת השיפועים של שני ישרים מאונכים שווה ל-<span class="math-ltr">-1</span> - מוצאים את שיפוע הגובה, ואז כותבים את משוואתו דרך הקודקוד.</p>
           <div class="highlight-block">
-            <h4>נוסחה</h4>
-            <p>$$S=\dfrac{1}{2}\cdot d_1\cdot d_2$$</p>
+            <h4>תנאי הניצבות</h4>
+            <p>$$m_1\cdot m_2=-1 \quad\Longleftrightarrow\quad m_2=-\dfrac{1}{m_1}$$</p>
           </div>
-          <div class="derivation-block" id="method2Example"></div>
+          <div class="derivation-block" id="altitudeExample"></div>
         </div>
 
         <div class="content-block">
-          <h3>שיטה 3: פירוק לשני משולשים (<span class="math-ltr">S = S₁ + S₂</span>)</h3>
-          <p>כאשר קשה לזהות ישר בסיס נוח, אפשר להעביר דרך אחד הקודקודים ישר מקביל לציר, עד שהוא חותך את הצלע שמול אותו קודקוד. כך מתקבלים <strong>שני משולשים קטנים יותר החולקים בסיס משותף</strong> (הקטע שנוצר), וכל אחד מהם כבר נחשב בשיטה 1. סוכמים את שני השטחים:</p>
-          <div class="highlight-block">
-            <h4>נוסחה</h4>
-            <p>$$S=S_1+S_2$$</p>
-          </div>
-          <div class="derivation-block" id="method3Example"></div>
+          <h3>עקב הגובה (Foot of the Altitude)</h3>
+          <p>עקב הגובה הוא <strong>נקודת החיתוך</strong> בין ישר הגובה לישר הבסיס. מוצאים אותה על ידי פתרון מערכת שתי משוואות הישרים (הצבה או השוואת המשוואות). לאחר מציאת העקב, ניתן לחשב את <strong>אורך הגובה</strong> - המרחק מהקודקוד אל העקב.</p>
+          <div class="derivation-block" id="footExample"></div>
         </div>
 
         <div class="content-block">
-          <h3>שיטה 4: שיטת המלבן החוסם</h3>
-          <p>שיטה שעובדת <strong>תמיד</strong>, לכל משולש: תוחמים את המשולש במלבן החוסם אותו (שצלעותיו מקבילות לצירים), מחשבים את שטח המלבן, ומחסירים ממנו את שטחי משולשי-הפינה הישרי-זווית שנוצרים בין צלעות המשולש לצלעות המלבן:</p>
-          <div class="highlight-block">
-            <h4>נוסחה</h4>
-            <p>$$S = S_{\text{מלבן}} - \sum S_{\text{פינה}}$$</p>
-          </div>
-          <div class="derivation-block" id="method4Example"></div>
+          <h3>חישוב שטח משולש - השיטה הסטנדרטית</h3>
+          <p>השיטה הסטנדרטית: $$S=\dfrac{1}{2}\cdot\text{בסיס}\cdot\text{גובה}$$ כאשר הבסיס הוא אורך צלע כלשהי (נוסחת המרחק), והגובה הוא אורך הגובה אליה (כפי שמצאנו דרך העקב). כאשר יש צלע <strong>מקבילה לציר</strong>, אפשר לקצר: לקחת אותה כבסיס ולקרוא את הגובה אליה ישירות, בלי נוסחת המרחק.</p>
+          <div class="derivation-block" id="areaGeneralExample"></div>
+          <p class="stage-label">קיצור לצלע מקבילה לציר</p>
+          <div class="derivation-block" id="areaShortcutExample"></div>
         </div>
 
         <div class="content-block">
-          <h3>שיטה 5: בעיה הפוכה - מציאת קודקוד לא ידוע</h3>
-          <p>לעיתים נתון שטח המשולש, ומבקשים למצוא קואורדינטה חסרה של אחד הקודקודים. במקרה שיש בסיס מקביל לציר, פותרים לפי אותה נוסחה - רק "מהסוף להתחלה": מהשטח ומאורך הבסיס מוצאים את הגובה הדרוש, ולפי הגובה (וכיוון הקודקוד ביחס לבסיס) קובעים את הקואורדינטה החסרה.</p>
-          <div class="highlight-block">
-            <h4>שיטת הפתרון</h4>
-            <p>$$\text{גובה} = \dfrac{2S}{\text{בסיס}}$$</p>
-          </div>
-          <div class="derivation-block" id="method5Example"></div>
+          <h3>תכונות ותרגול</h3>
+          <p><strong>תכונה 1:</strong> התיכון מחלק את המשולש לשני משולשים <strong>שווי-שטח</strong> (כי לשניהם אותו גובה מהקודקוד, ובסיסים שווים - חצאי הצלע הנגדית).</p>
+          <div class="derivation-block" id="propertyEqualAreasExample"></div>
+          <p><strong>תכונה 2:</strong> במשולש <strong>שווה-שוקיים</strong>, התיכון והגובה אל הבסיס הם אותו קטע בדיוק (חופפים).</p>
+          <div class="derivation-block" id="propertyIsoscelesExample"></div>
         </div>
       </section>
 
       <section class="step-panel" id="step-2" data-step="2" hidden>
         <h2 class="step-heading">שלב 2: חוקרים</h2>
-        <p class="step-intro">גררו כל אחד משלושת הקודקודים של המשולש. שיטת המלבן החוסם תעבוד תמיד, ואם צורת המשולש מאפשרת קיצור - שיטה 1 או שיטה 2 - תופיע התראה עם הדרך הקצרה יותר.</p>
+        <p class="step-intro">גררו כל אחד משלושת הקודקודים. התיכון והגובה מקודקוד A יחושבו ויוצגו באופן חי, כולל עקב הגובה ושטח המשולש.</p>
 
         <div class="lab-block">
-          <h3>בנו משולש ובדקו את שיטות חישוב השטח</h3>
+          <h3>בנו משולש וחקרו את התיכון והגובה מקודקוד A</h3>
           <p class="lab-hint">לא בטוחים מאיפה להתחיל? נסו אחת הדוגמאות המוכנות, או גררו קודקוד לפי בחירתכם:</p>
           <div class="preset-btn-row">
-            <button type="button" class="preset-btn" id="presetAxisBase">בסיס מקביל לציר</button>
-            <button type="button" class="preset-btn" id="presetRightAngle">משולש ישר-זווית</button>
             <button type="button" class="preset-btn" id="presetGeneral">משולש כללי</button>
+            <button type="button" class="preset-btn" id="presetIsosceles">משולש שווה-שוקיים</button>
           </div>
           <div class="lab-layout">
             <div class="lab-readout" id="triReadout"></div>
@@ -329,16 +322,16 @@
             <div class="results-verdict" id="resultsVerdict"></div>
           </div>
 
-          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: שיטות לחישוב שטח משולש</h3>
+          <h3 style="margin-bottom:12px;font-weight:700;color:var(--blue-primary);">טבלת סיכום: קווים מיוחדים במשולש</h3>
           <div class="table-wrap">
             <table class="data-table">
-              <thead><tr><th>שיטה</th><th>מתי משתמשים בה</th></tr></thead>
+              <thead><tr><th>מושג</th><th>איך מוצאים</th></tr></thead>
               <tbody>
-                <tr><td>בסיס מקביל לציר</td><td>אחת הצלעות אופקית או אנכית - בסיס וגובה נקראים ישירות</td></tr>
-                <tr><td>משולש ישר-זווית ונוסחת המרחק</td><td>יש זווית ישרה, אך הניצבים אינם מקבילים לצירים</td></tr>
-                <tr><td>פירוק לשני משולשים</td><td>מעבירים ישר מקביל לציר דרך קודקוד, ומחברים שני שטחים</td></tr>
-                <tr><td>מלבן חוסם</td><td>שיטה כללית שעובדת תמיד, גם כשאין קיצור אחר</td></tr>
-                <tr><td>בעיה הפוכה</td><td>נתון השטח, ומחפשים קואורדינטה חסרה של קודקוד</td></tr>
+                <tr><td>תיכון</td><td>אמצע הצלע הנגדית, ואז משוואת הישר מהקודקוד אליה</td></tr>
+                <tr><td>גובה</td><td>שיפוע מאונך לבסיס (<span class="math-ltr">m₁·m₂=-1</span>), ואז משוואת הישר מהקודקוד</td></tr>
+                <tr><td>עקב הגובה</td><td>חיתוך ישר הגובה עם ישר הבסיס (פתרון מערכת משוואות)</td></tr>
+                <tr><td>שטח משולש</td><td><span class="math-ltr">S = ½·בסיס·גובה</span>, ישירות אם הבסיס מקביל לציר</td></tr>
+                <tr><td>תכונות</td><td>התיכון מחלק לשני שטחים שווים; בשווה-שוקיים התיכון=הגובה</td></tr>
               </tbody>
             </table>
           </div>
@@ -348,7 +341,7 @@
             <h3 class="certificate-title" id="certTitleText">תעודת הצטיינות</h3>
             <p class="certificate-line">מוענקת בגאווה לתלמיד/ה:</p>
             <p class="certificate-student-name" id="certStudentName">תלמיד/ה</p>
-            <p class="certificate-lesson-name" id="certLessonName">לומדה: שטחי משולשים וגבהים</p>
+            <p class="certificate-lesson-name" id="certLessonName">לומדה: קווים מיוחדים במשולש: תיכון וגובה</p>
             <p class="certificate-score" id="certScore">ציון סופי: 0 (0/5)</p>
             <p class="certificate-quote" id="certQuote"></p>
             <div class="certificate-ref" id="certTime">Time: 0s</div>
@@ -389,11 +382,12 @@
       throwOnError: false
     };
 
-    var LESSON_NAME = 'שטחי משולשים וגבהים';
+    var LESSON_NAME = 'קווים מיוחדים במשולש: תיכון וגובה';
     var QUIZ_SIZE = 5;
     var VERTEX_KEYS = ['A', 'B', 'C'];
     var COLOR_LEG = '#2e9e5b';
     var COLOR_BASE = '#64748b';
+    var COLOR_MEDIAN = '#7c3aed';
 
     var currentStep = 1;
     var studentName = '';
@@ -420,6 +414,29 @@
       var r = Math.round(n * 2) / 2;
       return (r % 1 === 0) ? String(r) : r.toFixed(1);
     }
+    function fmt2(n) {
+      var r = Math.round(n * 100) / 100;
+      return (Math.abs(r - Math.round(r)) < 1e-9) ? String(Math.round(r)) : r.toFixed(2);
+    }
+
+    /* ---------- Exact-fraction arithmetic (for curated worked examples + quiz) ---------- */
+
+    function gcdInt(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = b; b = a % b; a = t; } return a || 1; }
+    function makeFrac(num, den) {
+      if (den < 0) { num = -num; den = -den; }
+      var g = gcdInt(num, den);
+      return { num: num / g, den: den / g };
+    }
+    function fracNeg(a) { return { num: -a.num, den: a.den }; }
+    function fracDiv(a, b) { return makeFrac(a.num * b.den, a.den * b.num); }
+    function intFrac(n) { return { num: n, den: 1 }; }
+    function fracToLatex(a) {
+      if (a.den === 1) return String(a.num);
+      var sign = a.num < 0 ? '-' : '';
+      return sign + '\\dfrac{' + Math.abs(a.num) + '}{' + a.den + '}';
+    }
+    function fracToStr(a) { return a.den === 1 ? String(a.num) : (a.num + '/' + a.den); }
+    function fracToNum(a) { return a.num / a.den; }
 
     /* ---------- Core geometry ---------- */
 
@@ -433,70 +450,22 @@
     function shoelaceArea(A, B, C) {
       return Math.abs(A.x * (B.y - C.y) + B.x * (C.y - A.y) + C.x * (A.y - B.y)) / 2;
     }
-    function allDistinct(arr) {
-      var seen = {};
-      for (var i = 0; i < arr.length; i++) {
-        if (seen[arr[i]]) return false;
-        seen[arr[i]] = true;
-      }
-      return true;
+    function midpoint(P, Q) { return { x: (P.x + Q.x) / 2, y: (P.y + Q.y) / 2 }; }
+
+    function slopeOrNull(P, Q) { var dx = Q.x - P.x; if (dx === 0) return null; return (Q.y - P.y) / dx; }
+    function perpSlopeOrNull(m) { if (m === null) return 0; if (m === 0) return null; return -1 / m; }
+    function lineIntersectGeneral(P1, m1, P2, m2) {
+      if (m1 === null && m2 === null) return null;
+      if (m1 === null) { var x1 = P1.x, y1 = m2 * x1 + (P2.y - m2 * P2.x); return { x: x1, y: y1 }; }
+      if (m2 === null) { var x2 = P2.x, y2 = m1 * x2 + (P1.y - m1 * P1.x); return { x: x2, y: y2 }; }
+      if (Math.abs(m1 - m2) < 1e-9) return null;
+      var b1 = P1.y - m1 * P1.x, b2 = P2.y - m2 * P2.x;
+      var x = (b2 - b1) / (m1 - m2);
+      var y = m1 * x + b1;
+      return { x: x, y: y };
     }
 
-    function sideAxisInfo(P1, P2) {
-      if (P1.y === P2.y) return { type: 'horizontal', base: Math.abs(P2.x - P1.x), y: P1.y };
-      if (P1.x === P2.x) return { type: 'vertical', base: Math.abs(P2.y - P1.y), x: P1.x };
-      return null;
-    }
-    function findAxisBase(A, B, C) {
-      var pts = { A: A, B: B, C: C };
-      var triples = [['A', 'B', 'C'], ['B', 'C', 'A'], ['C', 'A', 'B']];
-      for (var i = 0; i < triples.length; i++) {
-        var e1 = triples[i][0], e2 = triples[i][1], apex = triples[i][2];
-        var info = sideAxisInfo(pts[e1], pts[e2]);
-        if (info) return { end1: e1, end2: e2, apex: apex, info: info };
-      }
-      return null;
-    }
-
-    function vecSub(P, Q) { return { x: P.x - Q.x, y: P.y - Q.y }; }
-    function dot(u, v) { return u.x * v.x + u.y * v.y; }
-    function findRightAngle(A, B, C) {
-      var pts = { A: A, B: B, C: C };
-      for (var i = 0; i < VERTEX_KEYS.length; i++) {
-        var vKey = VERTEX_KEYS[i];
-        var others = VERTEX_KEYS.filter(function (k) { return k !== vKey; });
-        var v = pts[vKey], p1 = pts[others[0]], p2 = pts[others[1]];
-        var u1 = vecSub(p1, v), u2 = vecSub(p2, v);
-        if (Math.abs(dot(u1, u2)) < 1e-6 && u1.x !== 0 && u1.y !== 0 && u2.x !== 0 && u2.y !== 0) {
-          return { vertex: vKey, legEnds: [others[0], others[1]] };
-        }
-      }
-      return null;
-    }
-
-    function boxMethodBreakdown(A, B, C) {
-      var pts = [A, B, C];
-      var xs = pts.map(function (p) { return p.x; }), ys = pts.map(function (p) { return p.y; });
-      var xmin = Math.min.apply(null, xs), xmax = Math.max.apply(null, xs);
-      var ymin = Math.min.apply(null, ys), ymax = Math.max.apply(null, ys);
-      function vertexWithX(xv) { for (var i = 0; i < 3; i++) if (pts[i].x === xv) return pts[i]; return pts[0]; }
-      function vertexWithY(yv) { for (var i = 0; i < 3; i++) if (pts[i].y === yv) return pts[i]; return pts[0]; }
-      var cornerDefs = [
-        { cx: xmin, cy: ymax }, { cx: xmax, cy: ymax },
-        { cx: xmax, cy: ymin }, { cx: xmin, cy: ymin }
-      ];
-      var corners = cornerDefs.map(function (c) {
-        var Vx = vertexWithX(c.cx), Vy = vertexWithY(c.cy);
-        if (Vx === Vy) return { cx: c.cx, cy: c.cy, area: 0, degenerate: true };
-        var hLeg = Math.abs(Vy.x - c.cx), vLeg = Math.abs(Vx.y - c.cy);
-        return { cx: c.cx, cy: c.cy, area: 0.5 * hLeg * vLeg, hLeg: hLeg, vLeg: vLeg, degenerate: false };
-      });
-      var boxArea = (xmax - xmin) * (ymax - ymin);
-      var sumCorners = corners.reduce(function (s, c) { return s + c.area; }, 0);
-      return { xmin: xmin, xmax: xmax, ymin: ymin, ymax: ymax, boxArea: boxArea, corners: corners, sumCorners: sumCorners, triArea: boxArea - sumCorners };
-    }
-
-    /* ---------- Distance-formula helpers ---------- */
+    /* ---------- Distance-formula helpers (for curated content) ---------- */
 
     function simplifySqrt(n) {
       var coeff = 1, rad = n;
@@ -527,86 +496,27 @@
       return '<div class="dist-line-wrap"><p class="dist-line">$$' + body + '$$</p></div>';
     }
 
-    /* ---------- Method explain-builders (shared by Step 1 examples + quiz) ---------- */
-
-    function explainMethod1(A, B, C) {
-      var pts = { A: A, B: B, C: C };
-      var ax = findAxisBase(A, B, C);
-      var e1 = pts[ax.end1], e2 = pts[ax.end2], apex = pts[ax.apex];
-      var base = ax.info.base;
-      var height = ax.info.type === 'horizontal' ? Math.abs(apex.y - ax.info.y) : Math.abs(apex.x - ax.info.x);
-      var area = 0.5 * base * height;
-      var baseLabel = ax.end1 + ax.end2;
-      var html = '<p class="dist-line">הצלע ' + ltrToken(baseLabel) + ' ' + (ax.info.type === 'horizontal' ? 'מקבילה לציר ה-x' : 'מקבילה לציר ה-y') + ', לכן אפשר לקחת אותה כבסיס ולקרוא את אורכה ישירות:</p>';
-      html += '<p class="dist-line">$$S_{' + baseLabel + '} = |' + (ax.info.type === 'horizontal' ? 'x_2-x_1' : 'y_2-y_1') + '| = ' + base + '$$</p>';
-      html += '<p class="dist-line">הגובה לבסיס זה הוא המרחק ה' + (ax.info.type === 'horizontal' ? 'אנכי' : 'אופקי') + ' מקודקוד ' + ltrToken(ax.apex) + ' לישר הבסיס:</p>';
-      html += '<p class="dist-line">$$h = ' + height + '$$</p>';
-      html += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + base + '\\cdot ' + height + ' = ' + fmtNum(area) + '$$</strong></p>';
-      return { html: html, area: area, baseLabel: baseLabel, base: base, height: height };
+    /* A midpoint (e.g. a median's endpoint) can land on a half-integer coordinate
+       (x.5) even when both original vertices are integers. distanceSubstitutionHTML
+       assumes integer differences (Math.round(dy*dy) would silently corrupt a
+       half-integer dy, e.g. (-4.5)^2=20.25 rounding to 20) - this variant scales
+       both differences by 2 first so the squared terms are always exact integers,
+       then divides the final root by 2. */
+    function medianDistanceHTML(labelPair, A, M, color) {
+      var dx2 = Math.round((M.x - A.x) * 2), dy2 = Math.round((M.y - A.y) * 2);
+      var sumSq = dx2 * dx2 + dy2 * dy2;
+      var rows = [
+        'd_{' + labelPair + '} &= \\sqrt{(x_2-x_1)^2+(y_2-y_1)^2}',
+        '&= \\sqrt{\\left(' + M.x + '-(' + A.x + ')\\right)^2+\\left(' + M.y + '-(' + A.y + ')\\right)^2}',
+        '&= \\sqrt{' + fracToLatex(makeFrac(dx2 * dx2, 4)) + '+' + fracToLatex(makeFrac(dy2 * dy2, 4)) + '}',
+        '&= \\dfrac{\\sqrt{' + sumSq + '}}{2} = \\dfrac{' + sqrtToLatex(sumSq) + '}{2}'
+      ];
+      var body = '\\begin{aligned}' + rows.join(' \\\\ ') + '\\end{aligned}';
+      if (color) body = '\\textcolor{' + color + '}{' + body + '}';
+      return '<div class="dist-line-wrap"><p class="dist-line">$$' + body + '$$</p></div>';
     }
 
-    function explainMethod2(A, B, C) {
-      var pts = { A: A, B: B, C: C };
-      var ra = findRightAngle(A, B, C);
-      var v = pts[ra.vertex], p1 = pts[ra.legEnds[0]], p2 = pts[ra.legEnds[1]];
-      var d1sq = sqDist(v, p1), d2sq = sqDist(v, p2);
-      var legProduct = Math.round(Math.sqrt(d1sq * d2sq));
-      var area = legProduct / 2;
-      var leg1Label = ra.vertex + ra.legEnds[0], leg2Label = ra.vertex + ra.legEnds[1];
-      var html = '<p class="dist-line">קיימת זווית ישרה בקודקוד ' + ltrToken(ra.vertex) + ', אך הניצבים אינם מקבילים לצירים - נחשב את אורכיהם בעזרת נוסחת המרחק:</p>';
-      html += distanceSubstitutionHTML(leg1Label, v, p1, COLOR_LEG);
-      html += distanceSubstitutionHTML(leg2Label, v, p2, COLOR_LEG);
-      html += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot d_{' + leg1Label + '}\\cdot d_{' + leg2Label + '} = \\dfrac{1}{2}\\cdot\\sqrt{' + d1sq + '}\\cdot\\sqrt{' + d2sq + '} = ' + fmtNum(area) + '$$</strong></p>';
-      return { html: html, area: area };
-    }
-
-    function explainMethod3(A, B, C) {
-      var labeled = [{ k: 'A', p: A }, { k: 'B', p: B }, { k: 'C', p: C }].sort(function (a, b) { return a.p.x - b.p.x; });
-      var P1 = labeled[0].p, P2 = labeled[1].p, P3 = labeled[2].p;
-      var k1 = labeled[0].k, k2 = labeled[1].k, k3 = labeled[2].k;
-      var slope = (P3.y - P1.y) / (P3.x - P1.x);
-      var yD = P1.y + slope * (P2.x - P1.x);
-      var base = Math.abs(P2.y - yD);
-      var h1 = P2.x - P1.x, h2 = P3.x - P2.x;
-      var s1 = 0.5 * base * h1, s2 = 0.5 * base * h2;
-      var area = s1 + s2;
-      var html = '<p class="dist-line">ממיינים את הקודקודים לפי הקואורדינטה ' + ltrToken('x') + ': ' + ltrToken(k1) + '(' + P1.x + ',' + P1.y + '), ' + ltrToken(k2) + '(' + P2.x + ',' + P2.y + '), ' + ltrToken(k3) + '(' + P3.x + ',' + P3.y + '). מעבירים ישר מקביל לציר ה-' + ltrToken('y') + ' דרך ' + ltrToken(k2) + ', עד לחיתוך עם הצלע ' + ltrToken(k1 + k3) + ' בנקודה ' + ltrToken('D(' + P2.x + ',' + fmtNum(yD) + ')') + ':</p>';
-      html += '<p class="dist-line">$$\\text{בסיס משותף } = |y_{' + k2 + '}-y_D| = ' + fmtNum(base) + '$$</p>';
-      html += '<p class="dist-line">$$S_1 = \\dfrac{1}{2}\\cdot ' + fmtNum(base) + '\\cdot ' + h1 + ' = ' + fmtNum(s1) + ', \\quad S_2 = \\dfrac{1}{2}\\cdot ' + fmtNum(base) + '\\cdot ' + h2 + ' = ' + fmtNum(s2) + '$$</p>';
-      html += '<p class="dist-line"><strong>$$S=S_1+S_2 = ' + fmtNum(s1) + '+' + fmtNum(s2) + ' = ' + fmtNum(area) + '$$</strong></p>';
-      return { html: html, area: area, s1: s1, s2: s2 };
-    }
-
-    function explainMethod4(A, B, C) {
-      var bm = boxMethodBreakdown(A, B, C);
-      var truth = shoelaceArea(A, B, C);
-      var html = '<p class="dist-line">תוחמים את המשולש במלבן חוסם:</p>';
-      html += '<p class="dist-line">$$x\\in[' + bm.xmin + ',' + bm.xmax + '],\\quad y\\in[' + bm.ymin + ',' + bm.ymax + ']$$</p>';
-      html += '<p class="dist-line">$$S_{\\text{מלבן}} = (' + bm.xmax + '-(' + bm.xmin + '))\\cdot(' + bm.ymax + '-(' + bm.ymin + ')) = ' + bm.boxArea + '$$</p>';
-
-      if (Math.abs(bm.triArea - truth) > 1e-6) {
-        /* Two vertices sit at diagonally-opposite box corners - the naive per-corner
-           hLeg/vLeg pairing above no longer identifies real triangle edges, so the
-           3-corner subtraction breakdown does not apply in this configuration.
-           Falls back to the always-correct general area formula rather than risk
-           presenting a wrong "corner" derivation to the student. */
-        html += '<p class="dist-line">במקרה זה שני קודקודים של המשולש נמצאים בשתי פינות נגדיות של המלבן, כך שהפירוק לשלושה משולשי-פינה אינו ישים ישירות. משתמשים בנוסחת השטח הכללית לפי הקואורדינטות:</p>';
-        html += '<p class="dist-line"><strong>$$S = ' + fmtNum(truth) + '$$</strong></p>';
-        return { html: html, area: truth };
-      }
-
-      var nonZero = bm.corners.filter(function (c) { return !c.degenerate; });
-      html += '<p class="dist-line">מחסרים את משולשי-הפינה הישרי-זווית' + (nonZero.length < 3 ? ' (קודקוד אחד של המשולש נמצא בדיוק על פינת המלבן, ולכן אינו תורם משולש-פינה)' : '') + ':</p>';
-      var sumParts = [];
-      nonZero.forEach(function (c, i) {
-        html += '<p class="dist-line">$$S_{' + (i + 1) + '} = \\dfrac{1}{2}\\cdot ' + c.hLeg + '\\cdot ' + c.vLeg + ' = ' + fmtNum(c.area) + '$$</p>';
-        sumParts.push(fmtNum(c.area));
-      });
-      html += '<p class="dist-line"><strong>$$S = ' + bm.boxArea + ' - (' + sumParts.join('+') + ') = ' + fmtNum(bm.triArea) + '$$</strong></p>';
-      return { html: html, area: bm.triArea };
-    }
-
-    /* ---------- Step 1: worked examples ---------- */
+    /* ---------- SVG rendering helpers ---------- */
 
     function makeLocalScale(points, W, H, PAD) {
       var xs = points.map(function (p) { return p.x; }), ys = points.map(function (p) { return p.y; });
@@ -636,138 +546,161 @@
       markup += '<text x="' + (mx(0) + 12) + '" y="' + (my(ymax) + 12) + '" class="axis-label" style="font-weight:800;">y</text>';
       return markup;
     }
-
     function pointMarkers(mx, my, pts) {
       return pts.map(function (P) { return '<circle cx="' + mx(P.x) + '" cy="' + my(P.y) + '" r="4.5" class="point-marker"/>'; }).join('');
     }
+    function rightAngleMarker(mx, my, corner, u1, u2, frac, color) {
+      var m1 = { x: corner.x + u1.x * frac, y: corner.y + u1.y * frac };
+      var m2 = { x: corner.x + u2.x * frac, y: corner.y + u2.y * frac };
+      var mC = { x: m1.x + u2.x * frac, y: m1.y + u2.y * frac };
+      return '<polyline points="' + mx(m1.x) + ',' + my(m1.y) + ' ' + mx(mC.x) + ',' + my(mC.y) + ' ' + mx(m2.x) + ',' + my(m2.y) + '" fill="none" stroke="' + color + '" stroke-width="2"/>';
+    }
 
-    function renderMethod1SVG(A, B, C) {
+    function renderMedianSVG(A, B, C, M) {
       var W = 260, H = 260, PAD = 30;
       var sc = makeLocalScale([A, B, C], W, H, PAD);
       var mx = sc.mx, my = sc.my;
-      var ax = findAxisBase(A, B, C);
-      var pts = { A: A, B: B, C: C };
-      var e1 = pts[ax.end1], e2 = pts[ax.end2], apex = pts[ax.apex];
-      var footX = ax.info.type === 'horizontal' ? apex.x : e1.x;
-      var footY = ax.info.type === 'horizontal' ? e1.y : apex.y;
       var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
       markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly-fill"/>';
-      markup += '<line x1="' + mx(e1.x) + '" y1="' + my(e1.y) + '" x2="' + mx(e2.x) + '" y2="' + my(e2.y) + '" stroke="' + COLOR_BASE + '" stroke-width="3.5"/>';
-      markup += '<line x1="' + mx(apex.x) + '" y1="' + my(apex.y) + '" x2="' + mx(footX) + '" y2="' + my(footY) + '" stroke="' + COLOR_LEG + '" stroke-width="2" stroke-dasharray="5,4"/>';
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(M.x) + '" y2="' + my(M.y) + '" stroke="' + COLOR_MEDIAN + '" stroke-width="3"/>';
+      markup += '<circle cx="' + mx(M.x) + '" cy="' + my(M.y) + '" r="4" fill="' + COLOR_MEDIAN + '"/>';
       markup += pointMarkers(mx, my, [A, B, C]);
       markup += '</svg>';
       return markup;
     }
 
-    function renderMethod2SVG(A, B, C) {
-      var W = 260, H = 260, PAD = 30;
-      var sc = makeLocalScale([A, B, C], W, H, PAD);
+    function renderAltitudeFootSVG(A, B, C, H) {
+      var W = 260, H2 = 260, PAD = 30;
+      var sc = makeLocalScale([A, B, C, H], W, H2, PAD);
       var mx = sc.mx, my = sc.my;
-      var ra = findRightAngle(A, B, C);
-      var pts = { A: A, B: B, C: C };
-      var v = pts[ra.vertex], p1 = pts[ra.legEnds[0]], p2 = pts[ra.legEnds[1]];
-      var u1 = vecSub(p1, v), u2 = vecSub(p2, v);
-      var frac = 0.16;
-      var m1 = { x: v.x + u1.x * frac, y: v.y + u1.y * frac };
-      var m2 = { x: v.x + u2.x * frac, y: v.y + u2.y * frac };
-      var mCorner = { x: m1.x + u2.x * frac, y: m1.y + u2.y * frac };
-      var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
+      var markup = '<svg viewBox="0 0 ' + W + ' ' + H2 + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
       markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly-fill"/>';
-      markup += '<line x1="' + mx(v.x) + '" y1="' + my(v.y) + '" x2="' + mx(p1.x) + '" y2="' + my(p1.y) + '" stroke="' + COLOR_LEG + '" stroke-width="3.5"/>';
-      markup += '<line x1="' + mx(v.x) + '" y1="' + my(v.y) + '" x2="' + mx(p2.x) + '" y2="' + my(p2.y) + '" stroke="' + COLOR_LEG + '" stroke-width="3.5"/>';
-      markup += '<polyline points="' + mx(m1.x) + ',' + my(m1.y) + ' ' + mx(mCorner.x) + ',' + my(mCorner.y) + ' ' + mx(m2.x) + ',' + my(m2.y) + '" fill="none" stroke="' + COLOR_BASE + '" stroke-width="2"/>';
+      markup += '<line x1="' + mx(B.x) + '" y1="' + my(B.y) + '" x2="' + mx(C.x) + '" y2="' + my(C.y) + '" stroke="' + COLOR_BASE + '" stroke-width="3"/>';
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(H.x) + '" y2="' + my(H.y) + '" stroke="' + COLOR_LEG + '" stroke-width="3"/>';
+      var uAlong = { x: C.x - B.x, y: C.y - B.y };
+      var lenAlong = Math.sqrt(uAlong.x * uAlong.x + uAlong.y * uAlong.y) || 1;
+      uAlong = { x: uAlong.x / lenAlong, y: uAlong.y / lenAlong };
+      var uPerp = { x: A.x - H.x, y: A.y - H.y };
+      var lenPerp = Math.sqrt(uPerp.x * uPerp.x + uPerp.y * uPerp.y) || 1;
+      uPerp = { x: uPerp.x / lenPerp, y: uPerp.y / lenPerp };
+      markup += rightAngleMarker(mx, my, H, uAlong, uPerp, 0.55, COLOR_BASE);
+      markup += '<circle cx="' + mx(H.x) + '" cy="' + my(H.y) + '" r="4" fill="' + COLOR_LEG + '"/>';
       markup += pointMarkers(mx, my, [A, B, C]);
       markup += '</svg>';
       return markup;
     }
 
-    function renderMethod3SVG(A, B, C) {
+    function renderAreaShortcutSVG(A, B, C) {
       var W = 260, H = 260, PAD = 30;
       var sc = makeLocalScale([A, B, C], W, H, PAD);
       var mx = sc.mx, my = sc.my;
-      var sorted = [A, B, C].sort(function (a, b) { return a.x - b.x; });
-      var P1 = sorted[0], P2 = sorted[1], P3 = sorted[2];
-      var slope = (P3.y - P1.y) / (P3.x - P1.x);
-      var yD = P1.y + slope * (P2.x - P1.x);
-      var D = { x: P2.x, y: yD };
       var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
-      markup += '<polygon points="' + mx(P1.x) + ',' + my(P1.y) + ' ' + mx(P2.x) + ',' + my(P2.y) + ' ' + mx(D.x) + ',' + my(D.y) + '" fill="' + COLOR_LEG + '" fill-opacity="0.18" stroke="none"/>';
-      markup += '<polygon points="' + mx(P2.x) + ',' + my(P2.y) + ' ' + mx(P3.x) + ',' + my(P3.y) + ' ' + mx(D.x) + ',' + my(D.y) + '" fill="' + COLOR_BASE + '" fill-opacity="0.18" stroke="none"/>';
-      markup += '<polygon points="' + mx(P1.x) + ',' + my(P1.y) + ' ' + mx(P2.x) + ',' + my(P2.y) + ' ' + mx(P3.x) + ',' + my(P3.y) + '" class="tri-poly"/>';
-      markup += '<line x1="' + mx(P2.x) + '" y1="' + my(P2.y) + '" x2="' + mx(D.x) + '" y2="' + my(D.y) + '" stroke="' + COLOR_BASE + '" stroke-width="2.5" stroke-dasharray="5,4"/>';
-      markup += '<circle cx="' + mx(D.x) + '" cy="' + my(D.y) + '" r="3.5" fill="' + COLOR_BASE + '"/>';
-      markup += pointMarkers(mx, my, [P1, P2, P3]);
+      markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly-fill"/>';
+      markup += '<line x1="' + mx(B.x) + '" y1="' + my(B.y) + '" x2="' + mx(C.x) + '" y2="' + my(C.y) + '" stroke="' + COLOR_BASE + '" stroke-width="3.5"/>';
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(A.x) + '" y2="' + my(B.y) + '" stroke="' + COLOR_LEG + '" stroke-width="2" stroke-dasharray="5,4"/>';
+      markup += pointMarkers(mx, my, [A, B, C]);
       markup += '</svg>';
       return markup;
     }
 
-    function renderMethod4SVG(A, B, C) {
+    function renderPropertySVG(A, B, C, M) {
       var W = 260, H = 260, PAD = 30;
       var sc = makeLocalScale([A, B, C], W, H, PAD);
       var mx = sc.mx, my = sc.my;
-      var bm = boxMethodBreakdown(A, B, C);
       var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
-      markup += '<rect x="' + mx(bm.xmin) + '" y="' + my(bm.ymax) + '" width="' + (mx(bm.xmax) - mx(bm.xmin)) + '" height="' + (my(bm.ymin) - my(bm.ymax)) + '" fill="none" stroke="' + COLOR_BASE + '" stroke-width="2" stroke-dasharray="5,4"/>';
+      markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(M.x) + ',' + my(M.y) + '" fill="' + COLOR_LEG + '" fill-opacity="0.18" stroke="none"/>';
+      markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(M.x) + ',' + my(M.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" fill="' + COLOR_BASE + '" fill-opacity="0.18" stroke="none"/>';
       markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly"/>';
-      markup += pointMarkers(mx, my, [A, B, C]);
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(M.x) + '" y2="' + my(M.y) + '" stroke="' + COLOR_MEDIAN + '" stroke-width="3"/>';
+      markup += pointMarkers(mx, my, [A, B, C, M]);
       markup += '</svg>';
       return markup;
     }
 
-    function renderMethod5SVG(A, B, C) {
+    function renderIsoscelesSVG(A, B, C, M) {
       var W = 260, H = 260, PAD = 30;
       var sc = makeLocalScale([A, B, C], W, H, PAD);
       var mx = sc.mx, my = sc.my;
-      var horizontal = A.y === B.y;
-      var footX = horizontal ? C.x : A.x;
-      var footY = horizontal ? A.y : C.y;
       var markup = '<svg viewBox="0 0 ' + W + ' ' + H + '">' + buildGridMarkup(mx, my, sc.XMIN, sc.XMAX, sc.YMIN, sc.YMAX);
       markup += '<polygon points="' + mx(A.x) + ',' + my(A.y) + ' ' + mx(B.x) + ',' + my(B.y) + ' ' + mx(C.x) + ',' + my(C.y) + '" class="tri-poly-fill"/>';
-      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(B.x) + '" y2="' + my(B.y) + '" stroke="' + COLOR_BASE + '" stroke-width="3.5"/>';
-      markup += '<line x1="' + mx(C.x) + '" y1="' + my(C.y) + '" x2="' + mx(footX) + '" y2="' + my(footY) + '" stroke="' + COLOR_LEG + '" stroke-width="2" stroke-dasharray="5,4"/>';
-      markup += pointMarkers(mx, my, [A, B, C]);
+      markup += '<line x1="' + mx(A.x) + '" y1="' + my(A.y) + '" x2="' + mx(M.x) + '" y2="' + my(M.y) + '" stroke="' + COLOR_MEDIAN + '" stroke-width="4"/>';
+      markup += pointMarkers(mx, my, [A, B, C, M]);
       markup += '</svg>';
       return markup;
     }
+
+    /* ---------- Step 1: worked examples (one running triangle for median/altitude/foot/area) ---------- */
+
+    var MAIN_A = { x: 0, y: 6 }, MAIN_B = { x: -4, y: 3 }, MAIN_C = { x: 2, y: 0 };
 
     (function buildStep1Content() {
-      var m1A = { x: -3, y: -1 }, m1B = { x: 2, y: -1 }, m1C = { x: 0, y: 3 };
-      var m1 = explainMethod1(m1A, m1B, m1C);
-      document.getElementById('method1Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMethod1SVG(m1A, m1B, m1C) + '</div><div class="example-calc-wrap">' +
-        '<p class="derivation-line">$A(' + m1A.x + ',' + m1A.y + '),\\ B(' + m1B.x + ',' + m1B.y + '),\\ C(' + m1C.x + ',' + m1C.y + ')$</p>' +
-        m1.html + '</div></div>';
+      var A = MAIN_A, B = MAIN_B, C = MAIN_C;
+      var M = midpoint(B, C);
+      var mMedian = makeFrac((M.y - A.y) * 2, (M.x - A.x) * 2);
 
-      var m2A = { x: -2, y: -3 }, m2B = { x: -1, y: -1 }, m2C = { x: -4, y: -2 };
-      var m2 = explainMethod2(m2A, m2B, m2C);
-      document.getElementById('method2Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMethod2SVG(m2A, m2B, m2C) + '</div><div class="example-calc-wrap">' +
-        '<p class="derivation-line">$A(' + m2A.x + ',' + m2A.y + '),\\ B(' + m2B.x + ',' + m2B.y + '),\\ C(' + m2C.x + ',' + m2C.y + ')$</p>' +
-        m2.html + '</div></div>';
+      var medHtml = '<p class="derivation-line">$A(' + A.x + ',' + A.y + '),\\ B(' + B.x + ',' + B.y + '),\\ C(' + C.x + ',' + C.y + ')$</p>';
+      medHtml += '<p class="dist-line">אמצע הצלע $BC$: $$M=\\left(\\dfrac{' + B.x + '+' + C.x + '}{2},\\dfrac{' + B.y + '+' + C.y + '}{2}\\right)=(' + M.x + ',' + fracToLatex(makeFrac(M.y * 2, 2)) + ')$$</p>';
+      medHtml += '<p class="dist-line">שיפוע התיכון $AM$: $$m=\\dfrac{y_M-y_A}{x_M-x_A}=\\dfrac{' + M.y + '-' + A.y + '}{' + M.x + '-' + A.x + '}=' + fracToLatex(mMedian) + '$$</p>';
+      medHtml += '<p class="dist-line">משוואת התיכון (דרך $A$): $$y-' + A.y + '=' + fracToLatex(mMedian) + '(x-' + A.x + ') \\;\\Rightarrow\\; y=' + fracToLatex(mMedian) + 'x+' + A.y + '$$</p>';
+      medHtml += medianDistanceHTML('AM', A, M, COLOR_MEDIAN);
+      document.getElementById('medianExample').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, M) + '</div><div class="example-calc-wrap">' + medHtml + '</div></div>';
 
-      var m3A = { x: -4, y: -2 }, m3B = { x: -1, y: -1 }, m3C = { x: 2, y: 4 };
-      var m3 = explainMethod3(m3A, m3B, m3C);
-      document.getElementById('method3Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMethod3SVG(m3A, m3B, m3C) + '</div><div class="example-calc-wrap">' +
-        '<p class="derivation-line">$A(' + m3A.x + ',' + m3A.y + '),\\ B(' + m3B.x + ',' + m3B.y + '),\\ C(' + m3C.x + ',' + m3C.y + ')$</p>' +
-        m3.html + '</div></div>';
+      var mBC = makeFrac(C.y - B.y, C.x - B.x);
+      var mAlt = fracNeg(fracDiv(intFrac(1), mBC));
+      var altHtml = '<p class="derivation-line">$A(' + A.x + ',' + A.y + '),\\ B(' + B.x + ',' + B.y + '),\\ C(' + C.x + ',' + C.y + ')$</p>';
+      altHtml += '<p class="dist-line">שיפוע הבסיס $BC$: $$m_{BC}=\\dfrac{y_C-y_B}{x_C-x_B}=\\dfrac{' + C.y + '-(' + B.y + ')}{' + C.x + '-(' + B.x + ')}=' + fracToLatex(mBC) + '$$</p>';
+      altHtml += '<p class="dist-line">תנאי הניצבות: $$m_{\\text{גובה}}=-\\dfrac{1}{m_{BC}}=' + fracToLatex(mAlt) + '$$</p>';
+      altHtml += '<p class="dist-line">משוואת הגובה (דרך $A$): $$y-' + A.y + '=' + fracToLatex(mAlt) + '(x-' + A.x + ') \\;\\Rightarrow\\; y=' + fracToLatex(mAlt) + 'x+' + A.y + '$$</p>';
+      document.getElementById('altitudeExample').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderMedianSVG(A, B, C, midpoint(B, C)) + '</div><div class="example-calc-wrap">' + altHtml + '</div></div>';
 
-      var m4A = { x: 1, y: 5 }, m4B = { x: -3, y: 1 }, m4C = { x: 4, y: -2 };
-      var m4 = explainMethod4(m4A, m4B, m4C);
-      document.getElementById('method4Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMethod4SVG(m4A, m4B, m4C) + '</div><div class="example-calc-wrap">' +
-        '<p class="derivation-line">$A(' + m4A.x + ',' + m4A.y + '),\\ B(' + m4B.x + ',' + m4B.y + '),\\ C(' + m4C.x + ',' + m4C.y + ')$</p>' +
-        m4.html + '</div></div>';
+      var altB = A.y - fracToNum(mAlt) * A.x;
+      var baseB = B.y - fracToNum(mBC) * B.x;
+      var Hx = (baseB - altB) / (fracToNum(mAlt) - fracToNum(mBC));
+      var Hy = fracToNum(mAlt) * Hx + altB;
+      var H = { x: Math.round(Hx), y: Math.round(Hy) };
+      var footHtml = '<p class="dist-line">ישר הבסיס: $$y=' + fracToLatex(mBC) + 'x+' + fracToLatex(makeFrac(B.y * mBC.den - mBC.num * B.x, mBC.den)) + '$$</p>';
+      footHtml += '<p class="dist-line">ישר הגובה: $$y=' + fracToLatex(mAlt) + 'x+' + A.y + '$$</p>';
+      footHtml += '<p class="dist-line">משווים בין שתי המשוואות ופותרים עבור $x$ ואז $y$: $$H=(' + H.x + ',' + H.y + ')$$</p>';
+      footHtml += distanceSubstitutionHTML('AH', A, H, COLOR_LEG);
+      document.getElementById('footExample').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeFootSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + footHtml + '</div></div>';
 
-      var m5A = { x: -2, y: -1 }, m5B = { x: 3, y: -1 }, m5C = { x: 1, y: 3 };
-      var base5 = Math.abs(m5B.x - m5A.x);
-      var height5 = Math.abs(m5C.y - m5A.y);
-      var area5 = 0.5 * base5 * height5;
-      var m5html = '<p class="dist-line">נתונות ' + ltrToken('A(' + m5A.x + ',' + m5A.y + ')') + ' ו-' + ltrToken('B(' + m5B.x + ',' + m5B.y + ')') + ' (בסיס מקביל לציר ה-x, אורך ' + base5 + '), ושטח המשולש הוא ' + fmtNum(area5) + '. ידוע כי הקודקוד השלישי ' + ltrToken('C') + ' נמצא בנקודה שבה ' + ltrToken('x=' + m5C.x) + ', מעל ישר הבסיס - ומחפשים את ' + ltrToken('y') + ' שלו:</p>';
-      m5html += '<p class="dist-line">$$h = \\dfrac{2S}{\\text{בסיס}} = \\dfrac{2\\cdot ' + fmtNum(area5) + '}{' + base5 + '} = ' + height5 + '$$</p>';
-      m5html += '<p class="dist-line"><strong>' + ltrToken('C') + ' נמצא מעל הבסיס, לכן $$y_C = y_A + h = ' + m5A.y + '+' + height5 + ' = ' + m5C.y + '$$, כלומר ' + ltrToken('C(' + m5C.x + ',' + m5C.y + ')') + '</strong></p>';
-      document.getElementById('method5Example').innerHTML =
-        '<div class="example-layout"><div class="example-svg-wrap">' + renderMethod5SVG(m5A, m5B, m5C) + '</div><div class="example-calc-wrap">' + m5html + '</div></div>';
+      var baseLenSq = sqDist(B, C);
+      var altLenSq = sqDist(A, H);
+      var area = shoelaceArea(A, B, C);
+      var areaHtml = '<p class="dist-line">אורך הבסיס $BC$ (נוסחת המרחק): $$|BC|=' + sqrtToLatex(baseLenSq) + '$$</p>';
+      areaHtml += '<p class="dist-line">אורך הגובה $AH$ (חושב בשלב הקודם): $$|AH|=' + sqrtToLatex(altLenSq) + '$$</p>';
+      areaHtml += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + sqrtToLatex(baseLenSq) + '\\cdot ' + sqrtToLatex(altLenSq) + '=' + fmtNum(area) + '$$</strong></p>';
+      document.getElementById('areaGeneralExample').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeFootSVG(A, B, C, H) + '</div><div class="example-calc-wrap">' + areaHtml + '</div></div>';
+
+      var sA = { x: -3, y: -1 }, sB = { x: 3, y: -1 }, sC = { x: 0, y: 4 };
+      var sBase = Math.abs(sB.x - sA.x), sHeight = Math.abs(sC.y - sA.y);
+      var sArea = 0.5 * sBase * sHeight;
+      var shortcutHtml = '<p class="derivation-line">$A(' + sA.x + ',' + sA.y + '),\\ B(' + sB.x + ',' + sB.y + '),\\ C(' + sC.x + ',' + sC.y + ')$</p>';
+      shortcutHtml += '<p class="dist-line">הצלע $AB$ מקבילה לציר ה-x, לכן היא הבסיס והגובה אליה נקרא ישירות:</p>';
+      shortcutHtml += '<p class="dist-line">$$\\text{בסיס}=' + sBase + ',\\quad \\text{גובה}=' + sHeight + '$$</p>';
+      shortcutHtml += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + sBase + '\\cdot ' + sHeight + '=' + fmtNum(sArea) + '$$</strong></p>';
+      document.getElementById('areaShortcutExample').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderAreaShortcutSVG(sA, sB, sC) + '</div><div class="example-calc-wrap">' + shortcutHtml + '</div></div>';
+
+      var areaABM = shoelaceArea(A, B, M), areaACM = shoelaceArea(A, C, M);
+      var propHtml = '<p class="dist-line">התיכון $AM$ (מ-$A$ אל אמצע $BC$) מחלק את המשולש לשני משולשים:</p>';
+      propHtml += '<p class="dist-line">$$S_{ABM}=' + fmtNum(areaABM) + ',\\qquad S_{ACM}=' + fmtNum(areaACM) + '$$</p>';
+      propHtml += '<p class="dist-line"><strong>שני השטחים שווים, וסכומם הוא שטח המשולש המלא: $$' + fmtNum(areaABM) + '+' + fmtNum(areaACM) + '=' + fmtNum(area) + '$$</strong></p>';
+      document.getElementById('propertyEqualAreasExample').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderPropertySVG(A, B, C, M) + '</div><div class="example-calc-wrap">' + propHtml + '</div></div>';
+
+      var iA = { x: 0, y: 5 }, iB = { x: -3, y: -1 }, iC = { x: 3, y: -1 };
+      var iM = midpoint(iB, iC);
+      var isoHtml = '<p class="derivation-line">$A(' + iA.x + ',' + iA.y + '),\\ B(' + iB.x + ',' + iB.y + '),\\ C(' + iC.x + ',' + iC.y + ')$</p>';
+      isoHtml += '<p class="dist-line">$$|AB|=' + sqrtToLatex(sqDist(iA, iB)) + ',\\qquad |AC|=' + sqrtToLatex(sqDist(iA, iC)) + '$$</p>';
+      isoHtml += '<p class="dist-line">מכיוון ש-$AB=AC$, המשולש שווה-שוקיים. אמצע $BC$ הוא $M(' + iM.x + ',' + iM.y + ')$, וגם $A$ וגם $M$ נמצאים בדיוק על $x=' + iA.x + '$:</p>';
+      isoHtml += '<p class="dist-line"><strong>התיכון והגובה מ-$A$ הם אותו ישר בדיוק: $$x=' + iA.x + '$$</strong></p>';
+      document.getElementById('propertyIsoscelesExample').innerHTML =
+        '<div class="example-layout"><div class="example-svg-wrap">' + renderIsoscelesSVG(iA, iB, iC, iM) + '</div><div class="example-calc-wrap">' + isoHtml + '</div></div>';
 
       renderMathInElement(document.getElementById('step-1'), katexOptions);
     })();
@@ -781,11 +714,10 @@
     var linvy = function (py) { return LYMAX - (py - LPAD) / (LH - 2 * LPAD) * (LYMAX - LYMIN); };
 
     var LAB_PRESETS = {
-      axisBase: { A: { x: -3, y: -2 }, B: { x: 3, y: -2 }, C: { x: 0, y: 3 } },
-      rightAngle: { A: { x: -2, y: -3 }, B: { x: -1, y: -1 }, C: { x: -4, y: -2 } },
-      general: { A: { x: 1, y: 5 }, B: { x: -3, y: 1 }, C: { x: 4, y: -2 } }
+      general: { A: { x: 0, y: 6 }, B: { x: -4, y: 3 }, C: { x: 2, y: 0 } },
+      isosceles: { A: { x: 0, y: 5 }, B: { x: -3, y: -1 }, C: { x: 3, y: -1 } }
     };
-    var trianglePoints = { A: { x: -3, y: -2 }, B: { x: 3, y: -2 }, C: { x: 0, y: 3 } };
+    var trianglePoints = { A: { x: 0, y: 6 }, B: { x: -4, y: 3 }, C: { x: 2, y: 0 } };
     var draggingKey = null;
 
     function applyPreset(name) {
@@ -806,20 +738,28 @@
         readout.innerHTML = 'שלוש הנקודות על ישר אחד (או חופפות) - גררו קודקוד ליצירת משולש תקין.';
         return;
       }
-
       readout.classList.add('status-success');
-      var bm = explainMethod4(A, B, C);
-      var html = '<div class="tri-badges"><span class="tri-badge badge-right">שיטת המלבן החוסם עובדת תמיד - שטח המשולש: ' + fmtNum(bm.area) + '</span></div>' + bm.html;
 
-      var ax = findAxisBase(A, B, C);
-      if (ax) {
-        var m1 = explainMethod1(A, B, C);
-        html += '<div class="tri-badges"><span class="tri-badge">אפשר גם בקיצור: הבסיס ' + ltrToken(ax.end1 + ax.end2) + ' מקביל לציר!</span></div>' + m1.html;
+      var M = midpoint(B, C);
+      var mMedian = slopeOrNull(A, M);
+      var medianLen = Math.sqrt(sqDist(A, M));
+      var mBC = slopeOrNull(B, C);
+      var mAlt = perpSlopeOrNull(mBC);
+      var H = lineIntersectGeneral(A, mAlt, B, mBC);
+      var baseLen = Math.sqrt(sqDist(B, C));
+      var areaTruth = shoelaceArea(A, B, C);
+
+      var html = '<p class="dist-line"><strong>תיכון מ-A:</strong> אמצע $BC$ הוא $M(' + fmt2(M.x) + ',' + fmt2(M.y) + ')$, שיפוע $' + (mMedian === null ? 'לא מוגדר (אנכי)' : fmt2(mMedian)) + '$, אורך $\\approx ' + fmt2(medianLen) + '$</p>';
+      html += '<p class="dist-line"><strong>גובה מ-A:</strong> שיפוע $BC=' + (mBC === null ? 'לא מוגדר' : fmt2(mBC)) + '$, שיפוע הגובה $=' + (mAlt === null ? 'לא מוגדר (אנכי)' : fmt2(mAlt)) + '$</p>';
+      if (H) {
+        var altLen = Math.sqrt(sqDist(A, H));
+        html += '<p class="dist-line"><strong>עקב הגובה:</strong> $H(' + fmt2(H.x) + ',' + fmt2(H.y) + ')$, אורך הגובה $\\approx ' + fmt2(altLen) + '$</p>';
       }
-      var ra = findRightAngle(A, B, C);
-      if (ra) {
-        var m2 = explainMethod2(A, B, C);
-        html += '<div class="tri-badges"><span class="tri-badge">אפשר גם בקיצור: יש זווית ישרה ב-' + ltrToken(ra.vertex) + '!</span></div>' + m2.html;
+      html += '<p class="dist-line"><strong>שטח המשולש</strong> $\\approx ' + fmt2(areaTruth) + '$</p>';
+
+      var isIsosceles = (mMedian === null && mAlt === null) || (mMedian !== null && mAlt !== null && Math.abs(mMedian - mAlt) < 1e-6);
+      if (isIsosceles) {
+        html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: התיכון והגובה מ-' + ltrToken('A') + ' חופפים - המשולש שווה-שוקיים!</span></div>';
       }
 
       readout.innerHTML = html;
@@ -846,29 +786,20 @@
       document.getElementById('edgeBC').setAttribute('x2', lmx(C.x)); document.getElementById('edgeBC').setAttribute('y2', lmy(C.y));
       document.getElementById('edgeCA').setAttribute('x1', lmx(C.x)); document.getElementById('edgeCA').setAttribute('y1', lmy(C.y));
       document.getElementById('edgeCA').setAttribute('x2', lmx(A.x)); document.getElementById('edgeCA').setAttribute('y2', lmy(A.y));
+      document.getElementById('edgeAB').setAttribute('stroke', '#94a3b8');
+      document.getElementById('edgeBC').setAttribute('stroke', COLOR_BASE);
+      document.getElementById('edgeCA').setAttribute('stroke', '#94a3b8');
 
-      var neutral = '#94a3b8';
-      var colorAB = neutral, colorBC = neutral, colorCA = neutral;
       if (!isDegenerate(A, B, C)) {
-        var ax = findAxisBase(A, B, C);
-        if (ax) {
-          var pairKey = ax.end1 + ax.end2;
-          if (pairKey === 'AB' || pairKey === 'BA') colorAB = COLOR_BASE;
-          else if (pairKey === 'BC' || pairKey === 'CB') colorBC = COLOR_BASE;
-          else colorCA = COLOR_BASE;
-        }
-        var ra = findRightAngle(A, B, C);
-        if (ra) {
-          [ra.vertex + ra.legEnds[0], ra.vertex + ra.legEnds[1]].forEach(function (pk) {
-            if (pk === 'AB' || pk === 'BA') colorAB = COLOR_LEG;
-            else if (pk === 'BC' || pk === 'CB') colorBC = COLOR_LEG;
-            else if (pk === 'CA' || pk === 'AC') colorCA = COLOR_LEG;
-          });
-        }
+        var M = midpoint(B, C);
+        document.getElementById('medianLine').setAttribute('x1', lmx(A.x));
+        document.getElementById('medianLine').setAttribute('y1', lmy(A.y));
+        document.getElementById('medianLine').setAttribute('x2', lmx(M.x));
+        document.getElementById('medianLine').setAttribute('y2', lmy(M.y));
+        document.getElementById('medianLine').setAttribute('stroke', COLOR_MEDIAN);
+      } else {
+        document.getElementById('medianLine').setAttribute('stroke', 'none');
       }
-      document.getElementById('edgeAB').setAttribute('stroke', colorAB);
-      document.getElementById('edgeBC').setAttribute('stroke', colorBC);
-      document.getElementById('edgeCA').setAttribute('stroke', colorCA);
 
       updateLabReadout();
     }
@@ -879,6 +810,7 @@
       markup += '<line id="edgeAB" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
       markup += '<line id="edgeBC" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
       markup += '<line id="edgeCA" x1="0" y1="0" x2="0" y2="0" class="tri-edge"/>';
+      markup += '<line id="medianLine" x1="0" y1="0" x2="0" y2="0" stroke-width="3"/>';
       markup += '<text id="labelA" class="vertex-label">A</text>';
       markup += '<text id="labelB" class="vertex-label">B</text>';
       markup += '<text id="labelC" class="vertex-label">C</text>';
@@ -921,11 +853,10 @@
 
     buildTriangleSkeleton();
 
-    document.getElementById('presetAxisBase').addEventListener('click', function () { applyPreset('axisBase'); });
-    document.getElementById('presetRightAngle').addEventListener('click', function () { applyPreset('rightAngle'); });
     document.getElementById('presetGeneral').addEventListener('click', function () { applyPreset('general'); });
+    document.getElementById('presetIsosceles').addEventListener('click', function () { applyPreset('isosceles'); });
 
-    /* ---------- Step 3: quiz generators (one per method) ---------- */
+    /* ---------- Step 3: quiz generators (one per topic) ---------- */
 
     function buildDistractorSet(correctStr, rawCandidates) {
       var seen = {}; seen[correctStr] = true;
@@ -934,13 +865,117 @@
         var s = typeof v === 'string' ? v : String(v);
         if (!seen[s]) { seen[s] = true; out.push(s); }
       });
-      var bump = 1;
-      while (out.length < 3) {
-        var filler = String(parseFloat(correctStr) + bump * (out.length % 2 === 0 ? 1 : -1));
-        if (!seen[filler]) { seen[filler] = true; out.push(filler); }
-        bump++;
+      /* Numeric fallback filler only makes sense when correctStr is itself a plain
+         number (e.g. an area/fraction answer) - for a coordinate-pair "(x,y)" or a
+         "$\sqrt{n}$" LaTeX answer, parseFloat returns NaN, and NaN+anything is still
+         NaN, so the old unconditional while-loop kept generating the same "NaN"
+         filler forever whenever a raw candidate collided with the correct value -
+         a real infinite hang, caught only by a stress test with a hard wall-clock
+         timeout. Bail out immediately (rather than loop) when there's no sensible
+         numeric fallback; callers of non-numeric answer types compensate by simply
+         supplying more raw candidates up front so a collision rarely leaves fewer
+         than 3 distractors in the first place. */
+      var numericBase = parseFloat(correctStr);
+      if (!isNaN(numericBase)) {
+        var bump = 1, guard = 0;
+        while (out.length < 3 && guard < 30) {
+          guard++;
+          var filler = String(numericBase + bump * (out.length % 2 === 0 ? 1 : -1));
+          if (!seen[filler]) { seen[filler] = true; out.push(filler); }
+          bump++;
+        }
       }
       return out.slice(0, 3);
+    }
+
+    function sameParityInts(min, max, parity) {
+      var candidates = [];
+      for (var v = min; v <= max; v++) if (((v % 2) + 2) % 2 === parity) candidates.push(v);
+      return [randChoice(candidates), randChoice(candidates)];
+    }
+
+    function buildMedianTriangle() {
+      var parityX = randInt(0, 1), parityY = randInt(0, 1);
+      var bx = sameParityInts(-5, 5, parityX), by = sameParityInts(-5, 5, parityY);
+      var B = { x: bx[0], y: by[0] }, C = { x: bx[1], y: by[1] };
+      var A, attempts = 0;
+      do { A = { x: randInt(-5, 5), y: randInt(-5, 5) }; attempts++; } while (isDegenerate(A, B, C) && attempts < 60);
+      return { A: A, B: B, C: C };
+    }
+
+    function makeMedianQuestion() {
+      var t = buildMedianTriangle();
+      var M = midpoint(t.B, t.C);
+      var medianSq = Math.round(sqDist(t.A, M));
+      var correct = '$' + sqrtToLatex(medianSq) + '$';
+      var wrongs = buildDistractorSet(correct, [
+        '$' + sqrtToLatex(Math.round(sqDist(t.A, t.B))) + '$',
+        '$' + sqrtToLatex(Math.round(sqDist(t.A, t.C))) + '$',
+        '$' + sqrtToLatex(Math.round(sqDist(t.B, t.C))) + '$',
+        '$' + sqrtToLatex(medianSq + 4) + '$',
+        '$' + sqrtToLatex(Math.max(1, medianSq - 4)) + '$'
+      ]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">אמצע $BC$: $M(' + M.x + ',' + M.y + ')$</p>' + distanceSubstitutionHTML('AM', t.A, M, COLOR_MEDIAN);
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו אורך התיכון היוצא מקודקוד ' + ltrToken('A') + ' (אל אמצע הצלע שמולו)?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
+      };
+    }
+
+    var SLOPE_CHOICES = [[1, 2], [1, 3], [2, 3], [3, 2], [2, 1], [1, 4], [3, 4], [3, 1]];
+    function buildFootConstruction() {
+      var pick = randChoice(SLOPE_CHOICES);
+      var mBC = makeFrac(pick[0] * randChoice([1, -1]), pick[1]);
+      var H = { x: randInt(-3, 3), y: randInt(-3, 3) };
+      var dirBC = { x: mBC.den, y: mBC.num };
+      var t1 = randInt(2, 4), t2 = randInt(2, 4);
+      var B = { x: H.x - dirBC.x * t1, y: H.y - dirBC.y * t1 };
+      var C = { x: H.x + dirBC.x * t2, y: H.y + dirBC.y * t2 };
+      var mAlt = fracNeg(fracDiv(intFrac(1), mBC));
+      var dirAlt = { x: mAlt.den, y: mAlt.num };
+      var s = randInt(2, 4) * randChoice([1, -1]);
+      var A = { x: H.x + dirAlt.x * s, y: H.y + dirAlt.y * s };
+      return { A: A, B: B, C: C, H: H, mBC: mBC, mAlt: mAlt };
+    }
+
+    function makeAltitudeQuestion() {
+      var t = buildFootConstruction();
+      var correct = fracToStr(t.mAlt);
+      var wrongs = buildDistractorSet(correct, [fracToStr(t.mBC), fracToStr(fracNeg(t.mBC)), fracToStr(fracDiv(intFrac(1), t.mBC))]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">$$m_{BC}=' + fracToLatex(t.mBC) + ' \\;\\Rightarrow\\; m_{\\text{גובה}}=-\\dfrac{1}{m_{BC}}=' + fracToLatex(t.mAlt) + '$$</p>';
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שיפוע הגובה היוצא מקודקוד ' + ltrToken('A') + ' לצלע ' + ltrToken('BC') + '?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
+      };
+    }
+
+    function makeFootQuestion() {
+      var t = buildFootConstruction();
+      var correct = '(' + t.H.x + ',' + t.H.y + ')';
+      var Mfake = midpoint(t.B, t.C);
+      var wrongs = buildDistractorSet(correct, [
+        '(' + Mfake.x + ',' + Mfake.y + ')',
+        '(' + t.B.x + ',' + t.B.y + ')',
+        '(' + t.C.x + ',' + t.C.y + ')',
+        '(' + t.A.x + ',' + t.A.y + ')'
+      ]);
+      var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">ישר הבסיס: שיפוע $' + fracToLatex(t.mBC) + '$ דרך $B$. ישר הגובה: שיפוע $' + fracToLatex(t.mAlt) + '$ דרך $A$. פותרים את מערכת המשוואות ומקבלים:</p><p class="dist-line"><strong>$$H=(' + t.H.x + ',' + t.H.y + ')$$</strong></p>';
+      return {
+        kind: 'choice',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו עקב הגובה היוצא מקודקוד ' + ltrToken('A') + ' (נקודת החיתוך בין הגובה לבסיס)?',
+        options: options,
+        correctIndex: options.indexOf(correct),
+        explain: explain
+      };
     }
 
     function buildAxisBaseTriangle() {
@@ -957,172 +992,50 @@
         A = { x: x0b, y: y0b }; B = { x: x0b, y: y0b + baseLen };
         C = { x: x0b + apexOffset, y: randInt(y0b, y0b + baseLen) };
       }
-      return { A: A, B: B, C: C };
+      return { A: A, B: B, C: C, horizontal: horizontal };
     }
 
-    function makeMethod1Question() {
+    function makeAreaQuestion() {
       var t = buildAxisBaseTriangle();
-      var res = explainMethod1(t.A, t.B, t.C);
-      var correct = fmtNum(res.area);
-      var wrongs = buildDistractorSet(correct, [fmtNum(res.area * 2), fmtNum(res.area + 0.5), fmtNum(Math.max(0.5, res.area - 1))]);
+      var area = shoelaceArea(t.A, t.B, t.C);
+      var correct = fmtNum(area);
+      var wrongs = buildDistractorSet(correct, [fmtNum(area * 2), fmtNum(area + 0.5), fmtNum(Math.max(0.5, area - 1))]);
       var options = shuffle([correct].concat(wrongs));
+      var base = Math.abs(t.B.x - t.A.x) || Math.abs(t.B.y - t.A.y);
+      var height = t.horizontal ? Math.abs(t.C.y - t.A.y) : Math.abs(t.C.x - t.A.x);
+      var explain = '<p class="dist-line">הצלע $AB$ מקבילה לציר ה-' + (t.horizontal ? 'x' : 'y') + ', לכן היא הבסיס והגובה אליה נקרא ישירות: $$\\text{בסיס}=' + base + ',\\ \\text{גובה}=' + height + '$$</p><p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + base + '\\cdot ' + height + '=' + correct + '$$</strong></p>';
       return {
         kind: 'choice',
         promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. מהו שטח המשולש ' + ltrToken('ABC') + '?',
         options: options,
         correctIndex: options.indexOf(correct),
-        explain: res.html
+        explain: explain
       };
     }
 
-    var RIGHT_ANGLE_DIRS = [[1, 2], [2, 1], [1, 3], [3, 1], [2, 3], [3, 2]];
-    function buildRightTriangleNonAxis() {
-      var dir = randChoice(RIGHT_ANGLE_DIRS);
-      var p = dir[0], q = dir[1];
-      var k1 = randInt(1, 3), k2 = randInt(1, 3);
-      var s = randChoice([1, -1]);
-      var A = { x: randInt(-3, 0), y: randInt(-3, 0) };
-      var B = { x: A.x + k1 * p * s, y: A.y + k1 * q * s };
-      var C = { x: A.x - k2 * q * s, y: A.y + k2 * p * s };
-      return { A: A, B: B, C: C };
-    }
-
-    function makeMethod2Question() {
-      var t = buildRightTriangleNonAxis();
-      var res = explainMethod2(t.A, t.B, t.C);
-      var correct = fmtNum(res.area);
-      var wrongs = buildDistractorSet(correct, [fmtNum(res.area * 2), fmtNum(res.area + 1), fmtNum(Math.max(0.5, res.area - 1))]);
+    function makePropertyQuestion() {
+      var t = buildMedianTriangle();
+      var totalArea = shoelaceArea(t.A, t.B, t.C);
+      var correct = fmtNum(totalArea / 2);
+      var wrongs = buildDistractorSet(correct, [fmtNum(totalArea), fmtNum(totalArea / 3), fmtNum(totalArea * 2 / 3)]);
       var options = shuffle([correct].concat(wrongs));
+      var explain = '<p class="dist-line">שטח המשולש כולו: $$S=' + fmtNum(totalArea) + '$$</p><p class="dist-line">התיכון מחלק אותו לשני משולשים שווי-שטח, לכן כל אחד מהם:</p><p class="dist-line"><strong>$$\\dfrac{S}{2}=' + correct + '$$</strong></p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$, וידוע כי הזווית בקודקוד ' + ltrToken('A') + ' היא זווית ישרה. מהו שטח המשולש?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$, ו-$M$ אמצע הצלע $BC$. ידוע ששטח המשולש ' + ltrToken('ABC') + ' הוא $' + fmtNum(totalArea) + '$. מהו שטח המשולש ' + ltrToken('ABM') + '?',
         options: options,
         correctIndex: options.indexOf(correct),
-        explain: res.html
-      };
-    }
-
-    function buildSplitTriangle() {
-      var m = randChoice([-2, -1, 1, 2]);
-      var D = randChoice([4, 5, 6]);
-      var P1 = { x: randInt(-4, -1), y: randInt(-3, 3) };
-      var P3 = { x: P1.x + D, y: P1.y + m * D };
-      var midOffset = randInt(1, D - 1);
-      var P2x = P1.x + midOffset;
-      var yD = P1.y + m * midOffset;
-      var offset;
-      do { offset = randChoice([-3, -2, 2, 3]); } while (offset === 0);
-      var P2 = { x: P2x, y: yD + offset };
-      return { A: P1, B: P2, C: P3 };
-    }
-
-    function makeMethod3Question() {
-      var t = buildSplitTriangle();
-      var res = explainMethod3(t.A, t.B, t.C);
-      var correct = fmtNum(res.area);
-      var wrongs = buildDistractorSet(correct, [fmtNum(res.s1), fmtNum(res.s2), fmtNum(res.area + 1)]);
-      var options = shuffle([correct].concat(wrongs));
-      return {
-        kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. פרקו את המשולש לשני משולשים החולקים בסיס מקביל לציר, ומצאו את שטח המשולש הכולל.',
-        options: options,
-        correctIndex: options.indexOf(correct),
-        explain: res.html
-      };
-    }
-
-    function buildBoxTriangle() {
-      var attempts = 0, A, B, C;
-      do {
-        A = { x: randInt(-5, 5), y: randInt(-5, 5) };
-        B = { x: randInt(-5, 5), y: randInt(-5, 5) };
-        C = { x: randInt(-5, 5), y: randInt(-5, 5) };
-        attempts++;
-      } while ((
-        isDegenerate(A, B, C) ||
-        !allDistinct([A.x, B.x, C.x]) ||
-        !allDistinct([A.y, B.y, C.y]) ||
-        Math.abs(boxMethodBreakdown(A, B, C).triArea - shoelaceArea(A, B, C)) > 1e-6
-      ) && attempts < 200);
-      return { A: A, B: B, C: C };
-    }
-
-    function makeMethod4Question() {
-      var t = buildBoxTriangle();
-      var res = explainMethod4(t.A, t.B, t.C);
-      var correct = fmtNum(res.area);
-      var wrongs = buildDistractorSet(correct, [fmtNum(res.area + 2), fmtNum(Math.max(0.5, res.area - 2)), fmtNum(res.area * 0.5)]);
-      var options = shuffle([correct].concat(wrongs));
-      return {
-        kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$. השתמשו בשיטת המלבן החוסם כדי למצוא את שטח המשולש.',
-        options: options,
-        correctIndex: options.indexOf(correct),
-        explain: res.html
-      };
-    }
-
-    function buildReverseProblem() {
-      var horizontal = Math.random() < 0.5;
-      var baseLen = randInt(3, 6);
-      var height = randInt(2, 5);
-      var area = 0.5 * baseLen * height;
-      var above = Math.random() < 0.5;
-      var A, B, C;
-      if (horizontal) {
-        var y0 = randInt(-3, 3), x0 = randInt(-4, -1);
-        A = { x: x0, y: y0 }; B = { x: x0 + baseLen, y: y0 };
-        var cx = randInt(x0, x0 + baseLen);
-        C = { x: cx, y: above ? y0 + height : y0 - height };
-      } else {
-        var x0b = randInt(-3, 3), y0b = randInt(-4, -1);
-        A = { x: x0b, y: y0b }; B = { x: x0b, y: y0b + baseLen };
-        var cy = randInt(y0b, y0b + baseLen);
-        C = { x: above ? x0b + height : x0b - height, y: cy };
-      }
-      return { A: A, B: B, C: C, horizontal: horizontal, baseLen: baseLen, height: height, area: area, above: above };
-    }
-
-    function makeMethod5Question() {
-      var rp = buildReverseProblem();
-      var correctVal, promptExtra, unknownLabel;
-      if (rp.horizontal) {
-        correctVal = rp.C.y;
-        unknownLabel = 'y';
-        promptExtra = 'הקואורדינטה ' + ltrToken('x') + ' של קודקוד ' + ltrToken('C') + ' שווה ל-' + rp.C.x + ', וקודקוד זה נמצא ' + (rp.above ? 'מעל' : 'מתחת ל') + 'ישר הבסיס. מהי הקואורדינטה ' + ltrToken('y') + ' של ' + ltrToken('C') + '?';
-      } else {
-        correctVal = rp.C.x;
-        unknownLabel = 'x';
-        promptExtra = 'הקואורדינטה ' + ltrToken('y') + ' של קודקוד ' + ltrToken('C') + ' שווה ל-' + rp.C.y + ', וקודקוד זה נמצא ' + (rp.above ? 'מימין ל' : 'משמאל ל') + 'ישר הבסיס. מהי הקואורדינטה ' + ltrToken('x') + ' של ' + ltrToken('C') + '?';
-      }
-      var promptText = 'נתונות הנקודות $A(' + rp.A.x + ',' + rp.A.y + ')$ ו-$B(' + rp.B.x + ',' + rp.B.y + ')$. שטח המשולש ' + ltrToken('ABC') + ' שווה ל-' + fmtNum(rp.area) + '. ' + promptExtra;
-      var correctStr = String(correctVal);
-      var wrongs = buildDistractorSet(correctStr, [
-        String(rp.horizontal ? rp.A.y - (correctVal - rp.A.y) : rp.A.x - (correctVal - rp.A.x)),
-        String(correctVal + rp.height),
-        String(correctVal - 1)
-      ]);
-      var options = shuffle([correctStr].concat(wrongs));
-      var baseLabel = 'AB';
-      var explain = '<p class="dist-line">' + ltrToken(baseLabel) + ' מקביל לציר ה-' + (rp.horizontal ? 'x' : 'y') + ', אורכו ' + rp.baseLen + '.</p>' +
-        '<p class="dist-line">$$h = \\dfrac{2S}{\\text{בסיס}} = \\dfrac{2\\cdot ' + fmtNum(rp.area) + '}{' + rp.baseLen + '} = ' + rp.height + '$$</p>' +
-        '<p class="dist-line"><strong>' + ltrToken(unknownLabel + '_C') + ' = ' + (rp.horizontal ? rp.A.y : rp.A.x) + (rp.above ? '+' : '-') + rp.height + ' = ' + correctVal + '</strong></p>';
-      return {
-        kind: 'choice',
-        promptText: promptText,
-        options: options,
-        correctIndex: options.indexOf(correctStr),
         explain: explain
       };
     }
 
     function generateQuizQuestions() {
       var qs = [
-        makeMethod1Question(),
-        makeMethod2Question(),
-        makeMethod3Question(),
-        makeMethod4Question(),
-        makeMethod5Question()
+        makeMedianQuestion(),
+        makeAltitudeQuestion(),
+        makeFootQuestion(),
+        makeAreaQuestion(),
+        makePropertyQuestion()
       ];
       qs.forEach(function (q, i) { q.id = 'shp-03-q' + (i + 1); });
       return shuffle(qs);
@@ -1242,7 +1155,7 @@
         grade: 'י\'',
         level: '4 יח"ל',
         mainTopic: 'גיאומטריה אנליטית - צורות גיאומטריות',
-        subTopic: 'שטחי משולשים וגבהים',
+        subTopic: 'קווים מיוחדים במשולש: תיכון וגובה',
         mode: 'תרגול',
         time: quizTiming.totalSeconds,
         score: pct
