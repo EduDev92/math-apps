@@ -380,6 +380,7 @@
   <script src="../../shared/components/step-progress.js"></script>
   <script src="../../shared/js/score-tracker.js"></script>
   <script src="../../shared/js/bidi-utils.js"></script>
+  <script src="../../shared/js/math-format.js"></script>
   <script src="../../shared/components/math-input-pad.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
@@ -486,7 +487,10 @@
       document.getElementById('domainSvg').innerHTML = markup;
 
       var eqEl = document.getElementById('domainEquationDisplay');
-      eqEl.innerHTML = '$$f(x) = \\sqrt{' + a + '^x - ' + c + '} \\quad \\Rightarrow \\quad x \\ge \\log_{' + a + '}' + c + ' \\approx ' + x0.toFixed(2) + '$$';
+      eqEl.innerHTML = eqRows([
+        'f(x)&=\\sqrt{' + a + '^x - ' + c + '}',
+        '\\Rightarrow\\ x&\\ge \\log_{' + a + '}' + c + ' \\approx ' + x0.toFixed(2)
+      ]);
       renderMathInElement(eqEl, katexOptions);
       renderMathInElement(readoutEl, katexOptions);
     }

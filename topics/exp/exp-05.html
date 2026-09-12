@@ -539,6 +539,7 @@
   <script src="../../shared/components/step-progress.js"></script>
   <script src="../../shared/js/score-tracker.js"></script>
   <script src="../../shared/js/bidi-utils.js"></script>
+  <script src="../../shared/js/math-format.js"></script>
   <script src="../../shared/components/math-input-pad.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
@@ -687,7 +688,11 @@
       document.getElementById('quadSvg').innerHTML = markup;
 
       var equationEl = document.getElementById('quadEquationDisplay');
-      equationEl.innerHTML = '$$2^{x^2} \\le ' + k + ' \\quad\\Longrightarrow\\quad 2^{x^2} \\le 2^{' + c + '} \\quad\\Longrightarrow\\quad x^2 \\le ' + c + '$$';
+      equationEl.innerHTML = eqRows([
+        '2^{x^2} &\\le ' + k,
+        '\\Longrightarrow\\ 2^{x^2} &\\le 2^{' + c + '}',
+        '\\Longrightarrow\\ x^2 &\\le ' + c
+      ]);
       renderMathInElement(equationEl, katexOptions);
 
       var readoutEl = document.getElementById('quadReadout');

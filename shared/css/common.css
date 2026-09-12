@@ -109,6 +109,23 @@ p:has(.katex) {
   }
 }
 
+/* מרכוז נוסף: מספר קבצי לומדה (shp-02/03/05) מגדירים מקומית מחלקת-עטיפה
+   בשם .dist-line-wrap סביב פסקת נוסחה (עבור distanceSubstitutionHTML) עם
+   overflow-x:auto משלה - אבל בלי direction:ltr, מה שגורם לאותה תקלת
+   scrollWidth בדיוק כמו למעלה (ה-div נשאר RTL בעוד תוכנו LTR). קבע כאן
+   פעם אחת כדי שכל קובץ עתידי שמשתמש בשם המחלקה הזה יקבל את ההתנהגות
+   הנכונה אוטומטית, גם אם הוא (בטעות) יגדיר מחדש עותק מקומי בלי
+   direction:ltr - התנאי `:has(.katex)` שומר את זה מכוון רק לעטיפות
+   שבאמת מכילות נוסחה, לא לכל div עם השם הזה במקרה. */
+.dist-line-wrap:has(.katex) {
+  direction: ltr;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
 @media (max-width: 480px) {
   .lesson-card {
     padding: 14px 10px;

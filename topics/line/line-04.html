@@ -24,7 +24,7 @@
     .back-link:hover { text-decoration: underline; }
 
     .lesson-container { max-width: 1020px; margin: 0 auto; padding: 24px 20px 60px; }
-    .lesson-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 32px; overflow-x: hidden; }
+    .lesson-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 32px; }
     .step-panel[hidden] { display: none; }
 
     .step-heading { font-size: 1.6rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
@@ -320,6 +320,7 @@
   <script src="../../shared/components/step-progress.js"></script>
   <script src="../../shared/js/score-tracker.js"></script>
   <script src="../../shared/js/bidi-utils.js"></script>
+  <script src="../../shared/js/math-format.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
@@ -353,7 +354,14 @@
       return a;
     }
     function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-    function pointLabel(p) { return '(' + p.x + ', ' + p.y + ')'; }
+    function coordToStr(v) {
+      /* A midpoint coordinate is always either a whole integer or exactly
+         n+0.5 (the average of two integers) - show it as a clean fraction
+         ("1/2"), never a decimal ("0.5"). */
+      if (Number.isInteger(v)) return String(v);
+      return fracToStr(makeFrac(Math.round(v * 2), 2));
+    }
+    function pointLabel(p) { return '(' + coordToStr(p.x) + ', ' + coordToStr(p.y) + ')'; }
     function pointKey(p) { return p.x + ',' + p.y; }
     function midpointOf(p1, p2) { return { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 }; }
 
@@ -408,9 +416,13 @@
     function updateMidReadout() {
       var st = labState;
       var M = midpointOf(st.pA, st.pB);
+      var mxFrac = makeFrac(st.pA.x + st.pB.x, 2), myFrac = makeFrac(st.pA.y + st.pB.y, 2);
       var readout = document.getElementById('midReadout');
       readout.innerHTML = '<span class="math-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span>' +
-        '$$x_m = \\dfrac{' + st.pA.x + '+(' + st.pB.x + ')}{2} = ' + M.x + ' \\qquad y_m = \\dfrac{' + st.pA.y + '+(' + st.pB.y + ')}{2} = ' + M.y + '$$' +
+        eqRows([
+          'x_m&=\\dfrac{' + st.pA.x + '+(' + st.pB.x + ')}{2}=' + fracToLatex(mxFrac),
+          'y_m&=\\dfrac{' + st.pA.y + '+(' + st.pB.y + ')}{2}=' + fracToLatex(myFrac)
+        ]) +
         '<span class="math-ltr">M = ' + pointLabel(M) + '</span>';
       renderMathInElement(readout, katexOptions);
     }
@@ -541,7 +553,10 @@
       var options = shuffle([g.m].concat(distractors));
       var correctIndex = -1;
       options.forEach(function (p, i) { if (pointKey(p) === pointKey(g.m)) correctIndex = i; });
-      var explain = '$$x_m = \\dfrac{' + g.p1.x + '+(' + g.p2.x + ')}{2} = ' + g.m.x + ' \\qquad y_m = \\dfrac{' + g.p1.y + '+(' + g.p2.y + ')}{2} = ' + g.m.y + '$$';
+      var explain = eqRows([
+        'x_m&=\\dfrac{' + g.p1.x + '+(' + g.p2.x + ')}{2}=' + g.m.x,
+        'y_m&=\\dfrac{' + g.p1.y + '+(' + g.p2.y + ')}{2}=' + g.m.y
+      ]);
       return {
         kind: 'choice',
         promptText: 'נתונות שתי נקודות הקצה <span class="math-ltr">A' + pointLabel(g.p1) + '</span> ו-<span class="math-ltr">B' + pointLabel(g.p2) + '</span>. מהי נקודת האמצע של הקטע ביניהן?',

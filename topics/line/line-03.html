@@ -24,7 +24,7 @@
     .back-link:hover { text-decoration: underline; }
 
     .lesson-container { max-width: 1020px; margin: 0 auto; padding: 24px 20px 60px; }
-    .lesson-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 32px; overflow-x: hidden; }
+    .lesson-card { background: var(--card-bg); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 32px; }
     .step-panel[hidden] { display: none; }
 
     .step-heading { font-size: 1.6rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 6px; }
@@ -427,8 +427,8 @@
       var dDisplay = (Number.isInteger(d)) ? String(d) : d.toFixed(2);
       var readout = document.getElementById('distReadout');
       readout.innerHTML = '<span class="math-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span>' +
-        '$$x_2-x_1 = ' + dx + ',\\quad y_2-y_1 = ' + dy + '$$' +
-        '$$d = \\sqrt{(' + dx + ')^2+(' + dy + ')^2} = \\sqrt{' + sq + '} \\approx ' + dDisplay + '$$';
+        '$$\\begin{aligned}x_2-x_1&=' + dx + '\\\\y_2-y_1&=' + dy + '\\end{aligned}$$' +
+        '$$\\begin{aligned}d&=\\sqrt{(' + dx + ')^2+(' + dy + ')^2}\\\\&=\\sqrt{' + sq + '}\\\\&\\approx ' + dDisplay + '\\end{aligned}$$';
       renderMathInElement(readout, katexOptions);
     }
 
@@ -561,8 +561,8 @@
       var numericOptions = shuffle([g.correctD].concat(distractors));
       var correctIndex = numericOptions.indexOf(g.correctD);
       var sqSum = g.dx * g.dx + g.dy * g.dy;
-      var explain = '$$x_2-x_1 = ' + g.dx + ',\\quad y_2-y_1 = ' + g.dy + '$$' +
-        '$$d = \\sqrt{(' + g.dx + ')^2+(' + g.dy + ')^2} = \\sqrt{' + sqSum + '} = ' + g.correctD + '$$';
+      var explain = '$$\\begin{aligned}x_2-x_1&=' + g.dx + '\\\\y_2-y_1&=' + g.dy + '\\end{aligned}$$' +
+        '$$\\begin{aligned}d&=\\sqrt{(' + g.dx + ')^2+(' + g.dy + ')^2}\\\\&=\\sqrt{' + sqSum + '}\\\\&=' + g.correctD + '\\end{aligned}$$';
       return {
         kind: 'choice',
         promptText: 'מה המרחק בין הנקודות <span class="math-ltr">' + pointLabel(g.p1) + '</span> ל-<span class="math-ltr">' + pointLabel(g.p2) + '</span>?',
