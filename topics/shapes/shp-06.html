@@ -116,6 +116,11 @@
     .option-correct { background: var(--green-soft) !important; border-color: var(--green-success) !important; color: #1f7a41; }
     .option-incorrect { background: var(--red-soft) !important; border-color: var(--red-error) !important; color: #8f2323; }
 
+    /* Compact vertex diagrams for numeric/analytic questions (never on
+       multi-select property lists - those stay text-only). */
+    .quiz-diagram-wrap { text-align: center; }
+    .quiz-diagram-svg { max-width: 180px; height: auto; margin: 8px auto; display: block; }
+
     /* Multi-select (checkbox) questions - large touch targets, safe at 360px */
     .quiz-checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
     .quiz-checkbox-option {
@@ -708,6 +713,66 @@
       }
     ];
 
+    /* Compact vertex diagrams for numeric/analytic questions that involve
+       specific vertices, sides or diagonals - NOT used on the multi-select
+       property-list questions (those stay text-only by design). Vertex
+       layouts are separate from QUAD_DEFS (Step 1/2) since those run up to
+       y=150 - these fit the smaller 200x130 quiz viewBox on purpose. */
+    var QUIZ_SHAPE_LAYOUTS = {
+      parallelogram: [{ x: 40, y: 110 }, { x: 170, y: 110 }, { x: 145, y: 20 }, { x: 15, y: 20 }],
+      rectangle: [{ x: 30, y: 110 }, { x: 170, y: 110 }, { x: 170, y: 20 }, { x: 30, y: 20 }],
+      /* top/bottom vertices sit further from the edge than the other
+         layouts (26/104, not 10/120) - their label offset is purely
+         vertical here (dx=0), so the usual 16px push would land the A/C
+         labels outside the 0-130 viewBox otherwise. */
+      rhombus: [{ x: 100, y: 31 }, { x: 180, y: 65 }, { x: 100, y: 99 }, { x: 20, y: 65 }],
+      trapezoidIsosceles: [{ x: 20, y: 110 }, { x: 180, y: 110 }, { x: 150, y: 20 }, { x: 50, y: 20 }]
+    };
+
+    function renderQuizDiagram(type, opts) {
+      opts = opts || {};
+      var v = QUIZ_SHAPE_LAYOUTS[type];
+      var labels = ['A', 'B', 'C', 'D'];
+      var pts = v.map(function (p) { return p.x + ',' + p.y; }).join(' ');
+      var markup = '<svg viewBox="0 0 200 130" class="quiz-diagram-svg" aria-hidden="true">';
+      markup += '<polygon points="' + pts + '" fill="#eef2f9" stroke="#3b82f6" stroke-width="2.5"/>';
+
+      if (opts.diagonals) {
+        markup += '<line x1="' + v[0].x + '" y1="' + v[0].y + '" x2="' + v[2].x + '" y2="' + v[2].y + '" stroke="#64748b" stroke-width="1.6" stroke-dasharray="5,4"/>';
+        markup += '<line x1="' + v[1].x + '" y1="' + v[1].y + '" x2="' + v[3].x + '" y2="' + v[3].y + '" stroke="#64748b" stroke-width="1.6" stroke-dasharray="5,4"/>';
+      }
+      if (opts.rightAngleAt != null) {
+        var idx = opts.rightAngleAt, prev = v[(idx + 3) % 4], next = v[(idx + 1) % 4];
+        markup += rightAngleMarkSVG(v[idx], prev, next, '#c2650b');
+      }
+
+      /* SVG clips anything outside the viewBox by default (UA overflow:hidden) -
+         a label pushed straight out from a vertex near an edge (the diamond-
+         oriented rhombus's top/bottom vertices, or any shape's leftmost/
+         rightmost vertex) can land partway outside 0-200x0-130. Clamp the
+         label position itself, after applying the outward offset, rather
+         than hand-tuning every shape's vertex coordinates - this stays
+         correct regardless of which shape a future addition uses. */
+      var cx = (v[0].x + v[1].x + v[2].x + v[3].x) / 4, cy = (v[0].y + v[1].y + v[2].y + v[3].y) / 4;
+      v.forEach(function (p, i) {
+        var dx = p.x - cx, dy = p.y - cy;
+        var len = Math.sqrt(dx * dx + dy * dy) || 1;
+        var lx = Math.max(9, Math.min(191, p.x + (dx / len) * 16));
+        var ly = Math.max(13, Math.min(117, p.y + (dy / len) * 16));
+        markup += '<circle cx="' + p.x + '" cy="' + p.y + '" r="3.5" fill="#1e3a8a"/>';
+        markup += '<text x="' + lx + '" y="' + ly + '" font-size="15" font-weight="700" fill="#1e3a8a" text-anchor="middle" dominant-baseline="middle">' + labels[i] + '</text>';
+      });
+
+      if (opts.showM) {
+        var mx = (v[0].x + v[2].x) / 2, my = (v[0].y + v[2].y) / 2;
+        markup += '<circle cx="' + mx + '" cy="' + my + '" r="3.5" fill="#dc2626"/>';
+        markup += '<text x="' + (mx + 12) + '" y="' + (my - 8) + '" font-size="14" font-weight="700" fill="#dc2626">M</text>';
+      }
+
+      markup += '</svg>';
+      return markup;
+    }
+
     /* Category B: direct numerical application of a single property - fixed
        facts (not randomized parameters), single-choice. */
     var NUMERIC_BANK = [
@@ -715,37 +780,43 @@
         promptText: 'במקבילית ' + ltrToken('ABCD') + ' אורך הצלע ' + ltrToken('AB') + ' הוא 9 ס"מ. מה אורכה של הצלע הנגדית ' + ltrToken('CD') + '?',
         correct: '9 ס"מ',
         wrongs: ['4.5 ס"מ', '18 ס"מ', 'לא ניתן לדעת ללא שיפוע'],
-        explain: 'צלעות נגדיות במקבילית שוות זו לזו תמיד - לכן ' + ltrToken('CD') + ' שווה בדיוק ל-' + ltrToken('AB') + ', כלומר 9 ס"מ.'
+        explain: 'צלעות נגדיות במקבילית שוות זו לזו תמיד - לכן ' + ltrToken('CD') + ' שווה בדיוק ל-' + ltrToken('AB') + ', כלומר 9 ס"מ.',
+        svg: renderQuizDiagram('parallelogram', {})
       },
       {
         promptText: 'במלבן ' + ltrToken('ABCD') + ' אורך האלכסון ' + ltrToken('AC') + ' הוא 8 ס"מ. מה אורכו של האלכסון השני ' + ltrToken('BD') + '?',
         correct: '8 ס"מ',
         wrongs: ['4 ס"מ', '16 ס"מ', 'תלוי בזווית בין האלכסונים'],
-        explain: 'במלבן שני האלכסונים שווים זה לזה תמיד - לכן ' + ltrToken('BD') + ' שווה בדיוק ל-' + ltrToken('AC') + ', כלומר 8 ס"מ, ללא תלות בזווית ביניהם.'
+        explain: 'במלבן שני האלכסונים שווים זה לזה תמיד - לכן ' + ltrToken('BD') + ' שווה בדיוק ל-' + ltrToken('AC') + ', כלומר 8 ס"מ, ללא תלות בזווית ביניהם.',
+        svg: renderQuizDiagram('rectangle', { diagonals: true })
       },
       {
         promptText: 'במעוין ' + ltrToken('ABCD') + ' אורך הצלע ' + ltrToken('AB') + ' הוא 6 ס"מ. מהו היקף המעוין?',
         correct: '24 ס"מ',
         wrongs: ['12 ס"מ', '36 ס"מ', '18 ס"מ'],
-        explain: 'במעוין כל ארבע הצלעות שוות זו לזו - לכן ההיקף הוא $4\\times 6=24$ ס"מ.'
+        explain: 'במעוין כל ארבע הצלעות שוות זו לזו - לכן ההיקף הוא $4\\times 6=24$ ס"מ.',
+        svg: renderQuizDiagram('rhombus', {})
       },
       {
         promptText: 'במעוין ' + ltrToken('ABCD') + ' אלכסון אחד (' + ltrToken('AC') + ') אורכו 10 ס"מ, ואלכסון שני (' + ltrToken('BD') + ') אורכו 6 ס"מ. לכמה שווה החלק של ' + ltrToken('AC') + ' מנקודת המפגש של האלכסונים ועד לקודקוד ' + ltrToken('A') + '?',
         correct: '5 ס"מ',
         wrongs: ['10 ס"מ', '3 ס"מ', '6 ס"מ'],
-        explain: 'אלכסוני מעוין (וכל מקבילית) חוצים זה את זה - לכן כל חלק של ' + ltrToken('AC') + ' שווה למחצית אורכו: $10\\div 2=5$ ס"מ.'
+        explain: 'אלכסוני מעוין (וכל מקבילית) חוצים זה את זה - לכן כל חלק של ' + ltrToken('AC') + ' שווה למחצית אורכו: $10\\div 2=5$ ס"מ.',
+        svg: renderQuizDiagram('rhombus', { diagonals: true, showM: true })
       },
       {
         promptText: 'במלבן ' + ltrToken('ABCD') + ' ההיקף הוא 28 ס"מ, וצלע אחת (' + ltrToken('AB') + ') אורכה 8 ס"מ. מה אורך הצלע הסמוכה ' + ltrToken('BC') + '?',
         correct: '6 ס"מ',
         wrongs: ['10 ס"מ', '14 ס"מ', '20 ס"מ'],
-        explain: 'היקף מלבן הוא $2\\times(' + ltrToken('AB') + '+' + ltrToken('BC') + ')$ - לכן $28=2\\times(8+' + ltrToken('BC') + ')$, ומכאן ' + ltrToken('BC') + '=6 ס"מ.'
+        explain: 'היקף מלבן הוא $2\\times(' + ltrToken('AB') + '+' + ltrToken('BC') + ')$ - לכן $28=2\\times(8+' + ltrToken('BC') + ')$, ומכאן ' + ltrToken('BC') + '=6 ס"מ.',
+        svg: renderQuizDiagram('rectangle', {})
       },
       {
         promptText: 'בטרפז שווה-שוקיים ' + ltrToken('ABCD') + ' אורך האלכסון ' + ltrToken('AC') + ' הוא 11 ס"מ. מה אורך האלכסון השני ' + ltrToken('BD') + '?',
         correct: '11 ס"מ',
         wrongs: ['5.5 ס"מ', '22 ס"מ', 'תלוי בגובה הטרפז'],
-        explain: 'בטרפז שווה-שוקיים שני האלכסונים שווים זה לזה תמיד - לכן ' + ltrToken('BD') + ' שווה בדיוק ל-' + ltrToken('AC') + ', כלומר 11 ס"מ.'
+        explain: 'בטרפז שווה-שוקיים שני האלכסונים שווים זה לזה תמיד - לכן ' + ltrToken('BD') + ' שווה בדיוק ל-' + ltrToken('AC') + ', כלומר 11 ס"מ.',
+        svg: renderQuizDiagram('trapezoidIsosceles', { diagonals: true })
       }
     ];
 
@@ -756,25 +827,29 @@
         promptText: 'נתונה מקבילית ' + ltrToken('ABCD') + ' שבה ' + ltrToken('AC') + ' ו-' + ltrToken('BD') + ' הם האלכסונים. בחישוב אנליטי מצאנו כי מכפלת שיפועי האלכסונים מקיימת $m_{AC} \\cdot m_{BD} = -1$. לאיזה מרובע שודרגה המקבילית בוודאות?',
         correct: 'מעוין',
         wrongs: ['מלבן', 'טרפז', 'דלתון'],
-        explain: 'אלכסונים מאונכים ($m_1 \\cdot m_2=-1$) הם סימן ההיכר של מעוין: מקבילית שבה האלכסונים מאונכים היא מעוין.'
+        explain: 'אלכסונים מאונכים ($m_1 \\cdot m_2=-1$) הם סימן ההיכר של מעוין: מקבילית שבה האלכסונים מאונכים היא מעוין.',
+        svg: renderQuizDiagram('parallelogram', { diagonals: true })
       },
       {
         promptText: 'נתונה מקבילית ' + ltrToken('ABCD') + ' שבה ' + ltrToken('AB') + ' ו-' + ltrToken('BC') + ' הן צלעות סמוכות. בחישוב אנליטי מצאנו כי $m_{AB} \\cdot m_{BC} = -1$. מה נוכל להסיק בוודאות לגבי המרובע?',
         correct: 'המקבילית היא מלבן',
         wrongs: ['המקבילית היא מעוין', 'המקבילית היא ריבוע', 'המקבילית אינה משתנה'],
-        explain: 'ניצבות בין שתי צלעות סמוכות ($m_1\\cdot m_2=-1$) אומרת שיש זווית ישרה בקודקוד ' + ltrToken('B') + ' - במקבילית זווית ישרה אחת גוררת שכל הזוויות ישרות, כלומר המקבילית היא מלבן.'
+        explain: 'ניצבות בין שתי צלעות סמוכות ($m_1\\cdot m_2=-1$) אומרת שיש זווית ישרה בקודקוד ' + ltrToken('B') + ' - במקבילית זווית ישרה אחת גוררת שכל הזוויות ישרות, כלומר המקבילית היא מלבן.',
+        svg: renderQuizDiagram('parallelogram', { rightAngleAt: 1 })
       },
       {
         promptText: 'נתון מלבן ' + ltrToken('ABCD') + '. איזה ממצא אנליטי נוסף יוכיח בוודאות כי המלבן הוא <strong>ריבוע</strong>?',
         correct: 'האלכסונים מאונכים זה לזה ($m_{AC} \\cdot m_{BD} = -1$)',
         wrongs: ['האלכסונים שווים באורכם', 'הצלעות הנגדיות מקבילות', 'סכום הזוויות הוא $360^\\circ$'],
-        explain: 'מלבן שבו גם האלכסונים מאונכים הוא גם מעוין - ומרובע שהוא גם מלבן וגם מעוין הוא ריבוע. שתי האפשרויות האחרות מתקיימות בכל מלבן ואינן מוסיפות מידע חדש.'
+        explain: 'מלבן שבו גם האלכסונים מאונכים הוא גם מעוין - ומרובע שהוא גם מלבן וגם מעוין הוא ריבוע. שתי האפשרויות האחרות מתקיימות בכל מלבן ואינן מוסיפות מידע חדש.',
+        svg: renderQuizDiagram('rectangle', { diagonals: true })
       },
       {
         promptText: 'במערכת צירים נתונים שלושת הקודקודים ' + ltrToken('A') + ', ' + ltrToken('B') + ' ו-' + ltrToken('C') + ' של מקבילית ' + ltrToken('ABCD') + '. באיזה משפט גיאומטרי נשתמש כדי למצוא את הקודקוד הרביעי ' + ltrToken('D') + ' באמצעות נוסחת אמצע קטע?',
         correct: 'אלכסוני המקבילית חוצים זה את זה ובעלי נקודת אמצע משותפת',
         wrongs: ['צלעות נגדיות במקבילית שוות באורכן', 'שיפועי הצלעות הנגדיות שווים', 'אלכסוני המקבילית מאונכים זה לזה'],
-        explain: 'מכיוון שהאלכסונים ' + ltrToken('AC') + ' ו-' + ltrToken('BD') + ' חוצים זה את זה, אמצע ' + ltrToken('AC') + ' שווה לאמצע ' + ltrToken('BD') + ' - משוואה זו (עם נוסחת אמצע קטע) פותרת עבור שיעורי ' + ltrToken('D') + '.'
+        explain: 'מכיוון שהאלכסונים ' + ltrToken('AC') + ' ו-' + ltrToken('BD') + ' חוצים זה את זה, אמצע ' + ltrToken('AC') + ' שווה לאמצע ' + ltrToken('BD') + ' - משוואה זו (עם נוסחת אמצע קטע) פותרת עבור שיעורי ' + ltrToken('D') + '.',
+        svg: renderQuizDiagram('parallelogram', { diagonals: true, showM: true })
       },
       {
         promptText: 'נתונות שתי נקודות קצה של אלכסון במקבילית: $A(1,2)$ ו-$C(7,8)$. מהן קואורדינטות אמצע האלכסון ' + ltrToken('AC') + '?',
@@ -786,7 +861,8 @@
         promptText: 'נתונה מקבילית ' + ltrToken('ABCD') + '. חישבנו את אורכי הצלעות ' + ltrToken('AB') + ' ו-' + ltrToken('BC') + ' (צלעות סמוכות) ומצאנו כי הם שווים. לאיזה מרובע שודרגה המקבילית בוודאות?',
         correct: 'מעוין',
         wrongs: ['מלבן', 'ריבוע', 'טרפז'],
-        explain: 'במקבילית זוגות הצלעות הנגדיות תמיד שוות; אם בנוסף שתי צלעות סמוכות שוות, אז כל ארבע הצלעות שוות זו לזו - וזו ההגדרה של מעוין.'
+        explain: 'במקבילית זוגות הצלעות הנגדיות תמיד שוות; אם בנוסף שתי צלעות סמוכות שוות, אז כל ארבע הצלעות שוות זו לזו - וזו ההגדרה של מעוין.',
+        svg: renderQuizDiagram('parallelogram', {})
       }
     ];
 
@@ -801,7 +877,8 @@
       var options = shuffle([item.correct].concat(item.wrongs));
       return {
         kind: 'choice', promptText: item.promptText,
-        options: options, correctIndex: options.indexOf(item.correct), explain: item.explain
+        options: options, correctIndex: options.indexOf(item.correct), explain: item.explain,
+        svg: item.svg
       };
     }
 
@@ -867,6 +944,7 @@
 
       var html = '';
       if (q.promptText) html += '<p class="quiz-instruction">' + q.promptText + '</p>';
+      if (q.svg) html += '<div class="quiz-diagram-wrap">' + q.svg + '</div>';
 
       if (q.kind === 'multi-select') {
         html += '<div class="quiz-checkbox-group">' + q.options.map(function (opt, i) {
