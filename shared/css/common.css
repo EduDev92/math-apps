@@ -193,3 +193,39 @@ p:has(.katex) {
   touch-action: none;
   cursor: grab;
 }
+
+/* פוטר גלובלי (זכויות יוצרים + כפתור משוב בוואטסאפ) - מוזרק דינמית ע"י
+   shared/components/step-progress.js בכל לומדה+exam.html, ונטען ישירות
+   ב-index.html. margin-top גדול (לא position:fixed) כדי שלעולם לא יתנגש
+   עם .nav-buttons שמעליו - הפוטר תמיד בזרימת הדף הרגילה, לא מוצמד למסך. */
+.site-footer {
+  direction: rtl;
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px 10px;
+}
+.site-footer-copyright {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.footer-wa-btn {
+  display: inline-block;
+  max-width: 100%;
+  box-sizing: border-box;
+  background: var(--green-soft);
+  color: #1b3a2a;
+  border: 1px solid var(--green-success);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: break-word;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.footer-wa-btn:hover {
+  background: var(--green-success);
+  color: #ffffff;
+}

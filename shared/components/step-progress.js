@@ -97,3 +97,45 @@ class StepProgress extends HTMLElement {
 }
 
 customElements.define('step-progress', StepProgress);
+
+/* ---------- Global site footer (copyright + WhatsApp feedback) ----------
+   Injected here because this file is already loaded on every lesson page
+   and on exam.html - a single place to add/change the footer instead of
+   touching 27+ lesson files. index.html (the only page that doesn't use
+   <step-progress>) loads this same script just to get this behavior. */
+function buildFooterWaLink() {
+  var fileCode = (window.location.pathname.split('/').pop() || '').replace(/\.html$/, '');
+  if (!fileCode || fileCode === 'index') fileCode = 'דף ראשי';
+  var pageTitle = document.title.split('|')[0].trim() || document.title;
+  var stepEl = document.querySelector('.step-panel:not([hidden]) .step-heading') ||
+    document.querySelector('.step-title, h2.active, .progress-header');
+  var stepText = (stepEl && stepEl.textContent) ? stepEl.textContent.trim() : '';
+  var qEl = document.querySelector('.quiz-id-tag') ||
+    document.querySelector('.question-counter, .quiz-progress, .q-number, [id*="-q"]');
+  var questionText = (qEl && qEl.textContent) ? qEl.textContent.trim() : '';
+
+  var details = 'שלום אופיר, יש לי הערה/משוב לגבי הלומדה:\nכותרת: ' + pageTitle + ' (' + fileCode + ')';
+  if (stepText) details += '\nמיקום: ' + stepText;
+  if (questionText) details += ' (' + questionText + ')';
+  details += '\nקישור: ' + window.location.href;
+  return 'https://wa.me/972547841730?text=' + encodeURIComponent(details);
+}
+
+function initSiteFooter() {
+  if (document.querySelector('.site-footer')) return;
+  var footer = document.createElement('div');
+  footer.className = 'site-footer';
+  footer.innerHTML =
+    '<p class="site-footer-copyright">כל הזכויות שמורות לאופיר נוסבאום ©</p>' +
+    '<a href="#" id="footer-wa-btn" class="footer-wa-btn" target="_blank" rel="noopener">דיווח על טעות / הצעות בוואטסאפ</a>';
+  document.body.appendChild(footer);
+  document.getElementById('footer-wa-btn').addEventListener('click', function () {
+    this.href = buildFooterWaLink();
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSiteFooter);
+} else {
+  initSiteFooter();
+}
