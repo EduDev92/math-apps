@@ -58,6 +58,19 @@ const EXAMS_CONFIG = {
     course: 'grade10-level4-line',
     sourceModules: ['line-01', 'line-02', 'line-03', 'line-04', 'line-05', 'line-06'],
     questionsCount: 10
+  },
+  /* Single-module refresher exam - all 10 questions come from shp-06's own
+     generateQuizQuestions() (4 from COMBO_BANK + all 3 of CLASSIC_BANK + 3
+     from TF_BANK = 10 every call), pooled via the same iframe mechanism as
+     any multi-module exam so formatting/KaTeX/BiDi are identical to the
+     lesson itself - no separate question authoring here. */
+  'ELA-100': {
+    title: 'מבדק רענון: תכונות המרובעים',
+    description: 'מבדק המבוסס על שאלות לומדת תכונות המרובעים (shp-06)',
+    course: 'grade10-level4-shapes',
+    sourceModules: ['shp-06'],
+    questionsCount: 10,
+    timeLimit: 15
   }
 };
 
@@ -86,6 +99,7 @@ function resolveExamConfig(code) {
   return {
     code: code,
     title: cfg.title,
+    description: cfg.description || null,
     timeLimit: cfg.timeLimit || null,
     questionsCount: cfg.questionsCount,
     grade: course.grade,
