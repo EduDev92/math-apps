@@ -426,7 +426,7 @@
          white-space:nowrap, the excess bleeds off both edges instead of
          scrolling into view. */
       readout.innerHTML = '<span class="math-ltr">A(x₁,y₁)' + pointLabel(st.pA) + ',&nbsp; B(x₂,y₂)' + pointLabel(st.pB) + '</span>' +
-        '$$\\begin{aligned}m&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + st.pB.y + ' - (' + st.pA.y + ')}{' + st.pB.x + ' - (' + st.pA.x + ')}\\\\&=\\dfrac{' + dy + '}{' + dx + '}\\\\&=' + (f.den === 1 ? f.num : '\\dfrac{' + f.num + '}{' + f.den + '}') + '\\end{aligned}$$';
+        '$$\\begin{aligned}m&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + st.pB.y + ' - (' + st.pA.y + ')}{' + st.pB.x + ' - (' + st.pA.x + ')}\\\\&=' + (f.den === 1 ? f.num : '\\dfrac{' + f.num + '}{' + f.den + '}') + '\\end{aligned}$$';
       renderMathInElement(readout, katexOptions);
     }
 
@@ -549,7 +549,7 @@
       var correctIndex = -1;
       options.forEach(function (f, i) { if (fractionKey(f) === fractionKey(g.correct)) correctIndex = i; });
 
-      var explain = '$$\\begin{aligned}m&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + g.B.y + ' - (' + g.A.y + ')}{' + g.B.x + ' - (' + g.A.x + ')}\\\\&=\\dfrac{' + g.dy + '}{' + g.dx + '}\\\\&=' + fractionLabel(g.correct) + '\\end{aligned}$$';
+      var explain = '$$\\begin{aligned}m&=\\dfrac{y_2-y_1}{x_2-x_1}\\\\&=\\dfrac{' + g.B.y + ' - (' + g.A.y + ')}{' + g.B.x + ' - (' + g.A.x + ')}\\\\&=' + fractionLabel(g.correct) + '\\end{aligned}$$';
 
       var q = {
         kind: 'choice',
