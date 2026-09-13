@@ -1349,7 +1349,7 @@
       var rank = -1;
       for (var ri = 0; ri < sortedDesc.length; ri++) if (sortedDesc[ri].fnName === target.fnName) rank = ri;
       var rankText = rank === 0 ? 'הגבוה מביניהם' : (rank === sortedDesc.length - 1 ? 'הנמוך מביניהם' : 'באמצע, מבין הערכים');
-      var sideText = evalX < 0 ? 'משמאל לציר ה-y' : 'מימין לציר ה-y';
+      var sideText = evalX < 0 ? 'משמאל לציר ה-' + ltrToken('y') : 'מימין לציר ה-' + ltrToken('y');
       var explain = 'עבור $x=' + evalX + '$ מתקיים: $' + valueLines + '$. הערך ' + rankText + ' ' + sideText + ' הוא של $' + target.fnName + '(x)$, ולכן גרף ' + target.roman + ' מתאים לה.';
 
       return {

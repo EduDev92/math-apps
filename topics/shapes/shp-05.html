@@ -567,7 +567,7 @@
       var xBase = Math.abs(xC.x - xB.x), xHeight = Math.abs(xA.y - xB.y);
       var xArea = 0.5 * xBase * xHeight;
       var s3Html = '<p class="derivation-line">$A(' + xA.x + ',' + xA.y + ')$,&nbsp; $B(' + xB.x + ',' + xB.y + ')$,&nbsp; $C(' + xC.x + ',' + xC.y + ')$</p>';
-      s3Html += '<p class="dist-line">$BC$ מקבילה לציר ה-x:</p>';
+      s3Html += '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('x') + ':</p>';
       s3Html += '<p class="dist-line">$$\\begin{aligned}&\\text{בסיס}=|x_C-x_B|=' + xBase + '\\\\&\\text{גובה}=|y_A-y_B|=' + xHeight + '\\end{aligned}$$</p>';
       s3Html += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + xBase + '\\cdot ' + xHeight + '=' + fmtNum(xArea) + '$$</strong></p>';
       document.getElementById('step3Example').innerHTML =
@@ -577,7 +577,7 @@
       var yBase = Math.abs(yC.y - yB.y), yHeight = Math.abs(yA.x - yB.x);
       var yArea = 0.5 * yBase * yHeight;
       var s4Html = '<p class="derivation-line">$A(' + yA.x + ',' + yA.y + ')$,&nbsp; $B(' + yB.x + ',' + yB.y + ')$,&nbsp; $C(' + yC.x + ',' + yC.y + ')$</p>';
-      s4Html += '<p class="dist-line">$BC$ מקבילה לציר ה-y:</p>';
+      s4Html += '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('y') + ':</p>';
       s4Html += '<p class="dist-line">$$\\begin{aligned}&\\text{בסיס}=|y_C-y_B|=' + yBase + '\\\\&\\text{גובה}=|x_A-x_B|=' + yHeight + '\\end{aligned}$$</p>';
       s4Html += '<p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + yBase + '\\cdot ' + yHeight + '=' + fmtNum(yArea) + '$$</strong></p>';
       document.getElementById('step4Example').innerHTML =
@@ -640,7 +640,7 @@
       }
       var ax = findAxisBase(A, B, C);
       if (ax) {
-        html += '<div class="tri-badges"><span class="tri-badge badge-right">הבסיס ' + ltrToken(ax.end1 + ax.end2) + ' מקביל לציר ' + (ax.info.type === 'horizontal' ? 'x' : 'y') + ' - אפשר לחשב שטח בקיצור!</span></div>';
+        html += '<div class="tri-badges"><span class="tri-badge badge-right">הבסיס ' + ltrToken(ax.end1 + ax.end2) + ' מקביל לציר ' + ltrToken(ax.info.type === 'horizontal' ? 'x' : 'y') + ' - אפשר לחשב שטח בקיצור!</span></div>';
       }
 
       readout.innerHTML = html;
@@ -825,10 +825,10 @@
       var correct = fmtNum(area);
       var wrongs = buildDistractorSet(correct, [fmtNum(area * 2), fmtNum(area + 0.5), fmtNum(Math.max(0.5, area - 1))]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-x: $$\\text{בסיס}=' + base + ',\\ \\text{גובה}=' + height + '$$</p><p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + base + '\\cdot ' + height + '=' + correct + '$$</strong></p>';
+      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('x') + ': $$\\text{בסיס}=' + base + ',\\ \\text{גובה}=' + height + '$$</p><p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + base + '\\cdot ' + height + '=' + correct + '$$</strong></p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-x). מהו שטח המשולש?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-' + ltrToken('x') + '). מהו שטח המשולש?',
         options: options,
         correctIndex: options.indexOf(correct),
         explain: explain
@@ -849,10 +849,10 @@
       var correct = fmtNum(area);
       var wrongs = buildDistractorSet(correct, [fmtNum(area * 2), fmtNum(area + 0.5), fmtNum(Math.max(0.5, area - 1))]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-y: $$\\text{בסיס}=' + base + ',\\ \\text{גובה}=' + height + '$$</p><p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + base + '\\cdot ' + height + '=' + correct + '$$</strong></p>';
+      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('y') + ': $$\\text{בסיס}=' + base + ',\\ \\text{גובה}=' + height + '$$</p><p class="dist-line"><strong>$$S=\\dfrac{1}{2}\\cdot ' + base + '\\cdot ' + height + '=' + correct + '$$</strong></p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-y). מהו שטח המשולש?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-' + ltrToken('y') + '). מהו שטח המשולש?',
         options: options,
         correctIndex: options.indexOf(correct),
         explain: explain

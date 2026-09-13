@@ -572,14 +572,14 @@
 
       var hA = { x: 1, y: 4 }, hB = { x: -3, y: -1 }, hC = { x: 3, y: -1 };
       var hHtml = '<p class="derivation-line">$A(' + hA.x + ',' + hA.y + '),\\ B(' + hB.x + ',' + hB.y + '),\\ C(' + hC.x + ',' + hC.y + ')$</p>';
-      hHtml += '<p class="dist-line">$BC$ מקבילה לציר ה-x (שיפוע 0), לכן הגובה מ-$A$ אליה הוא אנכי:</p>';
+      hHtml += '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('x') + ' (שיפוע 0), לכן הגובה מ-$A$ אליה הוא אנכי:</p>';
       hHtml += '<p class="dist-line"><strong>$$x=' + hA.x + '$$</strong></p>';
       document.getElementById('step4ExampleH').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(hA, hB, hC, { x: hA.x, y: hB.y }) + '</div><div class="example-calc-wrap">' + hHtml + '</div></div>';
 
       var vA = { x: -2, y: 1 }, vB = { x: 2, y: -3 }, vC = { x: 2, y: 3 };
       var vHtml = '<p class="derivation-line">$A(' + vA.x + ',' + vA.y + '),\\ B(' + vB.x + ',' + vB.y + '),\\ C(' + vC.x + ',' + vC.y + ')$</p>';
-      vHtml += '<p class="dist-line">$BC$ מקבילה לציר ה-y (שיפוע לא מוגדר), לכן הגובה מ-$A$ אליה הוא אופקי:</p>';
+      vHtml += '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('y') + ' (שיפוע לא מוגדר), לכן הגובה מ-$A$ אליה הוא אופקי:</p>';
       vHtml += '<p class="dist-line"><strong>$$y=' + vA.y + '$$</strong></p>';
       document.getElementById('step4ExampleV').innerHTML =
         '<div class="example-layout"><div class="example-svg-wrap">' + renderAltitudeSVG(vA, vB, vC, { x: vB.x, y: vA.y }) + '</div><div class="example-calc-wrap">' + vHtml + '</div></div>';
@@ -629,7 +629,7 @@
          example, never a decimal approximation. */
       var html = '<p class="dist-line"><strong>שלב 1 - שיפוע הבסיס BC:</strong></p>';
       if (B.x === C.x) {
-        html += '<p class="dist-line">$BC$ מקבילה לציר ה-y (שיפוע לא מוגדר).</p>';
+        html += '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('y') + ' (שיפוע לא מוגדר).</p>';
         html += '<p class="dist-line"><strong>שלב 2-3 - הגובה מ-A:</strong></p>';
         html += '<p class="dist-line"><strong>$$y=' + A.y + '$$</strong></p>';
         html += '<div class="tri-badges"><span class="tri-badge badge-right">מקרה מיוחד: הבסיס אנכי, לכן הגובה אופקי!</span></div>';
@@ -855,10 +855,10 @@
         'x=' + (t.A.x + 1)
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-x (שיפוע 0), לכן הגובה מ-' + ltrToken('A') + ' אליה הוא אנכי - ישר העובר דרך $A$:</p><p class="dist-line"><strong>$$' + correct + '$$</strong></p>';
+      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('x') + ' (שיפוע 0), לכן הגובה מ-' + ltrToken('A') + ' אליה הוא אנכי - ישר העובר דרך $A$:</p><p class="dist-line"><strong>$$' + correct + '$$</strong></p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-x). מהי משוואת הגובה היוצא מקודקוד ' + ltrToken('A') + '?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-' + ltrToken('x') + '). מהי משוואת הגובה היוצא מקודקוד ' + ltrToken('A') + '?',
         options: options,
         correctIndex: options.indexOf(correct),
         explain: explain
@@ -881,10 +881,10 @@
         'y=' + (t.A.y + 1)
       ]);
       var options = shuffle([correct].concat(wrongs));
-      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-y (שיפוע לא מוגדר), לכן הגובה מ-' + ltrToken('A') + ' אליה הוא אופקי - ישר העובר דרך $A$:</p><p class="dist-line"><strong>$$' + correct + '$$</strong></p>';
+      var explain = '<p class="dist-line">$BC$ מקבילה לציר ה-' + ltrToken('y') + ' (שיפוע לא מוגדר), לכן הגובה מ-' + ltrToken('A') + ' אליה הוא אופקי - ישר העובר דרך $A$:</p><p class="dist-line"><strong>$$' + correct + '$$</strong></p>';
       return {
         kind: 'choice',
-        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-y). מהי משוואת הגובה היוצא מקודקוד ' + ltrToken('A') + '?',
+        promptText: 'נתונות הנקודות $A(' + t.A.x + ',' + t.A.y + ')$, $B(' + t.B.x + ',' + t.B.y + ')$, $C(' + t.C.x + ',' + t.C.y + ')$ (כאשר $BC$ מקבילה לציר ה-' + ltrToken('y') + '). מהי משוואת הגובה היוצא מקודקוד ' + ltrToken('A') + '?',
         options: options,
         correctIndex: options.indexOf(correct),
         explain: explain

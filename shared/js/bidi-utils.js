@@ -22,6 +22,15 @@
  * This is also why a bare single-letter token ("A", "BC") is NOT safe to
  * leave unwrapped in Hebrew prose just because it's short - short tokens are
  * exactly as vulnerable as long ones. Wrap every one.
+ *
+ * Confirmed failure mode (shp-04/shp-05 quiz prompts): a Hebrew parenthetical
+ * that already contains an isolated KaTeX span AND a bare unwrapped letter -
+ * e.g. "(כאשר $BC$ מקבילה לציר ה-x)" - scrambles the ENTIRE clause, not just
+ * the bare letter: the closing paren/period end up before text that should
+ * follow them, and the sentence after the parenthetical gets visually
+ * reordered to before it. Wrapping just the bare letter (ltrToken('x')) is
+ * sufficient to fix the whole clause - no need to wrap the parens themselves
+ * or the already-isolated KaTeX span next to it.
  */
 function ltrToken(text, extraAttrs) {
   return '<span class="math-ltr"' + (extraAttrs ? ' ' + extraAttrs : '') + '>' + text + '</span>‏';
