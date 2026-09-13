@@ -18,6 +18,11 @@
     }
 
     body { background: var(--bg-main); }
+    /* Only during the active exam (Step 4, toggled via JS) - stops a
+       pull-down-at-top gesture on mobile from triggering the browser's
+       native pull-to-refresh reload mid-exam. Not global: no reason to
+       block this convenience on the code/name/results steps. */
+    body.exam-in-progress { overscroll-behavior-y: contain; }
 
     .topbar { background: #ffffff; border-bottom: 1px solid var(--border-subtle); padding: 14px 20px; }
     .back-link { color: var(--blue-primary); font-weight: 700; font-size: 0.95rem; text-decoration: none; }
@@ -360,7 +365,33 @@
       if (n !== 4) {
         clearExamTimer();
         detachBlurGuard();
+        detachUnloadGuard();
+        document.body.classList.remove('exam-in-progress');
       }
+    }
+
+    /* ---------- Step 4: accidental refresh/close protection ---------- */
+    /* No sessionStorage/localStorage involved anywhere here - this is a
+       plain in-memory listener. A genuine reload (or the browser's own
+       "Leave" confirmation) simply restarts the whole script fresh at
+       Step 1, exactly like opening the page for the first time - nothing
+       is "locked", there's just a native warning first. */
+
+    function handleBeforeUnload(e) {
+      e.preventDefault();
+      /* Modern browsers ignore this custom string and show their own
+         fixed wording instead (a long-standing anti-abuse restriction) -
+         set anyway per spec / as a no-op fallback for old engines. */
+      e.returnValue = 'האם לצאת מהדף? השינויים לא יישמרו';
+      return e.returnValue;
+    }
+
+    function attachUnloadGuard() {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    function detachUnloadGuard() {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     }
 
     /* ---------- Step 4: countdown timer + auto-submit ---------- */
@@ -481,6 +512,8 @@
     function finishExam() {
       clearExamTimer();
       detachBlurGuard();
+      detachUnloadGuard();
+      document.body.classList.remove('exam-in-progress');
       examTiming.totalSeconds = Math.round((Date.now() - examTiming.startTime) / 1000);
       var correct = 0;
       examState.questions.forEach(function (q, i) {
@@ -619,6 +652,8 @@
         renderExamQuestion();
         startExamTimer();
         attachBlurGuard();
+        attachUnloadGuard();
+        document.body.classList.add('exam-in-progress');
       });
     }
 
