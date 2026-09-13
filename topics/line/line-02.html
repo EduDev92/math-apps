@@ -59,6 +59,7 @@
       background: #fff; border: 2px solid var(--blue-soft); border-radius: var(--radius-md);
       padding: 14px 16px; font-size: 1rem; font-weight: 700; text-align: center; min-height: 24px; max-width: 460px; width: 100%; line-height: 1.6;
     }
+    .lab-readout.status-success { border-color: var(--green-success); background: var(--green-soft); }
     .grid-svg-wrap { max-width: 380px; width: 100%; }
     .graph-svg {
       width: 100%; height: auto; display: block; background: #fff;
@@ -417,8 +418,13 @@
       }
       L = Math.abs(v2 - v1);
       var readout = document.getElementById('distReadout');
+      readout.classList.add('status-success');
       readout.innerHTML = '<span class="math-ltr">A' + pointLabel(st.pA) + ',&nbsp; B' + pointLabel(st.pB) + '</span><br>' +
-        'אורך ' + ltrToken('AB') + ' = |' + axisLabel + '| = <span class="math-ltr">|' + v2 + ' − (' + v1 + ')| = ' + L + '</span>';
+        /* The whole "AB = formula = substitution = result" chain is built as
+           ONE ltrToken() run, not several separate isolated fragments mixed
+           with plain "=" signs in the surrounding RTL flow - splitting it
+           broke the bidi reading order (rendered back-to-front). */
+        ltrToken('AB = ' + axisLabel + ' = |' + v2 + ' − (' + v1 + ')| = ' + L);
     }
 
     function updateLabVisual() {
