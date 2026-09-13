@@ -111,6 +111,25 @@
     .quiz-option-btn:hover { border-color: var(--blue-primary); background: var(--blue-soft); }
     .option-selected { background: var(--blue-soft) !important; border-color: var(--blue-primary) !important; }
 
+    /* Multi-select (checkbox) questions pulled from a lesson's question
+       pool (e.g. shp-06) - large touch targets, safe at 360px. No separate
+       "confirm" step here (unlike the lesson's own immediate-feedback
+       quiz): checking/unchecking just updates the stored answer, same as
+       clicking a different single-choice option, graded all at once when
+       the exam is submitted. */
+    .quiz-checkbox-group { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .quiz-checkbox-option {
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--radius-sm);
+      border: 2px solid var(--border-subtle); background: #fff; cursor: pointer; font-weight: 600;
+      font-size: 1rem; direction: rtl; transition: all 0.15s; box-sizing: border-box;
+    }
+    .quiz-checkbox-option:hover { border-color: var(--blue-primary); }
+    .quiz-checkbox-option input[type="checkbox"] {
+      width: 24px; height: 24px; min-width: 24px; flex-shrink: 0; accent-color: var(--blue-primary); cursor: pointer;
+    }
+    .quiz-checkbox-option.option-selected { background: var(--blue-soft) !important; border-color: var(--blue-primary) !important; }
+    .quiz-multiselect-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; }
+
     .exam-nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
     .exam-finish-row { text-align: center; margin-top: 18px; }
     .exam-finish-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; }
@@ -517,7 +536,7 @@
       examTiming.totalSeconds = Math.round((Date.now() - examTiming.startTime) / 1000);
       var correct = 0;
       examState.questions.forEach(function (q, i) {
-        if (examState.answers[i] === q.correctIndex) correct++;
+        if (isExamAnswerCorrect(q, examState.answers[i])) correct++;
       });
       renderExamResults(correct, examState.questions.length);
       renderExamOutcomeBadge();
@@ -702,22 +721,62 @@
       var svgMarkup = q.svg || q.pointSvg || '';
       var html = '<p class="quiz-instruction">' + q.promptText + '</p>';
       if (svgMarkup) html += '<div class="quiz-point-svg-wrap">' + svgMarkup + '</div>';
-      html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
-        var selected = examState.answers[examState.index] === i;
-        return '<button type="button" class="quiz-option-btn' + (selected ? ' option-selected' : '') + '" data-index="' + i + '">' + opt + '</button>';
-      }).join('') + '</div>';
+
+      if (q.kind === 'multi-select') {
+        var selectedSet = Array.isArray(examState.answers[examState.index]) ? examState.answers[examState.index] : [];
+        html += '<div class="quiz-checkbox-group">' + q.options.map(function (opt, i) {
+          var checked = selectedSet.indexOf(i) !== -1;
+          return '<label class="quiz-checkbox-option' + (checked ? ' option-selected' : '') + '" data-index="' + i + '">' +
+            '<input type="checkbox" data-index="' + i + '"' + (checked ? ' checked' : '') + '><span>' + opt.label + '</span></label>';
+        }).join('') + '</div>';
+        html += '<p class="quiz-multiselect-hint">יש לסמן את כל האפשרויות הנכונות - תשובה חלקית (חסרה או עם סימון שגוי) לא תיחשב.</p>';
+      } else {
+        html += '<div class="quiz-options">' + q.options.map(function (opt, i) {
+          var selected = examState.answers[examState.index] === i;
+          return '<button type="button" class="quiz-option-btn' + (selected ? ' option-selected' : '') + '" data-index="' + i + '">' + opt + '</button>';
+        }).join('') + '</div>';
+      }
 
       document.getElementById('quizBody').innerHTML = html;
 
-      document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          examState.answers[examState.index] = parseInt(this.dataset.index, 10);
-          renderExamQuestion();
+      if (q.kind === 'multi-select') {
+        document.querySelectorAll('#quizBody input[type="checkbox"]').forEach(function (cb) {
+          cb.addEventListener('change', function () {
+            var idx = parseInt(this.dataset.index, 10);
+            var current = Array.isArray(examState.answers[examState.index]) ? examState.answers[examState.index].slice() : [];
+            var pos = current.indexOf(idx);
+            if (this.checked && pos === -1) current.push(idx);
+            else if (!this.checked && pos !== -1) current.splice(pos, 1);
+            examState.answers[examState.index] = current;
+            renderExamQuestion();
+          });
         });
-      });
+      } else {
+        document.querySelectorAll('#quizBody .quiz-option-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            examState.answers[examState.index] = parseInt(this.dataset.index, 10);
+            renderExamQuestion();
+          });
+        });
+      }
 
       renderMathInElement(document.getElementById('quizBody'), katexOptions);
       updateExamNavState();
+    }
+
+    /* Multi-select is all-or-nothing: every correct option must be checked
+       and no incorrect option may be checked. */
+    function isExamAnswerCorrect(q, answer) {
+      if (q.kind === 'multi-select') {
+        if (!Array.isArray(answer)) return false;
+        var correctIdxs = [];
+        q.options.forEach(function (opt, i) { if (opt.correct) correctIdxs.push(i); });
+        if (answer.length !== correctIdxs.length) return false;
+        var sortedAnswer = answer.slice().sort();
+        var sortedCorrect = correctIdxs.slice().sort();
+        return sortedAnswer.every(function (v, i) { return v === sortedCorrect[i]; });
+      }
+      return answer === q.correctIndex;
     }
 
     document.getElementById('btnExamPrev').addEventListener('click', function () {
