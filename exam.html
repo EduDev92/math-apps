@@ -70,6 +70,10 @@
     .exam-error { text-align: center; padding: 30px 10px; }
     .exam-error p { color: var(--red-error); font-weight: 700; margin-bottom: 16px; }
 
+    .exam-timer { direction: ltr; text-align: center; font-size: 1.3rem; font-weight: 800; color: var(--blue-deep); margin-bottom: 14px; }
+    .exam-timer.timer-warning { color: var(--red-error); animation: examTimerPulse 1s ease-in-out infinite; }
+    @keyframes examTimerPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
     .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: 700; font-size: 0.95rem; color: var(--text-muted); }
     .quiz-dots { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
     .quiz-dot { width: 12px; height: 12px; border-radius: 50%; background: #dbe3ee; transition: all 0.2s; cursor: pointer; }
@@ -105,6 +109,30 @@
     .exam-nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; gap: 10px; }
     .exam-finish-row { text-align: center; margin-top: 18px; }
     .exam-finish-hint { font-size: 0.85rem; color: var(--text-muted); margin-top: 8px; }
+
+    /* Window-blur 3-strikes warning modal */
+    .blur-warning-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center; z-index: 10000; padding: 20px;
+      box-sizing: border-box;
+    }
+    /* [hidden] and .blur-warning-overlay{display:flex} have equal CSS
+       specificity (0,1,0 each) - without this, the author rule wins the
+       cascade tie and the overlay never actually disappears when the
+       `hidden` attribute is set, even though the DOM property is correct
+       (same class of bug .step-panel[hidden] below already guards against). */
+    .blur-warning-overlay[hidden] { display: none; }
+    .blur-warning-modal {
+      background: #fff; border: 3px solid var(--red-error); border-radius: var(--radius-lg);
+      padding: 26px 20px; max-width: 380px; width: 100%; text-align: center;
+      box-shadow: 0 12px 34px rgba(0, 0, 0, 0.3); box-sizing: border-box;
+    }
+    .blur-warning-text { font-weight: 700; color: var(--red-error); margin-bottom: 18px; line-height: 1.6; font-size: 1rem; }
+
+    /* Step 5 outcome badge (timeout / forced-exit / exit-count notice) */
+    .exam-outcome-badge { margin-bottom: 16px; padding: 12px 16px; border-radius: var(--radius-md); font-weight: 700; text-align: center; font-size: 0.92rem; }
+    .exam-outcome-badge.outcome-warning { background: var(--orange-soft); border: 1px solid var(--orange-strong); color: #8a4b06; }
+    .exam-outcome-badge.outcome-danger { background: var(--red-soft); border: 1px solid var(--red-error); color: #8f2323; }
 
     .btn { padding: 12px 26px; border-radius: var(--radius-sm); border: none; font-family: var(--font-family); font-weight: 700; font-size: 0.98rem; cursor: pointer; transition: all 0.15s; }
     .btn-primary { background: var(--blue-primary); color: #fff; }
@@ -219,6 +247,9 @@
         </div>
 
         <div id="examQuizContent" hidden>
+          <div class="exam-timer" id="examTimer" hidden>
+            <span id="examTimerText">00:00</span>
+          </div>
           <div class="quiz-header">
             <div>שאלה <span id="qIndex">1</span> מתוך <span id="qTotal">10</span></div>
             <div>נענו: <span id="qAnsweredCount">0</span>/<span id="qTotal2">10</span></div>
@@ -241,6 +272,7 @@
         <h2 class="step-heading">סיכום המבדק</h2>
 
         <div class="printable-area">
+          <div class="exam-outcome-badge" id="examOutcomeBadge" hidden></div>
           <div class="results-card" id="resultsCard">
             <div class="results-number" id="resultsCorrect">0</div>
             <div class="results-label" id="resultsLabel">תשובות נכונות</div>
@@ -274,6 +306,13 @@
     </div>
   </div>
 
+  <div class="blur-warning-overlay" id="blurWarningOverlay" hidden>
+    <div class="blur-warning-modal">
+      <p class="blur-warning-text" id="blurWarningText"></p>
+      <button type="button" id="btnBlurWarningOk" class="btn btn-primary">הבנתי, אני חוזר למבחן</button>
+    </div>
+  </div>
+
   <script src="shared/components/step-progress.js"></script>
   <script src="shared/js/score-tracker.js"></script>
   <script src="shared/js/exams-config.js"></script>
@@ -295,6 +334,12 @@
     var teacherName = '';
     var examTiming = { startTime: null, totalSeconds: null };
     var examState = { questions: [], index: 0, answers: [] };
+    var examTimerInterval = null;
+    var examSecondsRemaining = 0;
+    var submissionReason = 'manual';
+    var blurCount = 0;
+    var blurDebounceTimer = null;
+    var examListenersActive = false;
 
     function shuffle(arr) {
       var a = arr.slice();
@@ -312,6 +357,141 @@
       currentStep = n;
       document.getElementById('examProgress').setAttribute('current-step', n);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (n !== 4) {
+        clearExamTimer();
+        detachBlurGuard();
+      }
+    }
+
+    /* ---------- Step 4: countdown timer + auto-submit ---------- */
+
+    function clearExamTimer() {
+      if (examTimerInterval) {
+        clearInterval(examTimerInterval);
+        examTimerInterval = null;
+      }
+    }
+
+    function formatTimerText(totalSeconds) {
+      var m = Math.floor(totalSeconds / 60);
+      var s = totalSeconds % 60;
+      return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+    }
+
+    function updateExamTimerDisplay() {
+      var el = document.getElementById('examTimer');
+      document.getElementById('examTimerText').textContent = '⏱️ ' + formatTimerText(examSecondsRemaining);
+      el.classList.toggle('timer-warning', examSecondsRemaining <= 120);
+    }
+
+    function startExamTimer() {
+      var el = document.getElementById('examTimer');
+      if (!examConfig.timeLimit) {
+        el.hidden = true;
+        return;
+      }
+      clearExamTimer();
+      examSecondsRemaining = examConfig.timeLimit * 60;
+      el.hidden = false;
+      updateExamTimerDisplay();
+      examTimerInterval = setInterval(function () {
+        examSecondsRemaining--;
+        if (examSecondsRemaining <= 0) {
+          examSecondsRemaining = 0;
+          updateExamTimerDisplay();
+          clearExamTimer();
+          submissionReason = 'timeout';
+          finishExam();
+          return;
+        }
+        updateExamTimerDisplay();
+      }, 1000);
+    }
+
+    /* ---------- Step 4: window-blur 3-strikes policy ---------- */
+
+    function attachBlurGuard() {
+      if (examListenersActive) return;
+      examListenersActive = true;
+      document.addEventListener('visibilitychange', handleBlurEvent);
+      window.addEventListener('blur', handleBlurEvent);
+    }
+
+    function detachBlurGuard() {
+      examListenersActive = false;
+      document.removeEventListener('visibilitychange', handleBlurEvent);
+      window.removeEventListener('blur', handleBlurEvent);
+      if (blurDebounceTimer) {
+        clearTimeout(blurDebounceTimer);
+        blurDebounceTimer = null;
+      }
+    }
+
+    function handleBlurEvent(e) {
+      if (!examListenersActive || currentStep !== 4) return;
+      /* visibilitychange fires both on leaving AND returning - only the
+         "hidden" transition is a strike; window 'blur' has no such
+         counterpart so it always qualifies. */
+      if (e.type === 'visibilitychange' && document.visibilityState !== 'hidden') return;
+      if (blurDebounceTimer) return; /* ~500ms debounce: blur+visibilitychange
+         firing together for the same tab-switch counts as ONE strike */
+      blurDebounceTimer = setTimeout(function () { blurDebounceTimer = null; }, 500);
+      registerBlurStrike();
+    }
+
+    function registerBlurStrike() {
+      blurCount++;
+      if (blurCount >= 3) {
+        submissionReason = 'blur';
+        clearExamTimer();
+        detachBlurGuard();
+        finishExam();
+        return;
+      }
+      var textEl = document.getElementById('blurWarningText');
+      textEl.innerHTML = '⚠️ אזהרת יציאה ממסך המבחן!<br>חל איסור לעבור ללשוניות אחרות או לצאת מחלון המבחן.<br>אזהרה ' +
+        blurCount + ' מתוך 2. ביציאה הבאה המבחן יוגש אוטומטית!';
+      document.getElementById('blurWarningOverlay').hidden = false;
+    }
+
+    document.getElementById('btnBlurWarningOk').addEventListener('click', function () {
+      document.getElementById('blurWarningOverlay').hidden = true;
+    });
+
+    function buildSubmissionNotes() {
+      if (submissionReason === 'blur') return 'הוגש כפוי - 3 יציאות ממסך';
+      if (submissionReason === 'timeout') {
+        return blurCount > 0 ? ('תם הזמן (' + blurCount + ' יציאות ממסך)') : 'הוגש אוטומטית - תם הזמן';
+      }
+      return blurCount > 0 ? (blurCount + ' יציאות ממסך') : '';
+    }
+
+    function renderExamOutcomeBadge() {
+      var badge = document.getElementById('examOutcomeBadge');
+      var notes = buildSubmissionNotes();
+      if (!notes) {
+        badge.hidden = true;
+        return;
+      }
+      badge.className = 'exam-outcome-badge ' + (submissionReason === 'blur' ? 'outcome-danger' : 'outcome-warning');
+      badge.textContent = notes;
+      badge.hidden = false;
+    }
+
+    function finishExam() {
+      clearExamTimer();
+      detachBlurGuard();
+      examTiming.totalSeconds = Math.round((Date.now() - examTiming.startTime) / 1000);
+      var correct = 0;
+      examState.questions.forEach(function (q, i) {
+        if (examState.answers[i] === q.correctIndex) correct++;
+      });
+      renderExamResults(correct, examState.questions.length);
+      renderExamOutcomeBadge();
+      goToStep(5);
+      if (submissionReason === 'timeout') {
+        alert('הזמן שהוקצב למבחן הסתיים, המבחן הוגש אוטומטית.');
+      }
     }
 
     /* ---------- Step 1: exam code validation ---------- */
@@ -371,6 +551,8 @@
 
       examTiming.startTime = Date.now();
       examTiming.totalSeconds = null;
+      submissionReason = 'manual';
+      blurCount = 0;
       goToStep(4);
       loadExamQuestions();
     });
@@ -435,6 +617,8 @@
         document.getElementById('examQuizContent').hidden = false;
         buildQuizDotsSkeleton();
         renderExamQuestion();
+        startExamTimer();
+        attachBlurGuard();
       });
     }
 
@@ -510,13 +694,8 @@
 
     document.getElementById('btnFinishExam').addEventListener('click', function () {
       if (answeredCount() !== examState.questions.length) return;
-      examTiming.totalSeconds = Math.round((Date.now() - examTiming.startTime) / 1000);
-      var correct = 0;
-      examState.questions.forEach(function (q, i) {
-        if (examState.answers[i] === q.correctIndex) correct++;
-      });
-      renderExamResults(correct, examState.questions.length);
-      goToStep(5);
+      submissionReason = 'manual';
+      finishExam();
     });
 
     /* ---------- Step 4: results + certificate ---------- */
@@ -548,7 +727,8 @@
         subTopic: examConfig.title,
         mode: 'מבחן',
         time: examTiming.totalSeconds,
-        score: pct
+        score: pct,
+        notes: buildSubmissionNotes()
       });
     }
 
