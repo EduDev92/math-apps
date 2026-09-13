@@ -103,7 +103,7 @@
           }
           .tools-row {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 6px;
           }
           .numpad-row {
@@ -145,9 +145,13 @@
               <button type="button" class="btn-action" data-ins="^{\\placeholder{}}">xⁿ</button>
               <button type="button" class="btn-action" data-ins="\\frac{\\placeholder{}}{\\placeholder{}}">a/b</button>
               <button type="button" class="btn-action" data-ins="\\sqrt{\\placeholder{}}">√</button>
+              <button type="button" class="btn-action" data-ins="\\sqrt[\\placeholder{}]{\\placeholder{}}">ⁿ√</button>
+            </div>
+            <div class="tools-row">
               <button type="button" class="btn-action" data-ins="(\\placeholder{})">( )</button>
               <button type="button" class="btn-action" data-ins="x">x</button>
               <button type="button" class="btn-action" data-ins="e">e</button>
+              <button type="button" class="btn-action" data-ins="t">t</button>
             </div>
             <div class="numpad-row">
               <button type="button" data-ins="7">7</button>

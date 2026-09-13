@@ -1463,20 +1463,135 @@
       return shuffle(qs);
     }
 
+    /* General LaTeX arithmetic evaluator for the math-input-pad's free-text
+       answers - not just a single number/frac literal. Handles \frac/\tfrac/
+       \dfrac, \sqrt{}/\sqrt[n]{}, ^{} (incl. negative/fractional exponents),
+       (parens) and \left(\right) (brackets), raw "/" division alongside
+       \frac, \times/\cdot, unary +/-, and nested combinations of all of the
+       above - so a student answer like "(1/2)" or "\sqrt{9}" or the
+       question's own unsimplified "4^{-0.5}" all evaluate correctly instead
+       of falling through to the generic "format not recognized" message. */
     function parseLatexNumber(raw) {
       if (!raw) return null;
-      var s = raw.trim().replace(/\\left|\\right/g, '');
-      var fracMatch = s.match(/^(-)?\\t?frac\{(-?\d+(?:\.\d+)?)\}\{(-?\d+(?:\.\d+)?)\}$/);
-      if (fracMatch) {
-        var outerNeg = !!fracMatch[1];
-        var num = parseFloat(fracMatch[2]);
-        var den = parseFloat(fracMatch[3]);
-        if (den === 0) return null;
-        var val = num / den;
-        return outerNeg ? -val : val;
+      var s = raw.replace(/\\left/g, '').replace(/\\right/g, '')
+                 .replace(/\\!|\\,|\\;|\\ /g, '')
+                 .replace(/\s+/g, '');
+      if (!s) return null;
+
+      var i = 0;
+      var len = s.length;
+
+      function fail() { throw 0; }
+
+      function matchCmd(name) {
+        if (s.substr(i, name.length + 1) === '\\' + name) {
+          var next = s[i + name.length + 1];
+          if (next === undefined || !/[a-zA-Z]/.test(next)) {
+            i += name.length + 1;
+            return true;
+          }
+        }
+        return false;
       }
-      if (/^-?\d+(\.\d+)?$/.test(s)) return parseFloat(s);
-      return NaN;
+
+      function parseExpr() {
+        var v = parseTerm();
+        for (;;) {
+          if (s[i] === '+') { i++; v += parseTerm(); }
+          else if (s[i] === '-') { i++; v -= parseTerm(); }
+          else break;
+        }
+        return v;
+      }
+
+      function parseTerm() {
+        var v = parseUnary();
+        for (;;) {
+          if (matchCmd('times') || matchCmd('cdot')) { v *= parseUnary(); }
+          else if (s[i] === '*') { i++; v *= parseUnary(); }
+          else if (s[i] === '/') { i++; v /= parseUnary(); }
+          else break;
+        }
+        return v;
+      }
+
+      function parseUnary() {
+        if (s[i] === '-') { i++; return -parseUnary(); }
+        if (s[i] === '+') { i++; return parseUnary(); }
+        return parsePower();
+      }
+
+      function parsePower() {
+        var base = parseAtom();
+        if (s[i] === '^') {
+          i++;
+          var exp = parseAtom();
+          return Math.pow(base, exp);
+        }
+        return base;
+      }
+
+      function parseAtom() {
+        if (s[i] === '{') {
+          i++;
+          var v = parseExpr();
+          if (s[i] !== '}') fail();
+          i++;
+          return v;
+        }
+        if (s[i] === '(') {
+          i++;
+          var v2 = parseExpr();
+          if (s[i] !== ')') fail();
+          i++;
+          return v2;
+        }
+        if (matchCmd('frac') || matchCmd('tfrac') || matchCmd('dfrac')) {
+          var num = parseMacroArg();
+          var den = parseMacroArg();
+          if (den === 0) fail();
+          return num / den;
+        }
+        if (matchCmd('sqrt')) {
+          var degree = 2;
+          if (s[i] === '[') {
+            i++;
+            degree = parseExpr();
+            if (s[i] !== ']') fail();
+            i++;
+          }
+          var radicand = parseMacroArg();
+          if (degree === 0) fail();
+          if (radicand < 0) {
+            if (Math.round(degree) % 2 === 1) return -Math.pow(-radicand, 1 / degree);
+            fail();
+          }
+          return Math.pow(radicand, 1 / degree);
+        }
+        var m = /^(\d+(\.\d+)?|\.\d+)/.exec(s.slice(i));
+        if (m) { i += m[0].length; return parseFloat(m[0]); }
+        fail();
+      }
+
+      /* A \frac/\sqrt argument that isn't brace-wrapped is a bare single
+         LaTeX token (true LaTeX macro-argument grammar) - e.g. MathLive
+         serializes \frac{1}{2} as the terse "\frac12" when both parts are
+         single digits. Consuming greedily via parseAtom's number regex here
+         would wrongly read "12" as one number instead of "1" then "2". */
+      function parseMacroArg() {
+        if (s[i] === '{' || s[i] === '(') return parseAtom();
+        if (/[0-9]/.test(s[i] || '')) { var d = s[i]; i++; return parseFloat(d); }
+        fail();
+      }
+
+      try {
+        var result = parseExpr();
+        if (i !== len) return NaN;
+        if (typeof result !== 'number' || !isFinite(result)) return NaN;
+        return result;
+      } catch (e) {
+        return NaN;
+      }
     }
 
     /* ---------- Step 3: quiz rendering ---------- */
