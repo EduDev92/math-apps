@@ -87,6 +87,11 @@
 
     .quiz-body { min-height: 140px; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; }
     .quiz-instruction { font-weight: 700; margin-bottom: 12px; text-align: center; }
+    /* Same rule lessons use for their own quiz-formula prompts (e.g.
+       topics/exp/*.html) - a curated fixed-question exam (EXP-100) renders
+       promptLatex directly rather than pooling live from a lesson iframe, so
+       this needs to exist here too. */
+    .quiz-formula { direction: ltr; text-align: center; font-size: 1.3rem; margin: 14px 0; max-width: 100%; overflow-x: auto; }
 
     .quiz-point-svg-wrap { max-width: 240px; margin: 0 auto 14px; }
     .quiz-point-svg-wrap svg { width: 100%; height: auto; display: block; background: #fff; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); direction: ltr; }
@@ -339,6 +344,7 @@
 
   <script src="shared/components/step-progress.js"></script>
   <script src="shared/js/score-tracker.js"></script>
+  <script src="shared/js/bidi-utils.js"></script>
   <script src="shared/js/exams-config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
@@ -642,10 +648,55 @@
       });
     }
 
+    /* A choice question's options are shuffled once per session (not on
+       every re-render, or the correct option would visibly jump around as
+       students navigate back and forth). Builds a fresh object rather than
+       mutating q - q may be a literal from EXAMS_CONFIG.fixedQuestions,
+       shared across every session, and must stay untouched for the next
+       student. */
+    function shuffleFixedQuestionOptions(q) {
+      if (!Array.isArray(q.options)) return q;
+      var correctValue = q.options[q.correctIndex];
+      var newOptions = shuffle(q.options);
+      return {
+        id: q.id, kind: q.kind, promptText: q.promptText, promptLatex: q.promptLatex,
+        options: newOptions, correctIndex: newOptions.indexOf(correctValue), explain: q.explain
+      };
+    }
+
+    function startExamWithQuestions(picked) {
+      examState.questions = picked;
+      examState.index = 0;
+      examState.answers = new Array(picked.length);
+
+      document.getElementById('qTotal').textContent = picked.length;
+      document.getElementById('qTotal2').textContent = picked.length;
+
+      document.getElementById('examLoading').hidden = true;
+      document.getElementById('examQuizContent').hidden = false;
+      buildQuizDotsSkeleton();
+      renderExamQuestion();
+      startExamTimer();
+      attachBlurGuard();
+      attachUnloadGuard();
+      document.body.classList.add('exam-in-progress');
+    }
+
     function loadExamQuestions() {
       document.getElementById('examLoading').hidden = false;
       document.getElementById('examLoadError').hidden = true;
       document.getElementById('examQuizContent').hidden = true;
+
+      /* A hand-curated, fixed question set (e.g. EXP-100): every student
+         gets the same 10 questions (only order - question order and each
+         question's option order - is shuffled per session), so this skips
+         the iframe pool-and-sample path entirely rather than resampling a
+         live pool via generateQuizQuestions(). */
+      if (examConfig.fixedQuestions) {
+        var fixedPicked = shuffle(examConfig.fixedQuestions).map(shuffleFixedQuestionOptions);
+        startExamWithQuestions(fixedPicked);
+        return;
+      }
 
       Promise.all(examConfig.modulePaths.map(loadModuleQuestions)).then(function (results) {
         var pool = [];
@@ -658,21 +709,7 @@
         }
 
         var picked = shuffle(pool).slice(0, Math.min(examConfig.questionsCount, pool.length));
-        examState.questions = picked;
-        examState.index = 0;
-        examState.answers = new Array(picked.length);
-
-        document.getElementById('qTotal').textContent = picked.length;
-        document.getElementById('qTotal2').textContent = picked.length;
-
-        document.getElementById('examLoading').hidden = true;
-        document.getElementById('examQuizContent').hidden = false;
-        buildQuizDotsSkeleton();
-        renderExamQuestion();
-        startExamTimer();
-        attachBlurGuard();
-        attachUnloadGuard();
-        document.body.classList.add('exam-in-progress');
+        startExamWithQuestions(picked);
       });
     }
 
@@ -720,6 +757,7 @@
       var q = examState.questions[examState.index];
       var svgMarkup = q.svg || q.pointSvg || '';
       var html = '<p class="quiz-instruction">' + q.promptText + '</p>';
+      if (q.promptLatex) html += '<div class="quiz-formula">$$' + q.promptLatex + '$$</div>';
       if (svgMarkup) html += '<div class="quiz-point-svg-wrap">' + svgMarkup + '</div>';
 
       if (q.kind === 'multi-select') {
