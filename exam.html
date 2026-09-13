@@ -317,7 +317,7 @@
     /* ---------- Step 1: exam code validation ---------- */
 
     function validateExamCode() {
-      var code = document.getElementById('examCodeInput').value.trim();
+      var code = document.getElementById('examCodeInput').value.trim().toUpperCase();
       var errorEl = document.getElementById('codeError');
       errorEl.hidden = true;
 
