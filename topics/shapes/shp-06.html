@@ -660,36 +660,11 @@
     buildShapeSelect();
     document.getElementById('labReadout').textContent = 'בחרו תכונה מהרשימה למעלה כדי להתחיל.';
 
-    /* ---------- Step 3: quiz question banks ---------- */
-
-    var COMBO_BANK = [
-      { promptText: 'באיזה מרובע האלכסונים חוצים זה את זה, אך אינם שווים ואינם מאונכים?', correct: 'מקבילית', explain: 'חציה הדדית מתקיימת בכל המקביליות (מקבילית, מלבן, מעוין, ריבוע). שוללים את מלבן וריבוע (שם האלכסונים גם שווים) ואת מעוין וריבוע (שם האלכסונים גם מאונכים) — נשארת רק מקבילית.' },
-      { promptText: 'באיזה מרובע האלכסונים חוצים זה את זה וגם שווים, אך אינם מאונכים?', correct: 'מלבן', explain: 'חציה הדדית מתקיימת בכל המקביליות. שוויון האלכסונים מצמצם למלבן וריבוע. מכיוון שבריבוע האלכסונים גם מאונכים ואנחנו שוללים זאת — נשאר מלבן.' },
-      { promptText: 'באיזה מרובע האלכסונים חוצים זה את זה ומאונכים, אך אינם שווים?', correct: 'מעוין', explain: 'חציה הדדית מתקיימת בכל המקביליות. אלכסונים מאונכים מצמצם למעוין וריבוע. מכיוון שבריבוע האלכסונים גם שווים ואנחנו שוללים זאת — נשאר מעוין.' },
-      { promptText: 'באיזה מרובע כל ארבע הצלעות שוות וגם כל הזוויות ישרות?', correct: 'ריבוע', explain: 'כל הצלעות שוות מתקיים במעוין ובריבוע בלבד. מביניהם, רק בריבוע כל הזוויות גם ישרות — לכן זהו ריבוע.' },
-      { promptText: 'איזה מהמרובעים הוא טרפז שבו השוקיים אינן שוות, האלכסונים אינם שווים, ואין בו זווית ישרה בין שוק לבסיס?', correct: 'טרפז', explain: 'זהו טרפז "רגיל" (כללי) — לא שווה-שוקיים (השוקיים לא שוות ואין אלכסונים שווים) ולא ישר-זווית (אין זווית ישרה בין שוק לבסיס).' },
-      { promptText: 'באיזה טרפז השוקיים שוות זו לזו והאלכסונים שווים זה לזה?', correct: 'טרפז שווה שוקיים', explain: 'זהו סימן ההיכר של טרפז שווה שוקיים: שוקיים שוות ואלכסונים שווים (אך אינם חוצים זה את זה).' },
-      { promptText: 'באיזה טרפז יש שוק אחת המאונכת לבסיסים (יוצרת שתי זוויות ישרות)?', correct: 'טרפז ישר זווית', explain: 'זהו סימן ההיכר של טרפז ישר זווית: שוק אחת ניצבת לשני הבסיסים, ויוצרת שתי זוויות ישרות.' }
-    ];
-
-    var CLASSIC_BANK = [
-      { promptText: 'נתונה מקבילית שבה האלכסונים שווים זה לזה. איזה מרובע נוצר?', correct: 'מלבן', explain: 'זהו משפט ידוע: מקבילית שבה האלכסונים שווים היא מלבן.' },
-      { promptText: 'נתונה מקבילית שבה האלכסונים מאונכים זה לזה. איזה מרובע נוצר?', correct: 'מעוין', explain: 'זהו משפט ידוע: מקבילית שבה האלכסונים מאונכים היא מעוין.' },
-      { promptText: 'נתונה מקבילית שבה האלכסונים גם שווים וגם מאונכים זה לזה. איזה מרובע נוצר?', correct: 'ריבוע', explain: 'מקבילית עם אלכסונים שווים היא מלבן, ומקבילית עם אלכסונים מאונכים היא מעוין. מרובע שהוא גם מלבן וגם מעוין הוא ריבוע.' }
-    ];
-
-    var TF_BANK = [
-      { text: 'במקבילית האלכסונים חוצים זה את זה.', answer: true, explain: 'זו תכונת היסוד של כל מקבילית — האלכסונים חוצים זה את זה.' },
-      { text: 'בכל מלבן האלכסונים שווים זה לזה.', answer: true, explain: 'נכון — זו אחת מתכונות ההיכר של מלבן.' },
-      { text: 'בכל מעוין האלכסונים מאונכים זה לזה.', answer: true, explain: 'נכון — זו אחת מתכונות ההיכר של מעוין.' },
-      { text: 'בטרפז שווה שוקיים האלכסונים חוצים זה את זה.', answer: false, explain: 'לא נכון. בטרפז שווה שוקיים האלכסונים שווים זה לזה, אך אינם חוצים זה את זה (בניגוד למקבילית).' },
-      { text: 'בטרפז (כללי) יש שני זוגות של צלעות נגדיות מקבילות.', answer: false, explain: 'לא נכון. בטרפז יש בדיוק זוג אחד של צלעות נגדיות מקבילות (הבסיסים) — לא שניים.' },
-      { text: 'בריבוע כל ארבע הצלעות שוות זו לזו.', answer: true, explain: 'נכון — ריבוע הוא גם מעוין, ובמעוין כל הצלעות שוות.' },
-      { text: 'במקבילית (הכללית) כל ארבע הצלעות שוות זו לזו.', answer: false, explain: 'לא נכון. במקבילית הכללית רק זוגות הצלעות הנגדיות שוות זה לזה — לא כל הארבע (זו תכונה של מעוין וריבוע בלבד).' },
-      { text: 'בטרפז ישר זווית יש שתי זוויות ישרות בין שוק אחת לבסיסים.', answer: true, explain: 'נכון — זו ההגדרה של טרפז ישר זווית.' },
-      { text: 'בכל טרפז האלכסונים שווים זה לזה.', answer: false, explain: 'לא נכון. רק בטרפז שווה שוקיים האלכסונים שווים — לא בכל טרפז.' },
-      { text: 'אלכסוני המעוין חוצים זה את זה בנוסף להיותם מאונכים.', answer: true, explain: 'נכון — מעוין הוא גם מקבילית (ולכן אלכסוניו חוצים זה את זה), ובנוסף אלכסוניו מאונכים.' }
-    ];
+    /* ---------- Step 3: quiz question banks ----------
+       Legacy COMBO_BANK/CLASSIC_BANK/TF_BANK (abstract "which quadrilateral
+       is X" riddles and true/false trivia) were removed entirely - too
+       difficult/abstract for 4-unit students. The quiz now draws ONLY from
+       the three archetypes below (multi-select / numeric / analytic). */
 
     /* Category A: "select all that apply" - individual shapes only, no
        shortcuts like "all parallelograms". correct/options are matched by
@@ -724,6 +699,12 @@
         options: ['מקבילית', 'מלבן', 'מעוין', 'ריבוע', 'טרפז ישר זווית', 'דלתון'],
         correct: ['מלבן', 'ריבוע'],
         explain: 'ארבע זוויות ישרות הן ההגדרה של מלבן, וריבוע הוא מקרה פרטי של מלבן. בטרפז ישר-זווית רק שתיים מהזוויות ישרות - לא כולן.'
+      },
+      {
+        promptText: 'סמנו את כל המרובעים שבהם יש <strong>לפחות זוג אחד</strong> של צלעות נגדיות מקבילות:',
+        options: ['מקבילית', 'מלבן', 'מעוין', 'ריבוע', 'טרפז', 'דלתון'],
+        correct: ['מקבילית', 'מלבן', 'מעוין', 'ריבוע', 'טרפז'],
+        explain: 'כל המקביליות (מקבילית, מלבן, מעוין, ריבוע) הן בעלות שני זוגות מקבילים, וגם הטרפז - בעל זוג אחד לפחות (הבסיסים). בדלתון הכללי אין אף זוג צלעות נגדיות מקבילות.'
       }
     ];
 
@@ -747,6 +728,24 @@
         correct: '24 ס"מ',
         wrongs: ['12 ס"מ', '36 ס"מ', '18 ס"מ'],
         explain: 'במעוין כל ארבע הצלעות שוות זו לזו - לכן ההיקף הוא $4\\times 6=24$ ס"מ.'
+      },
+      {
+        promptText: 'במעוין ' + ltrToken('ABCD') + ' אלכסון אחד (' + ltrToken('AC') + ') אורכו 10 ס"מ, ואלכסון שני (' + ltrToken('BD') + ') אורכו 6 ס"מ. לכמה שווה החלק של ' + ltrToken('AC') + ' מנקודת המפגש של האלכסונים ועד לקודקוד ' + ltrToken('A') + '?',
+        correct: '5 ס"מ',
+        wrongs: ['10 ס"מ', '3 ס"מ', '6 ס"מ'],
+        explain: 'אלכסוני מעוין (וכל מקבילית) חוצים זה את זה - לכן כל חלק של ' + ltrToken('AC') + ' שווה למחצית אורכו: $10\\div 2=5$ ס"מ.'
+      },
+      {
+        promptText: 'במלבן ' + ltrToken('ABCD') + ' ההיקף הוא 28 ס"מ, וצלע אחת (' + ltrToken('AB') + ') אורכה 8 ס"מ. מה אורך הצלע הסמוכה ' + ltrToken('BC') + '?',
+        correct: '6 ס"מ',
+        wrongs: ['10 ס"מ', '14 ס"מ', '20 ס"מ'],
+        explain: 'היקף מלבן הוא $2\\times(' + ltrToken('AB') + '+' + ltrToken('BC') + ')$ - לכן $28=2\\times(8+' + ltrToken('BC') + ')$, ומכאן ' + ltrToken('BC') + '=6 ס"מ.'
+      },
+      {
+        promptText: 'בטרפז שווה-שוקיים ' + ltrToken('ABCD') + ' אורך האלכסון ' + ltrToken('AC') + ' הוא 11 ס"מ. מה אורך האלכסון השני ' + ltrToken('BD') + '?',
+        correct: '11 ס"מ',
+        wrongs: ['5.5 ס"מ', '22 ס"מ', 'תלוי בגובה הטרפז'],
+        explain: 'בטרפז שווה-שוקיים שני האלכסונים שווים זה לזה תמיד - לכן ' + ltrToken('BD') + ' שווה בדיוק ל-' + ltrToken('AC') + ', כלומר 11 ס"מ.'
       }
     ];
 
@@ -776,6 +775,18 @@
         correct: 'אלכסוני המקבילית חוצים זה את זה ובעלי נקודת אמצע משותפת',
         wrongs: ['צלעות נגדיות במקבילית שוות באורכן', 'שיפועי הצלעות הנגדיות שווים', 'אלכסוני המקבילית מאונכים זה לזה'],
         explain: 'מכיוון שהאלכסונים ' + ltrToken('AC') + ' ו-' + ltrToken('BD') + ' חוצים זה את זה, אמצע ' + ltrToken('AC') + ' שווה לאמצע ' + ltrToken('BD') + ' - משוואה זו (עם נוסחת אמצע קטע) פותרת עבור שיעורי ' + ltrToken('D') + '.'
+      },
+      {
+        promptText: 'נתונות שתי נקודות קצה של אלכסון במקבילית: $A(1,2)$ ו-$C(7,8)$. מהן קואורדינטות אמצע האלכסון ' + ltrToken('AC') + '?',
+        correct: '$(4,5)$',
+        wrongs: ['$(3,3)$', '$(8,10)$', '$(6,6)$'],
+        explain: 'לפי נוסחת אמצע קטע: $\\left(\\dfrac{1+7}{2},\\dfrac{2+8}{2}\\right)=(4,5)$.'
+      },
+      {
+        promptText: 'נתונה מקבילית ' + ltrToken('ABCD') + '. חישבנו את אורכי הצלעות ' + ltrToken('AB') + ' ו-' + ltrToken('BC') + ' (צלעות סמוכות) ומצאנו כי הם שווים. לאיזה מרובע שודרגה המקבילית בוודאות?',
+        correct: 'מעוין',
+        wrongs: ['מלבן', 'ריבוע', 'טרפז'],
+        explain: 'במקבילית זוגות הצלעות הנגדיות תמיד שוות; אם בנוסף שתי צלעות סמוכות שוות, אז כל ארבע הצלעות שוות זו לזו - וזו ההגדרה של מעוין.'
       }
     ];
 
@@ -806,34 +817,14 @@
       return picks;
     }
 
-    function makeShapeChoiceQuestion(item) {
-      var distractors = shuffle(QUADS.filter(function (s) { return s !== item.correct; })).slice(0, 3);
-      var options = shuffle([item.correct].concat(distractors));
-      return {
-        kind: 'choice', promptText: item.promptText,
-        options: options, correctIndex: options.indexOf(item.correct), explain: item.explain
-      };
-    }
-
     function generateQuizQuestions() {
       var qs = [];
 
-      /* 10 questions total, rebalanced to guarantee one of each new
-         archetype (multi-select / numeric / analytic) every attempt
-         alongside the existing classic/combo/true-false pool. */
-      pickN(COMBO_BANK, 2).forEach(function (item) { qs.push(makeShapeChoiceQuestion(item)); });
-      CLASSIC_BANK.forEach(function (item) { qs.push(makeShapeChoiceQuestion(item)); });
-      pickN(TF_BANK, 2).forEach(function (item) {
-        var opts = shuffle(['נכון', 'לא נכון']);
-        var correctLabel = item.answer ? 'נכון' : 'לא נכון';
-        qs.push({
-          kind: 'choice', promptText: item.text,
-          options: opts, correctIndex: opts.indexOf(correctLabel), explain: item.explain
-        });
-      });
-      pickN(MULTISELECT_BANK, 1).forEach(function (item) { qs.push(makeMultiSelectQuestion(item)); });
-      pickN(NUMERIC_BANK, 1).forEach(function (item) { qs.push(makeFixedChoiceQuestion(item)); });
-      pickN(ANALYTIC_BANK, 1).forEach(function (item) { qs.push(makeFixedChoiceQuestion(item)); });
+      /* 10 questions total, drawn strictly from the three 4-unit-tailored
+         banks - no legacy abstract riddles or true/false trivia. */
+      pickN(MULTISELECT_BANK, 4).forEach(function (item) { qs.push(makeMultiSelectQuestion(item)); });
+      pickN(NUMERIC_BANK, 3).forEach(function (item) { qs.push(makeFixedChoiceQuestion(item)); });
+      pickN(ANALYTIC_BANK, 3).forEach(function (item) { qs.push(makeFixedChoiceQuestion(item)); });
 
       qs.forEach(function (q, i) { q.id = 'shp-06-q' + (i + 1); });
       return shuffle(qs);
