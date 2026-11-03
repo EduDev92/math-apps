@@ -344,6 +344,8 @@ add_({part:'ד',title:'קובייה: מרחק ממישור',noTicks:1,box:[-.5,2
   build(g){cube(g);const P=[[0,0,2],[2,0,0],[0,2,0]];P.forEach((p,i)=>g.seg(p,P[(i+1)%3],'q',{r:1.3}));g.tri(P,'q');
     const F=[2/3,2/3,2/3];g.seg([0,0,0],F,'s',{sol:1,r:1.6});g.seg([2,2,2],F,'u',{sol:1,r:1.6});g.pt(F,'s','',{sol:1,small:1});}});
 
+// נשארו רק השקפים שהמורה בחר (3.11.2026); השאר הוסרו – המחשה בדפים ועטים בכיתה מדויקת יותר
+{const K=['נקודה במרחב','חלוקת קטע ביחס נתון','הצגה פרמטרית של ישר','ישרים מתלכדים','קובייה: זווית בין אלכסונים'];const kept=SL.filter(x=>K.includes(x.title));if(kept.length!==K.length)throw new Error('slide missing');SL.length=0;kept.forEach(x=>SL.push(x));}
 function cube(g){const V={A:[0,0,0],B:[2,0,0],C:[2,2,0],D:[0,2,0]};const up=p=>add(p,[0,0,2]);
   const E=[['A','B'],['B','C'],['C','D'],['D','A']];E.forEach(([a,b])=>{g.seg(V[a],V[b],'k',{r:.8});g.seg(up(V[a]),up(V[b]),'k',{r:.8});});
   Object.keys(V).forEach(k=>{g.seg(V[k],up(V[k]),'k',{r:.8});g.pt(V[k],'k',k,{small:1});g.pt(up(V[k]),'k',k+'′',{small:1});});}
