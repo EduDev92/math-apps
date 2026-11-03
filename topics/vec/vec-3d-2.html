@@ -70,10 +70,13 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(18rem,30rem) 
 .stage{position:relative;flex:1;min-height:320px;border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--stage)}
 .stage canvas{display:block;width:100%;height:100%;touch-action:none}
 .labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.lab{position:absolute;transform:translate(-50%,-135%);font-family:var(--f-math);font-size:17px;white-space:nowrap;direction:ltr;
+.lab{position:absolute;transform:none;font-family:var(--f-math);font-size:clamp(13px,3.7vw,17px);white-space:nowrap;direction:ltr;
   padding:1px 6px;border-radius:5px;background:color-mix(in srgb,var(--stage) 82%,transparent);font-weight:600}
-.lab.ax{font-size:19px;font-style:italic;background:none;transform:translate(-50%,-50%)}
-.lab.tk{font-size:12px;color:var(--muted);background:none;font-weight:400;transform:translate(-50%,-50%)}
+.lab.ax{font-size:clamp(15px,4vw,19px);font-style:italic;background:none}
+.lab.tk{font-size:11px;color:var(--muted);background:none;font-weight:400}
+.giz{position:absolute;bottom:26px;inset-inline-end:8px;width:74px;height:74px;pointer-events:none;overflow:visible}
+.giz text{font-family:var(--f-math);font-style:italic;font-size:15px;fill:var(--axis)}
+.giz line{stroke:var(--axis);stroke-width:2;stroke-linecap:round}
 .hint{position:absolute;bottom:8px;inset-inline-start:10px;font-size:.8rem;color:var(--muted)}
 .tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .slider{display:flex;align-items:center;gap:10px;flex:1;min-width:14rem;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:5px 12px}
@@ -99,7 +102,7 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(18rem,30rem) 
 <main>
   <section class="panel" id="panel" aria-live="polite"></section>
   <div class="stagewrap">
-    <div class="stage" id="stage"><div class="labels" id="labels"></div><div class="hint">גררו לסיבוב · גלגלת לזום · מקש ימני בעכבר להזזה</div></div>
+    <div class="stage" id="stage"><div class="labels" id="labels"></div><svg class="giz" id="giz" viewBox="-37 -37 74 74" hidden aria-label="כיווני הצירים"></svg><div class="hint">גררו לסיבוב · גלגלת לזום · מקש ימני בעכבר להזזה</div></div>
     <div class="tools">
       <button class="primary" id="solbtn" aria-pressed="false">הצג פתרון</button>
       <button id="rot" aria-pressed="false">סיבוב אוטומטי</button>
@@ -151,7 +154,7 @@ function prism8(A,B,D,h){const C=add(B,sub(D,A));const V={A,B,C,D};['A','B','C',
 const fr_=(a,b)=>'[['+a+'#'+b+']]';
 
 // ===== חלק א =====
-add_({id:'a3',part:'א',ex:3,title:'תיבה על הצירים',box:[-.5,4.5,-.5,6.5,-.5,4],
+add_({id:'a3',axes:1,part:'א',ex:3,title:'תיבה על הצירים',box:[-.5,4.5,-.5,6.5,-.5,4],
   given:'{D} בראשית, {A}, {C}, {D′} על הצירים. {DA = 3 , DC = 5 , DD′ = 3}.',
   text:['כל שיעור הוא "כמה צעדים" בכיוון כל ציר: {B′} נמצא 3 בכיוון {x}, 5 בכיוון {y} ו-3 למעלה.','וקטור = ראש פחות זנב: {~DB′~ = B′ − D}.'],
   sol:'{~DB′~ = (3, 5, 3)} , {~AC′~ = (−3, 5, 3)} , {V = 3 · 5 · 3 = 45}',
@@ -160,7 +163,7 @@ add_({id:'a3',part:'א',ex:3,title:'תיבה על הצירים',box:[-.5,4.5,-.5
     g.vec(V.D,sub(V.B1,V.D),'u','',{sol:1});g.vec(V.A,sub(V.C1,V.A),'v','',{sol:1});
     g.pt(V.B1,'s','B′(3, 5, 3)',{sol:1});g.pt(V.C1,'s','C′(0, 5, 3)',{sol:1});}});
 
-add_({id:'a4',part:'א',ex:4,title:'קובייה: אלכסונים כווקטורים',noTicks:0,box:[-.5,3,-.5,3,-.5,3],
+add_({id:'a4',axes:1,part:'א',ex:4,title:'קובייה: אלכסונים כווקטורים',noTicks:0,box:[-.5,3,-.5,3,-.5,3],
   given:'נפח הקובייה 8 ⇐ מקצוע 2. {A} בראשית, {D} על ציר {x}, {B} על ציר {y}, {A′} על ציר {z}.',
   text:['ארבעת אלכסוני הקובייה עוברים במרכז {(1, 1, 1)}.','שימו לב לסימנים: {~CA′~} הולך "אחורה" בכיוון {x} ו-{y}.'],
   sol:'{~AC′~ = (2, 2, 2)} , {~CA′~ = (−2, −2, 2)} , {~BD′~ = (2, −2, 2)} , {~DB′~ = (−2, 2, 2)}',
@@ -169,7 +172,7 @@ add_({id:'a4',part:'א',ex:4,title:'קובייה: אלכסונים כווקטו�
     const W={A:[0,0,0],B:[0,2,0],C:[2,2,0],D:[2,0,0]};['A','B','C','D'].forEach(n=>W[n+'1']=add(W[n],[0,0,2]));solid(g,W,BOX_E);labelAll(g,W);
     g.vec(W.A,sub(W.C1,W.A),'u','',{sol:1});g.vec(W.C,sub(W.A1,W.C),'v','',{sol:1});g.vec(W.B,sub(W.D1,W.B),'p','',{sol:1});g.vec(W.D,sub(W.B1,W.D),'q','',{sol:1});}});
 
-add_({id:'a5',part:'א',ex:5,title:'פירמידה ישרה – שתי אפשרויות',box:[-.5,3,-.5,2,-4,4],
+add_({id:'a5',axes:1,part:'א',ex:5,title:'פירמידה ישרה – שתי אפשרויות',box:[-.5,3,-.5,2,-4,4],
   given:'בסיס ריבועי {ABCD} ברביע הראשון של {[xy]} , {A(1, 0, 0) , B(2, 0, 0)} , נפח 1.',
   text:['בפירמידה ישרה הקודקוד {S} נמצא בדיוק מעל מרכז הריבוע.','שטח הבסיס 1, ו-{V = [[S · h#3]] = 1} ⇐ {h = 3}. אבל הגובה יכול להיות גם מתחת למישור.'],
   sol:'{S(1.5, 0.5, 3)} או {S(1.5, 0.5, −3)}',
@@ -181,7 +184,7 @@ add_({id:'a5',part:'א',ex:5,title:'פירמידה ישרה – שתי אפשר�
 
 add_({id:'a14',part:'א',ex:14,title:'השלמת מקבילון',box:[1,11,-8,5,0,6],
   given:'{A(3, 2, 4) , B(2, 4, 3) , C(5, 0, 2) , B′(6, −1, 3)} (סעיף א).',
-  text:['הבסיס {ABCD} מקבילית ⇐ {D = A + C − B}.','כל המקצועות הצדדיים שווים לווקטור {~BB′~} ⇐ מוסיפים אותו לכל קודקוד בבסיס.'],
+  text:['הבסיס {ABCD} מקבילית ⇐ {D = A + C − B}.','כל המקצועות הצדדיים שווים לווקטור {~BB′~} ⇐ מוסיפים אותו לכל קודקוד בבסיס.','המקבילון הזה “שטוח” מאוד (הנפח שלו רק 4) – סובבו אותו כדי לראות שזה באמת גוף.'],
   sol:'{D(6, −2, 3) , A′(7, −3, 4) , C′(9, −5, 2) , D′(10, −7, 3)}',
   legend:[['u','{~BB′~} – מקצוע צדדי','line']],
   build(g){const V=prism8([3,2,4],[2,4,3],[6,-2,3],[4,-5,0]);
@@ -191,7 +194,7 @@ add_({id:'a14',part:'א',ex:14,title:'השלמת מקבילון',box:[1,11,-8,5,
     ['D','A1','C1','D1'].forEach(n=>g.pt(V[n],'s',n.replace('1','′'),{sol:1}));
 }});
 
-add_({id:'a28',part:'א',ex:28,title:'תיבה: הטרפז {BKFE}',box:[-.5,6,-.5,8,-.5,11],
+add_({id:'a28',axes:1,part:'א',ex:28,title:'תיבה: הטרפז {BKFE}',box:[-.5,6,-.5,8,-.5,11],
   given:'{D} בראשית, {DA = 5 , DC = 7 , DD′ = 10}. {~CE~ = [[3#5]]~CC′~} , {K} מרכז הפאה {AA′D′D} , {DF : FD′ = 4 : 1}.',
   text:['{E} על המקצוע {CC′}, {F} על המקצוע {DD′}, {K} על הפאה השמאלית (המוסתרת).','סובבו עד שרואים ש-{KF} ו-{BE} באותו כיוון.'],
   sol:'{~KF~ = (−2.5, 0, 3)} , {~BE~ = (−5, 0, 6) = 2~KF~} ⇐ {KF ∥ BE} , {EF} לא מקביל ל-{BK} ⇐ <b>טרפז</b>',
@@ -210,7 +213,7 @@ add_({id:'a29',part:'א',ex:29,title:'פירמידה: מפגשי תיכונים'
   legend:[['u','{AM}','line'],['v','{DP}','line'],['p','{PM} ו-{AD}','line']],
   build(g){pyr(g);const V=PYR,E=mul(add(V.B,V.C),.5),M=mul(add(add(V.B,V.C),V.D),1/3),P=mul(add(add(V.A,V.B),V.C),1/3),N=[0,-.25,.75];
     g.seg(E,V.D,'k',{r:.6,dash:1});g.seg(E,V.A,'k',{r:.6,dash:1});g.pt(E,'k','E',{small:1});g.pt(M,'p','M');g.pt(P,'p','P');g.pt(N,'k','N',{small:1});
-    g.seg(V.A,M,'u',{sol:1,r:1.4});g.seg(V.D,P,'v',{sol:1,r:1.4});g.seg(P,M,'p',{sol:1,r:1.8});g.seg(V.A,V.D,'p',{sol:1,r:1.8});g.pt(N,'s','N',{sol:1});}});
+    g.seg(V.A,M,'u',{sol:1,r:1.4});g.seg(V.D,P,'v',{sol:1,r:1.4});g.seg(P,M,'p',{sol:1,r:1.8});g.seg(V.A,V.D,'p',{sol:1,r:1.8});g.pt(N,'s','',{sol:1});}});
 
 add_({id:'a30',part:'א',ex:30,title:'ישר המקביל למישור הבסיס',box:[-2.5,3.5,-3.5,1.5,-.3,2.5],
   given:'אותה פירמידה. {M} אמצע {AD}, {N} על הפאה {BCD} ו-{~DN~ = ([[1#2]], [[7#4]], [[3#4]])}.',
@@ -240,7 +243,7 @@ add_({id:'b15',part:'ב',ex:15,title:'מקצוע המאונך לבסיס',box:[0
 
 add_({id:'b16',part:'ב',ex:16,title:'המקבילון הוא תיבה',box:[-1,10,-2,12,-10,1],
   given:'{A(0, 1, −1) , C(3, −1, −2) , D(1, 1, 0) , B′(8, 11, −9)}.',
-  text:['{B = A + C − D = (2, −1, −3)}.','שלושת המקצועות מ-{B} מאונכים זה לזה ⇐ תיבה. בפתרון: הפירמידה {C′BCD}.'],
+  text:['{B = A + C − D = (2, −1, −3)}.','שלושת המקצועות מ-{B} מאונכים זה לזה ⇐ תיבה. בפתרון: הפירמידה {C′BCD}.','התיבה ארוכה וצרה: המקצועות {√216 ≈ 14.7} , {√12 ≈ 3.5} , {√2 ≈ 1.4}.'],
   sol:'נפח התיבה: {√12 · √2 · √216 = 72}. נפח הפירמידה {C′BCD}: {[[72#6]] = 12}.',
   legend:[['q','הפירמידה {C′BCD}','plane']],
   build(g){const V=prism8([0,1,-1],[2,-1,-3],[1,1,0],[6,12,-6]);solid(g,V,BOX_E);labelAll(g,V);
@@ -256,7 +259,7 @@ add_({id:'b17',part:'ב',ex:17,title:'מנסרה ישרה',box:[-9,5,-13,11,-9,9
     solid(g,V,'A-B B-C C-A A1-B1 B1-C1 C1-A1 A-A1 B-B1 C-C1');labelAll(g,V);const E=add(V.B,mul(h,2/3));g.pt(E,'p','E');
     g.right(V.B,sub(V.A,V.B),sub(V.C,V.B),'s',{sol:1});g.seg(E,V.A,'p',{sol:1,r:1.3});g.seg(E,V.C,'p',{sol:1,r:1.3});}});
 
-add_({id:'b18',part:'ב',ex:18,title:'פירמידה שבסיסה מעוין',box:[-4,6,-1,5,-.5,3],
+add_({id:'b18',axes:1,part:'ב',ex:18,title:'פירמידה שבסיסה מעוין',box:[-4,6,-1,5,-.5,3],
   given:'{A} בראשית, {B(−3, 4, 0) , D(5, 0, 0) , S(1, 2, 2)} , {M} מפגש האלכסונים, {Q} אמצע {SD}.',
   text:['{AB = AD = 5} ⇐ מעוין. {S} נמצא בדיוק מעל {M}.','אבל {SA = 3} ו-{SB = 2√6} – המקצועות הצדדיים לא שווים.'],
   sol:'שטח המעוין 20, {V = [[20 · 2#3]] = [[40#3]]}. הפירמידה לא ישרה. {~MQ~ = [[1#2]]~BS~} ⇐ {MQ ∥ BS} (קטע אמצעים במשולש {BSD}).',
@@ -265,7 +268,7 @@ add_({id:'b18',part:'ב',ex:18,title:'פירמידה שבסיסה מעוין',bo
     g.seg(V.A,V.C,'k',{r:.5,dash:1});g.seg(V.B,V.D,'k',{r:.5,dash:1});g.pt(M,'k','M',{small:1});g.pt(Q,'k','Q',{small:1});
     g.seg(V.S,M,'s',{r:1.5});g.right(M,[0,0,1],sub(V.D,M),'s',{sol:1});g.seg(M,Q,'u',{sol:1,r:1.8});g.seg(V.B,V.S,'u',{sol:1,r:1.8});}});
 
-add_({id:'b19',part:'ב',ex:19,title:'פירמידה ישרה שבסיסה ריבוע',box:[-3.5,-.5,1.5,4.5,-.2,3.5],
+add_({id:'b19',view:[1.25,.8,.55],part:'ב',ex:19,title:'פירמידה ישרה שבסיסה ריבוע',box:[-3.5,-.5,1.5,4.5,-.2,3.5],
   given:'{S(−2, 3, 3)} , {A(−3, 2, 1) , B(−3, 4, 1) , C(−1, 4, 1) , D(−1, 2, 1)}.',
   text:['הבסיס במישור {z = 1}, ו-{S} בדיוק מעל מרכז הריבוע {M(−2, 3, 1)}.','כל המקצועות הצדדיים שווים {√6}.'],
   sol:'{V = [[4 · 2#3]] = [[8#3]]} , {∢SBM ≈ 54.74°}',
@@ -273,7 +276,7 @@ add_({id:'b19',part:'ב',ex:19,title:'פירמידה ישרה שבסיסה רי�
   build(g){const V={A:[-3,2,1],B:[-3,4,1],C:[-1,4,1],D:[-1,2,1],S:[-2,3,3]},M=[-2,3,1];solid(g,V,'A-B B-C C-D D-A S-A S-B S-C S-D');labelAll(g,V);
     g.seg(V.S,M,'s',{r:1.4,dash:1});g.pt(M,'k','M',{small:1});g.seg(V.B,M,'s',{sol:1,r:1.2});g.arc(V.B,sub(V.S,V.B),sub(M,V.B),'s',{sol:1,label:'54.74°'});}});
 
-add_({id:'b20',part:'ב',ex:20,title:'פירמידה על הצירים',box:[-.5,7,-.5,5,-.5,4],
+add_({id:'b20',axes:1,part:'ב',ex:20,title:'פירמידה על הצירים',box:[-.5,7,-.5,5,-.5,4],
   given:'{A(6, 0, 0) , B(0, 0, 0) , C(0, 4, 0)} , {S} על החלק החיובי של ציר {z} , נפח 12.',
   text:['{BA} על ציר {x} ו-{BC} על ציר {y} ⇐ זווית ישרה ב-{B}.','{SB} על ציר {z} ⇐ מאונך למישור {[xy]} ⇐ הוא הגובה.'],
   sol:'{12 = [[12 · h#3]]} ⇐ {S(0, 0, 3)}. שטח הפנים {9 + 6 + 12 + 3√29 ≈ 43.16}',
@@ -283,26 +286,26 @@ add_({id:'b20',part:'ב',ex:20,title:'פירמידה על הצירים',box:[-.5
 
 // ===== חלק ג =====
 function lines2(g,A,u,B,v){g.line(A,u,'u');g.line(B,v,'v');g.pt(A,'u',P3(A),{small:1});g.pt(B,'v',P3(B),{small:1});g.vec(A,u,'u','');g.vec(B,v,'v','');}
-add_({id:'g6a',part:'ג',ex:'6א',title:'מצטלבים',box:[-4,6,-3,7,-10,8],
+add_({id:'g6a',keepBox:1,part:'ג',ex:'6א',title:'מצטלבים',box:[-3,4,-1,5,-9,1],
   given:'{ℓ₁: x̲ = (1, 2, −3) + t(0, 1, 2)} , {ℓ₂: x̲ = (−1, 0, −7) + s(3, 1, 4)}.',
   text:['הכיוונים לא פרופורציוניים ⇐ נחתכים או מצטלבים.','מהמשוואה הראשונה {s = [[2#3]]}, מהשנייה {t = −[[4#3]]}, והשלישית לא מתקיימת.','סובבו: יש מבט שבו נדמה שהם נחתכים – ומבט אחר שמראה שלא.'],
   sol:'<b>מצטלבים</b>. בוורוד: הקטע המאונך המשותף – הקצר ביותר בין שני הישרים.',
   legend:[['u','{ℓ₁}','line'],['v','{ℓ₂}','line'],['s','מאונך משותף','line']],
   build(g){const A=[1,2,-3],u=[0,1,2],B=[-1,0,-7],v=[3,1,4];lines2(g,A,u,B,v);const [P,Q]=closest(A,u,B,v);g.seg(P,Q,'s',{sol:1,r:1.5});}});
-add_({id:'g6b',part:'ג',ex:'6ב',title:'נחתכים',box:[-6,2,-7,4,-6,8],
+add_({id:'g6b',keepBox:1,part:'ג',ex:'6ב',title:'נחתכים',box:[-6,1,-7,3,-5,6],
   given:'{ℓ₁: x̲ = (−2, 1, 5) + t(1, 3, 4)} , {ℓ₂: x̲ = (−4, 0, −3) + s(0, 1, 0)}.',
   text:['{ℓ₂} מקביל לציר {y}.','משווים: {−2 + t = −4} ⇐ {t = −2}; בודקים בשיעור {z}: {5 − 8 = −3} ✓.'],
   sol:'נחתכים ב-{(−4, −5, −3)}',
   legend:[['u','{ℓ₁}','line'],['v','{ℓ₂}','line']],
   build(g){lines2(g,[-2,1,5],[1,3,4],[-4,0,-3],[0,1,0]);g.pt([-4,-5,-3],'s','(−4, −5, −3)',{sol:1});}});
-add_({id:'g6c',part:'ג',ex:'6ג',title:'מתלכדים',box:[0,6,-11,4,-10,12],
+add_({id:'g6c',keepBox:1,part:'ג',ex:'6ג',title:'מתלכדים',box:[1,7,-11,0,-10,3],
   given:'{ℓ₁: x̲ = (3, −2, 1) + t(−1, 4, 5)} , {ℓ₂: x̲ = (5, −10, −9) + s(2, −8, −10)}.',
   text:['{(2, −8, −10) = −2 · (−1, 4, 5)} ⇐ מקבילים או מתלכדים.','הנקודה {(5, −10, −9)} של {ℓ₂} על {ℓ₁} ({t = −2}).'],
   sol:'<b>מתלכדים</b> – אותו ישר בשתי הצגות (בפתרון {ℓ₂} מקווקו מעל {ℓ₁}).',
   legend:[['u','{ℓ₁}','line'],['v','{ℓ₂}','line']],
   build(g){const A=[3,-2,1],u=[-1,4,5],B=[5,-10,-9],v=[2,-8,-10];g.line(A,u,'u',{r:2});if(g.show)g.line(B,v,'v',{dash:1,r:1.2});else g.line(B,v,'v',{r:1.2});
     g.pt(A,'u',P3(A),{small:1});g.pt(B,'v',P3(B),{small:1});}});
-add_({id:'g6d',part:'ג',ex:'6ד',title:'מקבילים',box:[-9,8,-3,9,-6,6],
+add_({id:'g6d',keepBox:1,part:'ג',ex:'6ד',title:'מקבילים',box:[-8,7,-1,6,-3,5],
   given:'{ℓ₁: x̲ = (−7, 1, 0) + t(1, 2, −4)} , {ℓ₂: x̲ = (6, 2, 3) + s(−3, −6, 12)}.',
   text:['{(−3, −6, 12) = −3 · (1, 2, −4)} ⇐ אותו כיוון.','{(6, 2, 3)} על {ℓ₁}? מהשיעור הראשון {t = 13}, אבל אז {y = 27 ≠ 2}.'],
   sol:'<b>מקבילים</b> – יש מישור (בשקיפות) שמכיל את שניהם.',
@@ -314,7 +317,7 @@ function boxA(g){solid(g,BXA,BOX_E,'k',{r:.7});labelAll(g,BXA);}
 [['g8a','8א','AC′ ו-BD′','A','C1','B','D1','נחתכים במרכז התיבה {(1.5, 2.5, 1.5)} – שני אלכסונים של התיבה.'],
  ['g8b','8ב','AD′ ו-BC′','A','D1','B','C1','<b>מקבילים</b>: {~AD′~ = ~BC′~ = (−3, 0, 3)} – אלכסונים בשתי פאות נגדיות, באותו כיוון.'],
  ['g8c','8ג','AB′ ו-CD′','A','B1','C','D1','<b>מצטלבים</b>: {AB′} במישור {x = 3} ו-{CD′} במישור {x = 0} – אין נקודה משותפת, והכיוונים {(0, 5, 3)} ו-{(0, −5, 3)} שונים.']
-].forEach(([id,ex,t,a,b,c,d,sol])=>add_({id,part:'ג',ex,title:'בתיבה: '+t.replace(/([A-Z]′?[A-Z]′?)/g,'{$1}'),box:[-.5,4,-.5,6,-.5,4],
+].forEach(([id,ex,t,a,b,c,d,sol])=>add_({id,axes:1,part:'ג',ex,title:'בתיבה: '+t.replace(/([A-Z]′?[A-Z]′?)/g,'{$1}'),box:[-.5,4,-.5,6,-.5,4],
   given:'התיבה מחלק א, תרגיל 3: {D} בראשית, {DA = 3 , DC = 5 , DD′ = 3}.',
   text:['הישרים מצוירים לכל אורכם, גם מחוץ לתיבה.','קודם בודקים את הכיוונים, ואז אם יש נקודה משותפת.'],
   sol, legend:[['u','{'+a.replace('1','′')+b.replace('1','′')+'}','line'],['v','{'+c.replace('1','′')+d.replace('1','′')+'}','line']],
@@ -322,7 +325,7 @@ function boxA(g){solid(g,BXA,BOX_E,'k',{r:.7});labelAll(g,BXA);}
     if(id==='g8a')g.pt([1.5,2.5,1.5],'s','(1.5, 2.5, 1.5)',{sol:1});
     if(id==='g8c'){const [P,Q]=closest(V[a],sub(V[b],V[a]),V[c],sub(V[d],V[c]));g.seg(P,Q,'s',{sol:1,r:1.4});}}}));
 
-add_({id:'g9',part:'ג',ex:9,title:'טטראדר: {DN} ו-{AM}',box:[-.5,5,-.5,8,-.5,7],
+add_({id:'g9',axes:1,part:'ג',ex:9,title:'טטראדר: {DN} ו-{AM}',box:[-.5,5,-.5,8,-.5,7],
   given:'{A(0, 0, 0) , B(4, 5, 0) , C(0, 5, 0) , D(1, 4, 6)}. {M} מפגש התיכונים בפאה {BCD}, {~DN~ = [[1#4]]~AB~ + [[1#5]]~AC~ − ~AD~}.',
   text:['{M = ([[5#3]], [[14#3]], 2)}. {~DN~ = (0, −[[7#4]], −6)} ⇐ כיוון {(0, 7, 24)}.','נראה שהישרים "כמעט" נפגשים – סובבו ובדקו.'],
   sol:'<b>מצטלבים</b> (אין פתרון למערכת). בוורוד: הקטע המאונך המשותף.',
@@ -332,13 +335,13 @@ add_({id:'g9',part:'ג',ex:9,title:'טטראדר: {DN} ו-{AM}',box:[-.5,5,-.5,8
 
 const PR={A:[0,0,0],B:[3,3,0],C:[0,9,0]};['A','B','C'].forEach(n=>PR[n+'1']=add(PR[n],[0,0,6]));const PRM=[1,4,2];
 function prism(g){solid(g,PR,'A-B B-C C-A A1-B1 B1-C1 C1-A1 A-A1 B-B1 C-C1','k',{r:.7});labelAll(g,PR);g.tri([PR.B,PR.A1,PR.C],'q',.15);g.pt(PRM,'p','M');}
-add_({id:'g10a',part:'ג',ex:'10א',title:'מנסרה: {C′M} ו-{A′B}',box:[-1,5,-1,10,-1,7],
+add_({id:'g10a',axes:1,part:'ג',ex:'10א',title:'מנסרה: {C′M} ו-{A′B}',box:[-1,5,-1,10,-1,7],
   given:'{A(0, 0, 0) , B(3, 3, 0) , C(0, 9, 0) , A′(0, 0, 6)}. {M(1, 4, 2)} – מפגש התיכונים במשולש {BA′C} (בשקיפות).',
   text:['{C′M}: מ-{(0, 9, 6)} בכיוון {(1, −5, −4)}. {A′B}: מ-{(0, 0, 6)} בכיוון {(3, 3, −6)}.'],
   sol:'<b>מצטלבים</b>: משתי המשוואות הראשונות {s = [[1#2]] , t = [[3#2]]}, ובשיעור {z}: {0 ≠ 3}.',
   legend:[['u','{C′M}','line'],['v','{A′B}','line'],['q','המשולש {BA′C}','plane']],
   build(g){prism(g);g.line(PR.C1,sub(PRM,PR.C1),'u');g.line(PR.A1,sub(PR.B,PR.A1),'v');const [P,Q]=closest(PR.C1,sub(PRM,PR.C1),PR.A1,sub(PR.B,PR.A1));g.seg(P,Q,'s',{sol:1,r:1.5});}});
-add_({id:'g10b',part:'ג',ex:'10ב',title:'מנסרה: {A′M} ו-{BC}',box:[-1,5,-1,10,-1,7],
+add_({id:'g10b',axes:1,part:'ג',ex:'10ב',title:'מנסרה: {A′M} ו-{BC}',box:[-1,5,-1,10,-1,7],
   given:'אותה מנסרה. {M(1, 4, 2)} – מפגש התיכונים במשולש {BA′C}.',
   text:['{A′M} הוא חלק מהתיכון מ-{A′} במשולש {BA′C}.','תיכון פוגש את הצלע שמולו – באמצע שלה.'],
   sol:'נחתכים ב-{(1.5, 6, 0)} – אמצע {BC}.',
@@ -357,11 +360,11 @@ const css=n=>getComputedStyle(document.documentElement).getPropertyValue('--'+n)
 const col=k=>new THREE.Color(css(C[k]||k));
 const state={i:0,sol:false,par:null};
 
-function makeG(box,show,noTicks){
+function makeG(box,show,noTicks,mode){
   const sx=box[1]-box[0],sy=box[3]-box[2],sz=box[5]-box[4],size=Math.max(sx,sy,sz),R=size*0.0042;
   const G={size,R,objs:[],show};
   const mat=(k,o)=>new THREE.MeshLambertMaterial({color:col(k),transparent:!!o,opacity:o||1});
-  const lab=(p,text,k,cls)=>{const el=document.createElement('div');el.className='lab'+(cls?' '+cls:'');el.innerHTML=L(text);el.style.color=css(C[k]||k);labelsEl.appendChild(el);labels.push({el,pos:T(p)});};
+  const lab=(p,text,k,cls)=>{const el=document.createElement('div');el.className='lab'+(cls?' '+cls:'');el.innerHTML=L(text);el.style.color=css(C[k]||k);labelsEl.appendChild(el);labels.push({el,pos:T(p),cls:cls||'',w:0,h:0});};
   const tube=(a,b,r,k,o)=>{const A=T(a),B=T(b),dir=B.clone().sub(A),l=dir.length();if(l<1e-9)return;
     const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,l,12,1,true),mat(k,o));m.position.copy(A.clone().add(B).multiplyScalar(.5));
     m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());root.add(m);};
@@ -393,30 +396,62 @@ function makeG(box,show,noTicks){
     for(let i=0;i<40;i++)tube(pts[i],pts[i+1],R*1.3,k);const mid=th/2;if(o.label)lab(add(V,add(mul(A,r*1.35*Math.cos(mid)),mul(W,r*1.35*Math.sin(mid)))),o.label,k);};
   G.right=(V,a,b,k,o={})=>{if(!ok(o))return;const s=size*.04,A=mul(unit(a),s),Bv=sub(b,mul(unit(a),dot(b,unit(a))));const B=mul(unit(Bv),s);
     G.seg(add(V,A),add(add(V,A),B),k,{r:.9});G.seg(add(V,B),add(add(V,A),B),k,{r:.9});};
-  // צירים ורשת
+  // צירים ורשת – נבנים אחרי הגוף (G.finish), כדי שהתוויות של הגוף יקבלו עדיפות בפריסה.
+  G.finish=()=>{
+  if(mode==='gizmo')return;   // הגוף רחוק מהראשית: בלי צירים ורשת – כיווני הצירים מוצגים בפינת המסך (giz)
   const gm=new THREE.LineBasicMaterial({color:col('grid')}),gp=[];const st=niceStep(Math.max(sx,sy)/8);
   for(let x=Math.ceil(box[0]/st)*st;x<=box[1]+1e-9;x+=st){const a=T([x,box[2],0]),b=T([x,box[3],0]);gp.push(a,b);}
   for(let y=Math.ceil(box[2]/st)*st;y<=box[3]+1e-9;y+=st){const a=T([box[0],y,0]),b=T([box[1],y,0]);gp.push(a,b);}
   root.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(gp),gm));
-  ['x','y','z'].forEach((nm,i)=>{const e=[0,0,0];e[i]=1;const lo=Math.min(box[2*i],0),hi=Math.max(box[2*i+1],size*.15);
+  ['x','y','z'].forEach((nm,i)=>{const e=[0,0,0];e[i]=1;const lo=Math.min(box[2*i],0),hi=Math.max(box[2*i+1],0)+size*.1;
     G.seg(mul(e,lo),mul(e,hi-size*.04),'k',{r:.8});const cone=new THREE.Mesh(new THREE.ConeGeometry(R*3,size*.045,16),mat('k'));
     cone.position.copy(T(mul(e,hi-size*.0225)));cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),T(e).normalize());root.add(cone);
-    lab(mul(e,hi+size*.04),nm,'k','ax');if(noTicks)return;const s2=niceStep((hi-lo)/5);
+    lab(mul(e,hi+size*.07),nm,'k','ax');if(noTicks)return;const s2=niceStep((hi-lo)/5);
     for(let v=Math.ceil(lo/s2)*s2;v<hi-size*.06;v+=s2){if(Math.abs(v)<1e-9)continue;const p=mul(e,v);
       const off=i===2?[0,-size*.03,0]:[0,0,-size*.03];lab(add(p,off),N(v),'k','tk');}});
+  };
   return G;}
 function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x))),f=x/p;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*p;}
 
-function fitCamera(box,view){const c=[(box[0]+box[1])/2,(box[2]+box[3])/2,(box[4]+box[5])/2],size=Math.max(box[1]-box[0],box[3]-box[2],box[5]-box[4]);
-  const tgt=T(c);controls.target.copy(tgt);const dir=(view?T(view):new THREE.Vector3(.8,.42,1.25)).normalize();camera.position.copy(tgt.clone().add(dir.multiplyScalar(size*2.15)));
-  camera.near=size*.01;camera.far=size*50;camera.updateProjectionMatrix();controls.update();}
+function fitCamera(F){const pts=F.fit,dm=unit(F.dir||[1.25,.8,.42]),[u,w]=basis(dm);
+  let c=[0,0,0];{const lo=[1e9,1e9,1e9],hi=[-1e9,-1e9,-1e9];pts.forEach(p=>{for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}});c=mul(add(lo,hi),.5);}
+  let su=0,sw=0,sd=0;pts.forEach(p=>{const q=sub(p,c);su=Math.max(su,Math.abs(dot(q,u)));sw=Math.max(sw,Math.abs(dot(q,w)));sd=Math.max(sd,Math.abs(dot(q,dm)));});
+  const vf=camera.fov*Math.PI/180,hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
+  const dist=(Math.max(su/Math.tan(hf/2),sw/Math.tan(vf/2))+sd)*1.1,size=Math.max(su,sw,sd)*2||1;
+  const tgt=T(c);controls.target.copy(tgt);camera.position.copy(tgt.clone().add(T(dm).multiplyScalar(dist)));
+  camera.near=size*.01;camera.far=size*60;camera.updateProjectionMatrix();controls.update();}
 
+
+// מעבר "יבש" על השקף: אוסף את כל הנקודות של הגוף (כולל הפתרון) כדי לחשב את התיבה החוסמת שלו.
+function frame(s){if(s._fr)return s._fr;const P=[],r=(...q)=>q.forEach(p=>P.push(p)),z=()=>{};
+  const D={show:true,size:1,R:0,seg:(a,b)=>r(a,b),pt:p=>r(p),vec:(a,v)=>r(a,add(a,v)),tri:q=>r(...q),line:z,plane:z,arc:z,right:z,finish:z};
+  s.build(D,s.param?s.param.init:null);
+  let bb;if(s.keepBox||!P.length)bb=s.box.slice();else{bb=[1e9,-1e9,1e9,-1e9,1e9,-1e9];P.forEach(p=>{for(let i=0;i<3;i++){bb[2*i]=Math.min(bb[2*i],p[i]);bb[2*i+1]=Math.max(bb[2*i+1],p[i]);}});}
+  const size=Math.max(bb[1]-bb[0],bb[3]-bb[2],bb[5]-bb[4])||1;
+  for(let i=0;i<3;i++){const m=(bb[2*i]+bb[2*i+1])/2,h=Math.max((bb[2*i+1]-bb[2*i])/2,size*.08);bb[2*i]=m-h*1.12;bb[2*i+1]=m+h*1.12;}
+    const mode=(s.axes||s.keepBox)?'axes':'gizmo';   // צירים מלאים רק כשהגוף "יושב" על הצירים; אחרת – חצי כיוון קטנים
+  const view=mode==='axes'?[0,1,2].flatMap(i=>[Math.min(bb[2*i],0),Math.max(bb[2*i+1],0)]):bb;   // במצב צירים – גם הראשית בתמונה
+  // הנקודות שהמצלמה צריכה להכיל: הגוף, ובמצב צירים – גם הראשית וקצות הצירים; במצב "חצי כיוון" – גם החצים בפינה
+  const fit=P.slice();const sz=Math.max(view[1]-view[0],view[3]-view[2],view[5]-view[4]);
+  if(mode==='axes'){fit.push([0,0,0]);[0,1,2].forEach(i=>{const e=[0,0,0];e[i]=Math.max(view[2*i+1],0)+sz*.17;fit.push(e);});}
+  if(s.keepBox)for(let i=0;i<8;i++)fit.push([s.box[i&1],s.box[2+((i>>1)&1)],s.box[4+((i>>2)&1)]]);
+  // כיוון מבט: במצב צירים – כמו בשרטוט בחוברת (x כלפי הצופה). אחרת – הכיוון שבו הגוף נראה "רחב" ביותר
+  // (שטח המלבן החוסם של ההיטל מקסימלי), עם העדפה קלה לכיוון הרגיל, כדי שלא יתקבל גוף "שטוח" שהמימד הארוך שלו מכוון אל הצופה.
+  let dir=s.view||null;
+  if(!dir&&mode!=='axes'&&P.length>3){const az0=32.6;let best=-1;
+    for(let az=0;az<360;az+=15)for(const el of [18,30,42]){const a=az*Math.PI/180,e=el*Math.PI/180,d=[Math.cos(e)*Math.cos(a),Math.cos(e)*Math.sin(a),Math.sin(e)];
+      const [u,w]=basis(d);let u0=1e9,u1=-1e9,w0=1e9,w1=-1e9;P.forEach(p=>{const pu=dot(p,u),pw=dot(p,w);u0=Math.min(u0,pu);u1=Math.max(u1,pu);w0=Math.min(w0,pw);w1=Math.max(w1,pw);});
+      const da=Math.abs(((az-az0+540)%360)-180),sc=(u1-u0)*(w1-w0)*(1-.18*da/180)*(1-.1*Math.abs(el-30)/30);if(sc>best){best=sc;dir=d;}}}
+  return s._fr={bb,mode,view,fit,dir};}
+function basis(d){const n=unit(d),u=unit(cross([0,0,1],n)),w=cross(n,u);return [u,w];}
 function build(keepCam){
   const s=SL[state.i];scene.remove(root);root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});
   root=new THREE.Group();scene.add(root);labelsEl.innerHTML='';labels=[];
   scene.background=new THREE.Color(css('stage'));
-  const g=makeG(s.box,state.sol,s.noTicks);s.build(g,state.par);
-  if(!keepCam)fitCamera(s.box,s.view);}
+  const F=frame(s);const box=s.keepBox?s.box:F.view;
+  const g=makeG(box,state.sol,s.noTicks,F.mode);s.build(g,state.par);g.finish();
+  {const gz=document.getElementById('giz');if(F.mode==='gizmo')gz.removeAttribute('hidden');else gz.setAttribute('hidden','');}
+  if(!keepCam)fitCamera(F);}
 
 function panel(){
   const s=SL[state.i],el=document.getElementById('panel');
@@ -444,7 +479,7 @@ jump.onchange=()=>go(+jump.value);
 document.getElementById('next').onclick=()=>go(state.i+1);
 document.getElementById('prev').onclick=()=>go(state.i-1);
 document.getElementById('solbtn').onclick=()=>{state.sol=!state.sol;panel();build(true);};
-document.getElementById('reset').onclick=()=>fitCamera(SL[state.i].box,SL[state.i].view);
+document.getElementById('reset').onclick=()=>fitCamera(frame(SL[state.i]));
 const rot=document.getElementById('rot');rot.onclick=()=>{controls.autoRotate=!controls.autoRotate;controls.autoRotateSpeed=1.4;rot.setAttribute('aria-pressed',controls.autoRotate);};
 document.getElementById('fs').onclick=()=>{const d=document.documentElement;try{(document.fullscreenElement?document.exitFullscreen():d.requestFullscreen()).catch(()=>{});}catch(e){}};
 document.getElementById('par').oninput=e=>{state.par=+e.target.value;document.getElementById('parout').textContent=SL[state.i].param.name+' = '+N(state.par);build(true);};
@@ -464,8 +499,21 @@ new ResizeObserver(resize).observe(stage);
 const v=new THREE.Vector3();
 function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);
   const w=stage.clientWidth,h=stage.clientHeight;
+  // כיווני הצירים בפינה (רק כשאין צירים בסצנה): ההיטל של שלושת וקטורי היחידה לפי סיבוב המצלמה
+  const gz=document.getElementById('giz');if(!gz.hasAttribute('hidden')){const qi=camera.quaternion.clone().invert();let h2='';
+    [['x',[1,0,0]],['y',[0,1,0]],['z',[0,0,1]]].forEach(([nm,e])=>{const p=T(e).applyQuaternion(qi);const X=p.x*24,Y=-p.y*24;
+      h2+=`<line x1="0" y1="0" x2="${X.toFixed(1)}" y2="${Y.toFixed(1)}"/><circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="2.2" fill="var(--axis)"/><text x="${(X*1.38).toFixed(1)}" y="${(Y*1.38+5).toFixed(1)}" text-anchor="middle">${nm}</text>`;});
+    gz.innerHTML=h2;}
+  // פריסת תוויות: כל תווית מנסה כמה מקומות סביב הנקודה ובוחרת את הראשון שלא עולה על תווית קודמת.
+  // תוויות הגוף נוצרות לפני תוויות הצירים ולכן מקבלות עדיפות; שנתה שאין לה מקום – מוסתרת.
+  const placed=[],hit=(a)=>placed.some(b=>a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h);
   for(const l of labels){v.copy(l.pos).project(camera);if(v.z>1||v.z<-1){l.el.style.display='none';continue;}
-    l.el.style.display='';l.el.style.left=((v.x+1)/2*w)+'px';l.el.style.top=((1-v.y)/2*h)+'px';}}
+    l.el.style.display='';if(!l.w){l.w=l.el.offsetWidth;l.h=l.el.offsetHeight;}
+    const x=(v.x+1)/2*w,y=(1-v.y)/2*h,W=l.w,Hh=l.h,g=5;
+    const cand=l.cls==='tk'?[[x-W/2,y-Hh/2]]:l.cls==='ax'?[[x-W/2,y-Hh/2],[x+g,y-Hh/2],[x-W-g,y-Hh/2],[x-W/2,y-Hh-g]]:[[x-W/2,y-Hh-g],[x+g,y-Hh*.9],[x-W-g,y-Hh*.9],[x-W/2,y+g],[x+g,y+g*.4],[x-W-g,y+g*.4],[x-W/2,y-2*Hh-g]];
+    let pick=null;for(const [cx,cy] of cand){const r={x:cx,y:cy,w:W,h:Hh};if(!hit(r)){pick=r;break;}}
+    if(!pick){if(l.cls==='tk'){l.el.style.display='none';continue;}pick={x:cand[0][0],y:cand[0][1],w:W,h:Hh};}
+    placed.push(pick);l.el.style.left=pick.x+'px';l.el.style.top=pick.y+'px';}}
 state.i=-1;resize();onHash();loop();
 </script>
 
