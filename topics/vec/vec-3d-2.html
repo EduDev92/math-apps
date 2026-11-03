@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>וקטורים אלגבריים – מודלים לחוברת 2</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* פריסה: מצגת למקרן – מודל תלת-ממדי גדול משמאל, לוח מחיר צר מימין (כמו לוח וגיר), ניווט בשורה עליונה */
+:root{
+  --bg:#eef1f5; --panel:#ffffff; --ink:#18202e; --muted:#5b6578; --rule:#d5dbe5;
+  --accent:#2f56c9; --accent-ink:#ffffff;
+  --c1:#2f56c9; --c2:#d9482b; --c3:#11897a; --c4:#7a4fb5; --sol:#c2177a; --axis:#2a3242; --grid:#c9d0dc; --stage:#f7f8fb;
+  --f-body:"Heebo","Arial Hebrew",Arial,sans-serif; --f-math:"STIX Two Text","Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f131b; --panel:#171c27; --ink:#e7ebf2; --muted:#9aa4b6; --rule:#2a3140;
+  --accent:#7f9cff; --accent-ink:#0f131b;
+  --c1:#7f9cff; --c2:#ff7a5c; --c3:#3fd0bc; --c4:#c39bff; --sol:#ff6fb8; --axis:#c3cad8; --grid:#2b3343; --stage:#131822; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f131b; --panel:#171c27; --ink:#e7ebf2; --muted:#9aa4b6; --rule:#2a3140;
+  --accent:#7f9cff; --accent-ink:#0f131b;
+  --c1:#7f9cff; --c2:#ff7a5c; --c3:#3fd0bc; --c4:#c39bff; --sol:#ff6fb8; --axis:#c3cad8; --grid:#2b3343; --stage:#131822; color-scheme:dark }
+html,body{height:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;direction:rtl;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;box-sizing:border-box;
+  display:flex;flex-direction:column;gap:10px}
+.m{font-family:var(--f-math);font-size:1.12em;unicode-bidi:isolate;direction:ltr;white-space:nowrap}
+.vec{display:inline-block;position:relative;padding-top:.32em;line-height:1}
+.vec::after{content:"";position:absolute;left:.05em;right:.05em;top:.06em;height:.34em;
+  background:linear-gradient(currentColor,currentColor) left .14em/calc(100% - .25em) 1.4px no-repeat;
+  -webkit-mask:none}
+.vec::before{content:"";position:absolute;right:-.02em;top:.04em;border-left:.32em solid currentColor;border-top:.17em solid transparent;border-bottom:.17em solid transparent}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.15;margin:0 .1em}
+.fr>span:first-child{border-bottom:1.3px solid currentColor;padding:0 .15em}
+u{text-underline-offset:2px}
+
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header .back{color:var(--accent);text-decoration:none;font-weight:700}
+header h1{font-size:1.25rem;font-weight:800;margin:0;letter-spacing:.01em}
+header .sub{color:var(--muted);font-size:.95rem}
+.nav{margin-inline-start:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+select,button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:7px 12px;cursor:pointer}
+button:hover,select:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);min-width:4.5em;text-align:center}
+select{max-width:min(60vw,22rem)}
+
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(18rem,30rem) 1fr;gap:12px}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;overflow:auto;min-width:0;display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-size:.82rem;font-weight:700;letter-spacing:.06em;color:var(--accent)}
+.panel h2{font-size:1.65rem;line-height:1.2;margin:0;text-wrap:balance}
+.blk h3{font-size:.85rem;font-weight:700;color:var(--muted);margin:0 0 4px;letter-spacing:.04em}
+.blk p,.blk li{margin:0;font-size:1.08rem;line-height:1.7}
+.blk ul{margin:0;padding-inline-start:1.1em}
+.sol{border-top:2px dashed var(--sol);padding-top:10px}
+.sol h3{color:var(--sol)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.95rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:4px;border-radius:2px;display:inline-block}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+.legend i.pl{height:11px;width:16px;opacity:.55;border-radius:2px}
+
+.stagewrap{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0}
+.stage{position:relative;flex:1;min-height:320px;border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--stage)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lab{position:absolute;transform:translate(-50%,-135%);font-family:var(--f-math);font-size:17px;white-space:nowrap;direction:ltr;
+  padding:1px 6px;border-radius:5px;background:color-mix(in srgb,var(--stage) 82%,transparent);font-weight:600}
+.lab.ax{font-size:19px;font-style:italic;background:none;transform:translate(-50%,-50%)}
+.lab.tk{font-size:12px;color:var(--muted);background:none;font-weight:400;transform:translate(-50%,-50%)}
+.hint{position:absolute;bottom:8px;inset-inline-start:10px;font-size:.8rem;color:var(--muted)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.slider{display:flex;align-items:center;gap:10px;flex:1;min-width:14rem;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:5px 12px}
+.slider input{flex:1;accent-color:var(--accent)}
+.slider output{font-family:var(--f-math);font-size:1.05rem;min-width:5.5em;direction:ltr;font-variant-numeric:tabular-nums}
+@media (max-width:860px){ main{grid-template-columns:1fr;grid-template-rows:auto minmax(380px,1fr)} .panel{order:2} body{height:auto} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="../../index.html#grade12-5">→ לרכזת</a>
+  <h1>וקטורים אלגבריים – מודלים</h1>
+  <span class="sub">כיתה יב · 5 יח"ל · לחוברת G12-U5-VEC-02 (לפי קמפוס IL)</span>
+  <div class="nav">
+    <button id="prev" aria-label="השקף הקודם">→ הקודם</button>
+    <span class="count" id="count">1 / 1</span>
+    <button id="next" aria-label="השקף הבא">הבא ←</button>
+    <select id="jump" aria-label="מעבר לשקף"></select>
+  </div>
+</header>
+<main>
+  <section class="panel" id="panel" aria-live="polite"></section>
+  <div class="stagewrap">
+    <div class="stage" id="stage"><div class="labels" id="labels"></div><div class="hint">גררו לסיבוב · גלגלת לזום · מקש ימני בעכבר להזזה</div></div>
+    <div class="tools">
+      <button class="primary" id="solbtn" aria-pressed="false">הצג פתרון</button>
+      <button id="rot" aria-pressed="false">סיבוב אוטומטי</button>
+      <button id="reset">איפוס מבט</button>
+      <button id="fs">מסך מלא</button>
+      <div class="slider" id="sliderbox" hidden><label for="par" id="parlab">t</label><input type="range" id="par"><output id="parout"></output></div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ---------- וקטורים (שיעורי מתמטיקה: x, y, z) ----------
+const add=(a,b)=>a.map((x,i)=>x+b[i]), sub=(a,b)=>a.map((x,i)=>x-b[i]), mul=(a,k)=>a.map(x=>x*k);
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2], len=a=>Math.sqrt(dot(a,a)), unit=a=>mul(a,1/len(a));
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const footPlane=(P,n,d)=>add(P,mul(n,-(dot(n,P)+d)/dot(n,n)));
+const footLine=(P,A,u)=>add(A,mul(u,dot(sub(P,A),u)/dot(u,u)));
+const meetLP=(A,u,n,d)=>add(A,mul(u,-(dot(n,A)+d)/dot(n,u)));
+function closest(A,u,B,v){const w=sub(A,B),a=dot(u,u),b=dot(u,v),c=dot(v,v),d=dot(u,w),e=dot(v,w),D=a*c-b*b;
+  const s=(b*e-c*d)/D,t=(a*e-b*d)/D;return [add(A,mul(u,s)),add(B,mul(v,t))];}
+const deg=r=>r*180/Math.PI;
+const angVec=(a,b)=>deg(Math.acos(dot(a,b)/(len(a)*len(b))));
+const N=x=>{const r=Math.round(x*100)/100;return (Object.is(r,-0)?0:r).toString().replace('-','−');};
+const P3=p=>'('+p.map(N).join(', ')+')';
+const D=d=>N(d)+'°';
+// math (x,y,z) -> three: x לכיוון הצופה, y ימינה, z למעלה
+const T=p=>new THREE.Vector3(p[1],p[2],p[0]);
+
+// ---------- טקסט: {...} מתמטיקה, [[a#b]] שבר, ~AB~ וקטור עם חץ ----------
+function H(s){return s
+  .replace(/\[\[([^#\]]+)#([^\]]+)\]\]/g,'<span class="fr"><span>$1</span><span>$2</span></span>')
+  .replace(/~([^~]+)~/g,'<span class="vec">$1</span>')
+  .replace(/\{([^{}]+)\}/g,'<bdi class="m" dir="ltr">$1</bdi>');}
+const L=s=>H(s); // כיתוב בשרטוט
+
+// ---------- השקפים: מודל לכל תרגיל עם גוף/ישרים בחוברת G12-U5-VEC-02 ----------
+// id = הקישור מהחוברת (#a28 = חלק א, תרגיל 28). השיעורים בדיוק כמו בחוברת.
+const C={u:'c1',v:'c2',p:'c3',q:'c4',s:'sol',k:'axis'};
+const SL=[];
+const add_=o=>SL.push(o);
+const PARTS={'א':'וקטור אלגברי (6.1)','ב':'מכפלה סקלרית (6.2)','ג':'מצב הדדי בין ישרים (6.3)'};
+// עזר: גוף לפי קודקודים ורשימת מקצועות. names: {A:[x,y,z],...}; edges: 'AB BC ...' (′ נכתב כ-1: A1)
+function solid(g,V,edges,k='k',o={}){edges.split(' ').forEach(e=>{const [a,b]=e.split('-');g.seg(V[a],V[b],k,{r:o.r||.9,dash:o.dash,sol:o.sol});});}
+function labelAll(g,V,k='k',skip=''){Object.keys(V).forEach(n=>{if(skip.split(' ').includes(n))return;g.pt(V[n],k,n.replace('1','′'),{small:1});});}
+const BOX_E='A-B B-C C-D D-A A1-B1 B1-C1 C1-D1 D1-A1 A-A1 B-B1 C-C1 D-D1';
+function prism8(A,B,D,h){const C=add(B,sub(D,A));const V={A,B,C,D};['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;}
+const fr_=(a,b)=>'[['+a+'#'+b+']]';
+
+// ===== חלק א =====
+add_({id:'a3',part:'א',ex:3,title:'תיבה על הצירים',box:[-.5,4.5,-.5,6.5,-.5,4],
+  given:'{D} בראשית, {A}, {C}, {D′} על הצירים. {DA = 3 , DC = 5 , DD′ = 3}.',
+  text:['כל שיעור הוא "כמה צעדים" בכיוון כל ציר: {B′} נמצא 3 בכיוון {x}, 5 בכיוון {y} ו-3 למעלה.','וקטור = ראש פחות זנב: {~DB′~ = B′ − D}.'],
+  sol:'{~DB′~ = (3, 5, 3)} , {~AC′~ = (−3, 5, 3)} , {V = 3 · 5 · 3 = 45}',
+  legend:[['u','{~DB′~}','line'],['v','{~AC′~}','line']],
+  build(g){const V=prism8([3,0,0],[3,5,0],[0,0,0],[0,0,3]);solid(g,V,BOX_E);labelAll(g,V);
+    g.vec(V.D,sub(V.B1,V.D),'u','',{sol:1});g.vec(V.A,sub(V.C1,V.A),'v','',{sol:1});
+    g.pt(V.B1,'s','B′(3, 5, 3)',{sol:1});g.pt(V.C1,'s','C′(0, 5, 3)',{sol:1});}});
+
+add_({id:'a4',part:'א',ex:4,title:'קובייה: אלכסונים כווקטורים',noTicks:0,box:[-.5,3,-.5,3,-.5,3],
+  given:'נפח הקובייה 8 ⇐ מקצוע 2. {A} בראשית, {D} על ציר {x}, {B} על ציר {y}, {A′} על ציר {z}.',
+  text:['ארבעת אלכסוני הקובייה עוברים במרכז {(1, 1, 1)}.','שימו לב לסימנים: {~CA′~} הולך "אחורה" בכיוון {x} ו-{y}.'],
+  sol:'{~AC′~ = (2, 2, 2)} , {~CA′~ = (−2, −2, 2)} , {~BD′~ = (2, −2, 2)} , {~DB′~ = (−2, 2, 2)}',
+  legend:[['u','{~AC′~}','line'],['v','{~CA′~}','line'],['p','{~BD′~}','line'],['q','{~DB′~}','line']],
+  build(g){
+    const W={A:[0,0,0],B:[0,2,0],C:[2,2,0],D:[2,0,0]};['A','B','C','D'].forEach(n=>W[n+'1']=add(W[n],[0,0,2]));solid(g,W,BOX_E);labelAll(g,W);
+    g.vec(W.A,sub(W.C1,W.A),'u','',{sol:1});g.vec(W.C,sub(W.A1,W.C),'v','',{sol:1});g.vec(W.B,sub(W.D1,W.B),'p','',{sol:1});g.vec(W.D,sub(W.B1,W.D),'q','',{sol:1});}});
+
+add_({id:'a5',part:'א',ex:5,title:'פירמידה ישרה – שתי אפשרויות',box:[-.5,3,-.5,2,-4,4],
+  given:'בסיס ריבועי {ABCD} ברביע הראשון של {[xy]} , {A(1, 0, 0) , B(2, 0, 0)} , נפח 1.',
+  text:['בפירמידה ישרה הקודקוד {S} נמצא בדיוק מעל מרכז הריבוע.','שטח הבסיס 1, ו-{V = [[S · h#3]] = 1} ⇐ {h = 3}. אבל הגובה יכול להיות גם מתחת למישור.'],
+  sol:'{S(1.5, 0.5, 3)} או {S(1.5, 0.5, −3)}',
+  legend:[['u','הפירמידה','line'],['v','האפשרות השנייה','line']],
+  build(g){const A=[1,0,0],B=[2,0,0],C=[2,1,0],D=[1,1,0],M=[1.5,.5,0];[[A,B],[B,C],[C,D],[D,A]].forEach(([a,b])=>g.seg(a,b,'k',{r:1}));
+    g.pt(A,'k','A');g.pt(B,'k','B');g.pt(C,'k','C',{sol:0});g.pt(D,'k','D');g.pt(M,'k','',{small:1});
+    const S1=[1.5,.5,3],S2=[1.5,.5,-3];[A,B,C,D].forEach(p=>{g.seg(p,S1,'u',{sol:1});g.seg(p,S2,'v',{sol:1,dash:1});});
+    g.seg(M,S1,'s',{sol:1,dash:1,label:'h = 3'});g.pt(S1,'u','S(1.5, 0.5, 3)',{sol:1});g.pt(S2,'v','S(1.5, 0.5, −3)',{sol:1});}});
+
+add_({id:'a14',part:'א',ex:14,title:'השלמת מקבילון',box:[1,11,-8,5,0,6],
+  given:'{A(3, 2, 4) , B(2, 4, 3) , C(5, 0, 2) , B′(6, −1, 3)} (סעיף א).',
+  text:['הבסיס {ABCD} מקבילית ⇐ {D = A + C − B}.','כל המקצועות הצדדיים שווים לווקטור {~BB′~} ⇐ מוסיפים אותו לכל קודקוד בבסיס.'],
+  sol:'{D(6, −2, 3) , A′(7, −3, 4) , C′(9, −5, 2) , D′(10, −7, 3)}',
+  legend:[['u','{~BB′~} – מקצוע צדדי','line']],
+  build(g){const V=prism8([3,2,4],[2,4,3],[6,-2,3],[4,-5,0]);
+    g.seg(V.A,V.B,'k',{r:1});g.seg(V.B,V.C,'k',{r:1});g.vec(V.B,sub(V.B1,V.B),'u','~BB′~');
+    ['A','B','C','B1'].forEach(n=>g.pt(V[n],'k',n.replace('1','′')));
+    solid(g,V,'C-D D-A A1-B1 B1-C1 C1-D1 D1-A1 A-A1 C-C1 D-D1','s',{r:.9,sol:1});
+    ['D','A1','C1','D1'].forEach(n=>g.pt(V[n],'s',n.replace('1','′'),{sol:1}));
+}});
+
+add_({id:'a28',part:'א',ex:28,title:'תיבה: הטרפז {BKFE}',box:[-.5,6,-.5,8,-.5,11],
+  given:'{D} בראשית, {DA = 5 , DC = 7 , DD′ = 10}. {~CE~ = [[3#5]]~CC′~} , {K} מרכז הפאה {AA′D′D} , {DF : FD′ = 4 : 1}.',
+  text:['{E} על המקצוע {CC′}, {F} על המקצוע {DD′}, {K} על הפאה השמאלית (המוסתרת).','סובבו עד שרואים ש-{KF} ו-{BE} באותו כיוון.'],
+  sol:'{~KF~ = (−2.5, 0, 3)} , {~BE~ = (−5, 0, 6) = 2~KF~} ⇐ {KF ∥ BE} , {EF} לא מקביל ל-{BK} ⇐ <b>טרפז</b>',
+  legend:[['u','{KF}','line'],['v','{BE}','line'],['q','הטרפז','plane']],
+  build(g){const V=prism8([5,0,0],[5,7,0],[0,0,0],[0,0,10]);solid(g,V,BOX_E);labelAll(g,V);
+    const E=[0,7,6],K=[2.5,0,5],F=[0,0,8];g.pt(E,'p','E');g.pt(K,'p','K');g.pt(F,'p','F');
+    g.seg(K,F,'u',{sol:1,r:1.8});g.seg(V.B,E,'v',{sol:1,r:1.8});g.seg(V.B,K,'s',{sol:1,r:1});g.seg(E,F,'s',{sol:1,r:1});
+    if(g.show)g.tri([V.B,K,F,E],'q',.25);}});
+
+const PYR={A:[-2,1,0],B:[3,0,1],C:[-1,1,2],D:[0,-3,0]};
+function pyr(g){const V=PYR;solid(g,V,'A-B B-C C-A A-D B-D C-D');labelAll(g,V);}
+add_({id:'a29',part:'א',ex:29,title:'פירמידה: מפגשי תיכונים',box:[-2.5,3.5,-3.5,1.5,-.3,2.5],
+  given:'{A(−2, 1, 0) , B(3, 0, 1) , C(−1, 1, 2) , D(0, −3, 0)}. {M} – מפגש התיכונים בפאה {BCD}, {P} – בבסיס {ABC}, {E} אמצע {BC}.',
+  text:['{M} ו-{P} נמצאים שניהם על תיכונים שיוצאים מ-{E}: {M} על {ED}, {P} על {EA}.','{N(0, −[[1#4]], [[3#4]])} – נסו לראות על אילו ישרים היא נמצאת.'],
+  sol:'{~PM~ = [[1#3]]~AD~} ⇐ {PM ∥ AD}. הישרים {AM} ו-{DP} נחתכים ב-{N}.',
+  legend:[['u','{AM}','line'],['v','{DP}','line'],['p','{PM} ו-{AD}','line']],
+  build(g){pyr(g);const V=PYR,E=mul(add(V.B,V.C),.5),M=mul(add(add(V.B,V.C),V.D),1/3),P=mul(add(add(V.A,V.B),V.C),1/3),N=[0,-.25,.75];
+    g.seg(E,V.D,'k',{r:.6,dash:1});g.seg(E,V.A,'k',{r:.6,dash:1});g.pt(E,'k','E',{small:1});g.pt(M,'p','M');g.pt(P,'p','P');g.pt(N,'k','N',{small:1});
+    g.seg(V.A,M,'u',{sol:1,r:1.4});g.seg(V.D,P,'v',{sol:1,r:1.4});g.seg(P,M,'p',{sol:1,r:1.8});g.seg(V.A,V.D,'p',{sol:1,r:1.8});g.pt(N,'s','N',{sol:1});}});
+
+add_({id:'a30',part:'א',ex:30,title:'ישר המקביל למישור הבסיס',box:[-2.5,3.5,-3.5,1.5,-.3,2.5],
+  given:'אותה פירמידה. {M} אמצע {AD}, {N} על הפאה {BCD} ו-{~DN~ = ([[1#2]], [[7#4]], [[3#4]])}.',
+  text:['{~MN~ = [[1#4]]~AB~ + [[1#4]]~AC~} – צירוף של שני וקטורים במישור {ABC}.','לכן {~MN~} "שוכב" בכיוון המישור. בפתרון: עותק של {~MN~} מתחיל ב-{A} – ונשאר בתוך המישור.'],
+  sol:'{~MN~ = ([[3#2]], −[[1#4]], [[3#4]])} מקביל למישור {ABC}, ו-{M} לא על המישור ⇐ {MN} מקביל למישור.',
+  legend:[['u','{~MN~}','line'],['q','המישור {ABC}','plane']],
+  build(g){pyr(g);const V=PYR,M=[-1,-1,0],N=[.5,-1.25,.75],v=sub(N,M);g.tri([V.A,V.B,V.C],'q',.22);
+    g.pt(M,'p','M');g.pt(N,'p','N');g.vec(M,v,'u','~MN~');g.vec(V.A,v,'u','',{sol:1});
+    g.seg(V.A,add(V.A,mul(sub(V.B,V.A),.25)),'s',{sol:1,r:1.4});g.seg(add(V.A,mul(sub(V.B,V.A),.25)),add(V.A,v),'s',{sol:1,r:1.4});}});
+
+add_({id:'a31',part:'א',ex:31,title:'מקבילון: {EF} מקביל לבסיס',box:[0,5,-5,3,-7,16],
+  given:'{A(1, 2, 0) , B(3, 0, −6) , D(2, 2, 8) , C′(4, −4, 9)}. {E} על {AC′} ({AE : EC′ = 2 : 1}), {F} על {BB′} ({~BF~ = [[2#3]]~BB′~}).',
+  text:['{C = B + D − A} ואז {~AA′~ = ~CC′~}.','{~EF~ = [[1#3]]~AB~ − [[2#3]]~AD~} – צירוף של וקטורים בבסיס.'],
+  sol:'{C(4, 0, 2) , B′(3, −4, 1) , E(3, −2, 6) , F(3, −[[8#3]], −[[4#3]])}. עותק של {~EF~} שמתחיל ב-{A} נשאר במישור {ABCD}.',
+  legend:[['u','{~EF~}','line'],['q','הבסיס {ABCD}','plane']],
+  build(g){const V=prism8([1,2,0],[3,0,-6],[2,2,8],[0,-4,7]);solid(g,V,BOX_E);labelAll(g,V);g.tri([V.A,V.B,V.C,V.D],'q',.2);
+    const E=[3,-2,6],F=[3,-8/3,-4/3];g.seg(V.A,V.C1,'k',{r:.6,dash:1});g.pt(E,'p','E');g.pt(F,'p','F');g.vec(E,sub(F,E),'u','~EF~');g.vec(V.A,sub(F,E),'u','',{sol:1});}});
+
+// ===== חלק ב =====
+add_({id:'b15',part:'ב',ex:15,title:'מקצוע המאונך לבסיס',box:[0,9,1,10,-2,5],
+  given:'{A(8, 9, −1) , B(1, 5, 1) , C(5, 3, −1) , D(7, 2, 4)}.',
+  text:['במשולש {ABC} הזווית הישרה ב-{C}: {~CA~ · ~CB~ = 0}.','{DC} מאונך לשני ישרים נחתכים בבסיס ({CA}, {CB}) ⇐ מאונך למישור הבסיס.'],
+  sol:'{S<sub>ABC</sub> = 3√30} , {DC = √30} ⇐ {V = [[3√30 · √30#3]] = 30}. הפירמידה לא ישרה – הגובה יורד ל-{C}, לא לאמצע היתר.',
+  legend:[['q','הבסיס','plane'],['s','הגובה {DC}','line']],
+  build(g){const V={A:[8,9,-1],B:[1,5,1],C:[5,3,-1],D:[7,2,4]};g.tri([V.A,V.B,V.C],'q',.22);solid(g,V,'A-B B-C C-A A-D B-D');labelAll(g,V);
+    g.seg(V.C,V.D,'s',{r:1.6});g.right(V.C,sub(V.A,V.C),sub(V.B,V.C),'s',{sol:1});g.right(V.C,sub(V.D,V.C),sub(V.A,V.C),'s',{sol:1});g.right(V.C,sub(V.D,V.C),sub(V.B,V.C),'s',{sol:1});}});
+
+add_({id:'b16',part:'ב',ex:16,title:'המקבילון הוא תיבה',box:[-1,10,-2,12,-10,1],
+  given:'{A(0, 1, −1) , C(3, −1, −2) , D(1, 1, 0) , B′(8, 11, −9)}.',
+  text:['{B = A + C − D = (2, −1, −3)}.','שלושת המקצועות מ-{B} מאונכים זה לזה ⇐ תיבה. בפתרון: הפירמידה {C′BCD}.'],
+  sol:'נפח התיבה: {√12 · √2 · √216 = 72}. נפח הפירמידה {C′BCD}: {[[72#6]] = 12}.',
+  legend:[['q','הפירמידה {C′BCD}','plane']],
+  build(g){const V=prism8([0,1,-1],[2,-1,-3],[1,1,0],[6,12,-6]);solid(g,V,BOX_E);labelAll(g,V);
+    g.right(V.B,sub(V.A,V.B),sub(V.C,V.B),'s',{sol:1});g.right(V.B,sub(V.B1,V.B),sub(V.A,V.B),'s',{sol:1});
+    if(g.show){[[V.B,V.C,V.D],[V.C1,V.B,V.C],[V.C1,V.C,V.D],[V.C1,V.B,V.D]].forEach(t=>g.tri(t,'q',.25));}}});
+
+add_({id:'b17',part:'ב',ex:17,title:'מנסרה ישרה',box:[-9,5,-13,11,-9,9],
+  given:'{A(−8, 10, 2) , B(4, 4, 2) , C(2, 0, 8) , C′(−4, −12, −2)} , {~BE~ = [[2#3]]~BB′~}.',
+  text:['{~CC′~} מאונך ל-{~BA~} ול-{~BC~} ⇐ המקצועות הצדדיים מאונכים לבסיס ⇐ מנסרה ישרה.','{E} על המקצוע {BB′}, שני שלישים מהדרך.'],
+  sol:'{V = [[1#2]] · √180 · √56 · √280 = 840} , {E(0, −4, −[[14#3]])} , {~EA~ · ~EC~ = [[1120#9]] ≠ 0} ⇐ {∢AEC} לא ישרה',
+  legend:[['p','{EA} ו-{EC}','line']],
+  build(g){const h=[-6,-12,-10],V={A:[-8,10,2],B:[4,4,2],C:[2,0,8]};['A','B','C'].forEach(n=>V[n+'1']=add(V[n],h));
+    solid(g,V,'A-B B-C C-A A1-B1 B1-C1 C1-A1 A-A1 B-B1 C-C1');labelAll(g,V);const E=add(V.B,mul(h,2/3));g.pt(E,'p','E');
+    g.right(V.B,sub(V.A,V.B),sub(V.C,V.B),'s',{sol:1});g.seg(E,V.A,'p',{sol:1,r:1.3});g.seg(E,V.C,'p',{sol:1,r:1.3});}});
+
+add_({id:'b18',part:'ב',ex:18,title:'פירמידה שבסיסה מעוין',box:[-4,6,-1,5,-.5,3],
+  given:'{A} בראשית, {B(−3, 4, 0) , D(5, 0, 0) , S(1, 2, 2)} , {M} מפגש האלכסונים, {Q} אמצע {SD}.',
+  text:['{AB = AD = 5} ⇐ מעוין. {S} נמצא בדיוק מעל {M}.','אבל {SA = 3} ו-{SB = 2√6} – המקצועות הצדדיים לא שווים.'],
+  sol:'שטח המעוין 20, {V = [[20 · 2#3]] = [[40#3]]}. הפירמידה לא ישרה. {~MQ~ = [[1#2]]~BS~} ⇐ {MQ ∥ BS} (קטע אמצעים במשולש {BSD}).',
+  legend:[['s','{SM}','line'],['u','{MQ} ו-{BS}','line']],
+  build(g){const V={A:[0,0,0],B:[-3,4,0],C:[2,4,0],D:[5,0,0],S:[1,2,2]},M=[1,2,0],Q=[3,1,1];solid(g,V,'A-B B-C C-D D-A S-A S-B S-C S-D');labelAll(g,V);
+    g.seg(V.A,V.C,'k',{r:.5,dash:1});g.seg(V.B,V.D,'k',{r:.5,dash:1});g.pt(M,'k','M',{small:1});g.pt(Q,'k','Q',{small:1});
+    g.seg(V.S,M,'s',{r:1.5});g.right(M,[0,0,1],sub(V.D,M),'s',{sol:1});g.seg(M,Q,'u',{sol:1,r:1.8});g.seg(V.B,V.S,'u',{sol:1,r:1.8});}});
+
+add_({id:'b19',part:'ב',ex:19,title:'פירמידה ישרה שבסיסה ריבוע',box:[-3.5,-.5,1.5,4.5,-.2,3.5],
+  given:'{S(−2, 3, 3)} , {A(−3, 2, 1) , B(−3, 4, 1) , C(−1, 4, 1) , D(−1, 2, 1)}.',
+  text:['הבסיס במישור {z = 1}, ו-{S} בדיוק מעל מרכז הריבוע {M(−2, 3, 1)}.','כל המקצועות הצדדיים שווים {√6}.'],
+  sol:'{V = [[4 · 2#3]] = [[8#3]]} , {∢SBM ≈ 54.74°}',
+  legend:[['s','הגובה {SM}','line']],
+  build(g){const V={A:[-3,2,1],B:[-3,4,1],C:[-1,4,1],D:[-1,2,1],S:[-2,3,3]},M=[-2,3,1];solid(g,V,'A-B B-C C-D D-A S-A S-B S-C S-D');labelAll(g,V);
+    g.seg(V.S,M,'s',{r:1.4,dash:1});g.pt(M,'k','M',{small:1});g.seg(V.B,M,'s',{sol:1,r:1.2});g.arc(V.B,sub(V.S,V.B),sub(M,V.B),'s',{sol:1,label:'54.74°'});}});
+
+add_({id:'b20',part:'ב',ex:20,title:'פירמידה על הצירים',box:[-.5,7,-.5,5,-.5,4],
+  given:'{A(6, 0, 0) , B(0, 0, 0) , C(0, 4, 0)} , {S} על החלק החיובי של ציר {z} , נפח 12.',
+  text:['{BA} על ציר {x} ו-{BC} על ציר {y} ⇐ זווית ישרה ב-{B}.','{SB} על ציר {z} ⇐ מאונך למישור {[xy]} ⇐ הוא הגובה.'],
+  sol:'{12 = [[12 · h#3]]} ⇐ {S(0, 0, 3)}. שטח הפנים {9 + 6 + 12 + 3√29 ≈ 43.16}',
+  legend:[['q','הפאה {SAC}','plane']],
+  build(g){const V={A:[6,0,0],B:[0,0,0],C:[0,4,0],S:[0,0,3]};solid(g,V,'A-B B-C C-A S-A S-B S-C');labelAll(g,V);
+    g.right(V.B,[1,0,0],[0,1,0],'s',{sol:1});g.pt(V.S,'s','S(0, 0, 3)',{sol:1});if(g.show)g.tri([V.S,V.A,V.C],'q',.25);}});
+
+// ===== חלק ג =====
+function lines2(g,A,u,B,v){g.line(A,u,'u');g.line(B,v,'v');g.pt(A,'u',P3(A),{small:1});g.pt(B,'v',P3(B),{small:1});g.vec(A,u,'u','');g.vec(B,v,'v','');}
+add_({id:'g6a',part:'ג',ex:'6א',title:'מצטלבים',box:[-4,6,-3,7,-10,8],
+  given:'{ℓ₁: x̲ = (1, 2, −3) + t(0, 1, 2)} , {ℓ₂: x̲ = (−1, 0, −7) + s(3, 1, 4)}.',
+  text:['הכיוונים לא פרופורציוניים ⇐ נחתכים או מצטלבים.','מהמשוואה הראשונה {s = [[2#3]]}, מהשנייה {t = −[[4#3]]}, והשלישית לא מתקיימת.','סובבו: יש מבט שבו נדמה שהם נחתכים – ומבט אחר שמראה שלא.'],
+  sol:'<b>מצטלבים</b>. בוורוד: הקטע המאונך המשותף – הקצר ביותר בין שני הישרים.',
+  legend:[['u','{ℓ₁}','line'],['v','{ℓ₂}','line'],['s','מאונך משותף','line']],
+  build(g){const A=[1,2,-3],u=[0,1,2],B=[-1,0,-7],v=[3,1,4];lines2(g,A,u,B,v);const [P,Q]=closest(A,u,B,v);g.seg(P,Q,'s',{sol:1,r:1.5});}});
+add_({id:'g6b',part:'ג',ex:'6ב',title:'נחתכים',box:[-6,2,-7,4,-6,8],
+  given:'{ℓ₁: x̲ = (−2, 1, 5) + t(1, 3, 4)} , {ℓ₂: x̲ = (−4, 0, −3) + s(0, 1, 0)}.',
+  text:['{ℓ₂} מקביל לציר {y}.','משווים: {−2 + t = −4} ⇐ {t = −2}; בודקים בשיעור {z}: {5 − 8 = −3} ✓.'],
+  sol:'נחתכים ב-{(−4, −5, −3)}',
+  legend:[['u','{ℓ₁}','line'],['v','{ℓ₂}','line']],
+  build(g){lines2(g,[-2,1,5],[1,3,4],[-4,0,-3],[0,1,0]);g.pt([-4,-5,-3],'s','(−4, −5, −3)',{sol:1});}});
+add_({id:'g6c',part:'ג',ex:'6ג',title:'מתלכדים',box:[0,6,-11,4,-10,12],
+  given:'{ℓ₁: x̲ = (3, −2, 1) + t(−1, 4, 5)} , {ℓ₂: x̲ = (5, −10, −9) + s(2, −8, −10)}.',
+  text:['{(2, −8, −10) = −2 · (−1, 4, 5)} ⇐ מקבילים או מתלכדים.','הנקודה {(5, −10, −9)} של {ℓ₂} על {ℓ₁} ({t = −2}).'],
+  sol:'<b>מתלכדים</b> – אותו ישר בשתי הצגות (בפתרון {ℓ₂} מקווקו מעל {ℓ₁}).',
+  legend:[['u','{ℓ₁}','line'],['v','{ℓ₂}','line']],
+  build(g){const A=[3,-2,1],u=[-1,4,5],B=[5,-10,-9],v=[2,-8,-10];g.line(A,u,'u',{r:2});if(g.show)g.line(B,v,'v',{dash:1,r:1.2});else g.line(B,v,'v',{r:1.2});
+    g.pt(A,'u',P3(A),{small:1});g.pt(B,'v',P3(B),{small:1});}});
+add_({id:'g6d',part:'ג',ex:'6ד',title:'מקבילים',box:[-9,8,-3,9,-6,6],
+  given:'{ℓ₁: x̲ = (−7, 1, 0) + t(1, 2, −4)} , {ℓ₂: x̲ = (6, 2, 3) + s(−3, −6, 12)}.',
+  text:['{(−3, −6, 12) = −3 · (1, 2, −4)} ⇐ אותו כיוון.','{(6, 2, 3)} על {ℓ₁}? מהשיעור הראשון {t = 13}, אבל אז {y = 27 ≠ 2}.'],
+  sol:'<b>מקבילים</b> – יש מישור (בשקיפות) שמכיל את שניהם.',
+  legend:[['u','{ℓ₁}','line'],['v','{ℓ₂}','line'],['q','המישור המשותף','plane']],
+  build(g){const A=[-7,1,0],u=[1,2,-4],B=[6,2,3],v=[-3,-6,12];lines2(g,A,u,B,mul(v,1/3));const n=cross(u,sub(B,A));g.plane(n,-dot(n,A),'q',{sol:1,op:.16});}});
+
+const BXA=prism8([3,0,0],[3,5,0],[0,0,0],[0,0,3]);
+function boxA(g){solid(g,BXA,BOX_E,'k',{r:.7});labelAll(g,BXA);}
+[['g8a','8א','AC′ ו-BD′','A','C1','B','D1','נחתכים במרכז התיבה {(1.5, 2.5, 1.5)} – שני אלכסונים של התיבה.'],
+ ['g8b','8ב','AD′ ו-BC′','A','D1','B','C1','<b>מקבילים</b>: {~AD′~ = ~BC′~ = (−3, 0, 3)} – אלכסונים בשתי פאות נגדיות, באותו כיוון.'],
+ ['g8c','8ג','AB′ ו-CD′','A','B1','C','D1','<b>מצטלבים</b>: {AB′} במישור {x = 3} ו-{CD′} במישור {x = 0} – אין נקודה משותפת, והכיוונים {(0, 5, 3)} ו-{(0, −5, 3)} שונים.']
+].forEach(([id,ex,t,a,b,c,d,sol])=>add_({id,part:'ג',ex,title:'בתיבה: '+t.replace(/([A-Z]′?[A-Z]′?)/g,'{$1}'),box:[-.5,4,-.5,6,-.5,4],
+  given:'התיבה מחלק א, תרגיל 3: {D} בראשית, {DA = 3 , DC = 5 , DD′ = 3}.',
+  text:['הישרים מצוירים לכל אורכם, גם מחוץ לתיבה.','קודם בודקים את הכיוונים, ואז אם יש נקודה משותפת.'],
+  sol, legend:[['u','{'+a.replace('1','′')+b.replace('1','′')+'}','line'],['v','{'+c.replace('1','′')+d.replace('1','′')+'}','line']],
+  build(g){boxA(g);const V=BXA;g.line(V[a],sub(V[b],V[a]),'u',{r:1.5});g.line(V[c],sub(V[d],V[c]),'v',{r:1.5});
+    if(id==='g8a')g.pt([1.5,2.5,1.5],'s','(1.5, 2.5, 1.5)',{sol:1});
+    if(id==='g8c'){const [P,Q]=closest(V[a],sub(V[b],V[a]),V[c],sub(V[d],V[c]));g.seg(P,Q,'s',{sol:1,r:1.4});}}}));
+
+add_({id:'g9',part:'ג',ex:9,title:'טטראדר: {DN} ו-{AM}',box:[-.5,5,-.5,8,-.5,7],
+  given:'{A(0, 0, 0) , B(4, 5, 0) , C(0, 5, 0) , D(1, 4, 6)}. {M} מפגש התיכונים בפאה {BCD}, {~DN~ = [[1#4]]~AB~ + [[1#5]]~AC~ − ~AD~}.',
+  text:['{M = ([[5#3]], [[14#3]], 2)}. {~DN~ = (0, −[[7#4]], −6)} ⇐ כיוון {(0, 7, 24)}.','נראה שהישרים "כמעט" נפגשים – סובבו ובדקו.'],
+  sol:'<b>מצטלבים</b> (אין פתרון למערכת). בוורוד: הקטע המאונך המשותף.',
+  legend:[['u','{DN}','line'],['v','{AM}','line'],['s','מאונך משותף','line']],
+  build(g){const V={A:[0,0,0],B:[4,5,0],C:[0,5,0],D:[1,4,6]},M=[5/3,14/3,2];solid(g,V,'A-B B-C C-A A-D B-D C-D','k',{r:.7});labelAll(g,V);g.pt(M,'p','M');
+    const u=[0,7,24];g.line(V.D,u,'u');g.line(V.A,M,'v');const [P,Q]=closest(V.D,u,V.A,M);g.seg(P,Q,'s',{sol:1,r:1.5});}});
+
+const PR={A:[0,0,0],B:[3,3,0],C:[0,9,0]};['A','B','C'].forEach(n=>PR[n+'1']=add(PR[n],[0,0,6]));const PRM=[1,4,2];
+function prism(g){solid(g,PR,'A-B B-C C-A A1-B1 B1-C1 C1-A1 A-A1 B-B1 C-C1','k',{r:.7});labelAll(g,PR);g.tri([PR.B,PR.A1,PR.C],'q',.15);g.pt(PRM,'p','M');}
+add_({id:'g10a',part:'ג',ex:'10א',title:'מנסרה: {C′M} ו-{A′B}',box:[-1,5,-1,10,-1,7],
+  given:'{A(0, 0, 0) , B(3, 3, 0) , C(0, 9, 0) , A′(0, 0, 6)}. {M(1, 4, 2)} – מפגש התיכונים במשולש {BA′C} (בשקיפות).',
+  text:['{C′M}: מ-{(0, 9, 6)} בכיוון {(1, −5, −4)}. {A′B}: מ-{(0, 0, 6)} בכיוון {(3, 3, −6)}.'],
+  sol:'<b>מצטלבים</b>: משתי המשוואות הראשונות {s = [[1#2]] , t = [[3#2]]}, ובשיעור {z}: {0 ≠ 3}.',
+  legend:[['u','{C′M}','line'],['v','{A′B}','line'],['q','המשולש {BA′C}','plane']],
+  build(g){prism(g);g.line(PR.C1,sub(PRM,PR.C1),'u');g.line(PR.A1,sub(PR.B,PR.A1),'v');const [P,Q]=closest(PR.C1,sub(PRM,PR.C1),PR.A1,sub(PR.B,PR.A1));g.seg(P,Q,'s',{sol:1,r:1.5});}});
+add_({id:'g10b',part:'ג',ex:'10ב',title:'מנסרה: {A′M} ו-{BC}',box:[-1,5,-1,10,-1,7],
+  given:'אותה מנסרה. {M(1, 4, 2)} – מפגש התיכונים במשולש {BA′C}.',
+  text:['{A′M} הוא חלק מהתיכון מ-{A′} במשולש {BA′C}.','תיכון פוגש את הצלע שמולו – באמצע שלה.'],
+  sol:'נחתכים ב-{(1.5, 6, 0)} – אמצע {BC}.',
+  legend:[['u','{A′M}','line'],['v','{BC}','line']],
+  build(g){prism(g);g.line(PR.A1,sub(PRM,PR.A1),'u');g.line(PR.B,sub(PR.C,PR.B),'v');g.pt([1.5,6,0],'s','(1.5, 6, 0)',{sol:1});}});
+
+// ---------- מנוע תלת-ממד ----------
+const stage=document.getElementById('stage'),labelsEl=document.getElementById('labels');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+stage.prepend(renderer.domElement);
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,0.01,1000);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.12;
+scene.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.55);dl.position.set(3,6,4);scene.add(dl);
+let root=new THREE.Group();scene.add(root);let labels=[];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();
+const col=k=>new THREE.Color(css(C[k]||k));
+const state={i:0,sol:false,par:null};
+
+function makeG(box,show,noTicks){
+  const sx=box[1]-box[0],sy=box[3]-box[2],sz=box[5]-box[4],size=Math.max(sx,sy,sz),R=size*0.0042;
+  const G={size,R,objs:[],show};
+  const mat=(k,o)=>new THREE.MeshLambertMaterial({color:col(k),transparent:!!o,opacity:o||1});
+  const lab=(p,text,k,cls)=>{const el=document.createElement('div');el.className='lab'+(cls?' '+cls:'');el.innerHTML=L(text);el.style.color=css(C[k]||k);labelsEl.appendChild(el);labels.push({el,pos:T(p)});};
+  const tube=(a,b,r,k,o)=>{const A=T(a),B=T(b),dir=B.clone().sub(A),l=dir.length();if(l<1e-9)return;
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,l,12,1,true),mat(k,o));m.position.copy(A.clone().add(B).multiplyScalar(.5));
+    m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());root.add(m);};
+  const ok=o=>!(o&&o.sol)||show;
+  G.seg=(a,b,k,o={})=>{if(!ok(o))return;const r=R*(o.r||1);
+    if(o.dash){const l=len(sub(b,a)),n=Math.max(2,Math.round(l/(size*0.03)));for(let i=0;i<n;i++){if(i%2)continue;tube(add(a,mul(sub(b,a),i/n)),add(a,mul(sub(b,a),(i+1)/n)),r,k);}}
+    else tube(a,b,r,k);
+    if(o.label)lab(mul(add(a,b),.5),o.label,k);};
+  G.pt=(p,k,text,o={})=>{if(!ok(o))return;const s=new THREE.Mesh(new THREE.SphereGeometry(R*(o.small?2.4:3.4),20,14),mat(k));s.position.copy(T(p));root.add(s);if(text)lab(p,text,k);};
+  G.vec=(a,v,k,text,o={})=>{if(!ok(o))return;const l=len(v),hl=Math.min(size*0.05,l*.35),b=add(a,v),c=add(a,mul(v,(l-hl)/l));tube(a,c,R*1.5,k);
+    const cone=new THREE.Mesh(new THREE.ConeGeometry(R*4.2,hl,18),mat(k));const dir=T(v).normalize();cone.position.copy(T(add(c,mul(v,hl/2/l))));
+    cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);root.add(cone);if(text)lab(add(a,mul(v,.62)),text,k);};
+  G.line=(A,u,k,o={})=>{if(!ok(o))return;let t0=-Infinity,t1=Infinity;
+    for(let i=0;i<3;i++){const lo=box[2*i],hi=box[2*i+1];if(Math.abs(u[i])<1e-12){if(A[i]<lo||A[i]>hi)return;continue;}
+      let a=(lo-A[i])/u[i],b=(hi-A[i])/u[i];if(a>b)[a,b]=[b,a];t0=Math.max(t0,a);t1=Math.min(t1,b);}
+    if(t0>=t1)return;G.seg(add(A,mul(u,t0)),add(A,mul(u,t1)),k,{dash:o.dash,r:o.r||1.15});};
+  G.plane=(n,d,k,o={})=>{if(!ok(o))return;const c=[];for(let i=0;i<8;i++)c.push([box[i&1],box[2+((i>>1)&1)],box[4+((i>>2)&1)]]);
+    const E=[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]],P=[];
+    E.forEach(([i,j])=>{const f0=dot(n,c[i])+d,f1=dot(n,c[j])+d;if(f0===0)P.push(c[i]);if(f0*f1<0)P.push(add(c[i],mul(sub(c[j],c[i]),f0/(f0-f1))));});
+    if(P.length<3)return;const cen=mul(P.reduce(add,[0,0,0]),1/P.length);let e1=unit(cross(n,Math.abs(n[0])<.9*len(n)?[1,0,0]:[0,1,0])),e2=unit(cross(n,e1));
+    P.sort((a,b)=>Math.atan2(dot(sub(a,cen),e2),dot(sub(a,cen),e1))-Math.atan2(dot(sub(b,cen),e2),dot(sub(b,cen),e1)));
+    G.tri(P,k,o.op||.3);P.forEach((p,i)=>tube(p,P[(i+1)%P.length],R*.55,k,.8));};
+  G.tri=(P,k,op=.35)=>{const pos=[];for(let i=1;i<P.length-1;i++)[P[0],P[i],P[i+1]].forEach(p=>{const v=T(p);pos.push(v.x,v.y,v.z);});
+    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:col(k),transparent:true,opacity:op,side:THREE.DoubleSide,depthWrite:false}));root.add(m);};
+  G.arc=(V,a,b,k,o={})=>{if(!ok(o))return;let A=unit(a),B=unit(b);if(!o.obtuse&&dot(A,B)<0)B=mul(B,-1);
+    const th=Math.acos(Math.max(-1,Math.min(1,dot(A,B)))),W=unit(sub(B,mul(A,dot(A,B)))),r=o.rad||size*.12,pts=[];
+    for(let i=0;i<=40;i++){const s=th*i/40;pts.push(add(V,add(mul(A,r*Math.cos(s)),mul(W,r*Math.sin(s)))));}
+    for(let i=0;i<40;i++)tube(pts[i],pts[i+1],R*1.3,k);const mid=th/2;if(o.label)lab(add(V,add(mul(A,r*1.35*Math.cos(mid)),mul(W,r*1.35*Math.sin(mid)))),o.label,k);};
+  G.right=(V,a,b,k,o={})=>{if(!ok(o))return;const s=size*.04,A=mul(unit(a),s),Bv=sub(b,mul(unit(a),dot(b,unit(a))));const B=mul(unit(Bv),s);
+    G.seg(add(V,A),add(add(V,A),B),k,{r:.9});G.seg(add(V,B),add(add(V,A),B),k,{r:.9});};
+  // צירים ורשת
+  const gm=new THREE.LineBasicMaterial({color:col('grid')}),gp=[];const st=niceStep(Math.max(sx,sy)/8);
+  for(let x=Math.ceil(box[0]/st)*st;x<=box[1]+1e-9;x+=st){const a=T([x,box[2],0]),b=T([x,box[3],0]);gp.push(a,b);}
+  for(let y=Math.ceil(box[2]/st)*st;y<=box[3]+1e-9;y+=st){const a=T([box[0],y,0]),b=T([box[1],y,0]);gp.push(a,b);}
+  root.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(gp),gm));
+  ['x','y','z'].forEach((nm,i)=>{const e=[0,0,0];e[i]=1;const lo=Math.min(box[2*i],0),hi=Math.max(box[2*i+1],size*.15);
+    G.seg(mul(e,lo),mul(e,hi-size*.04),'k',{r:.8});const cone=new THREE.Mesh(new THREE.ConeGeometry(R*3,size*.045,16),mat('k'));
+    cone.position.copy(T(mul(e,hi-size*.0225)));cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),T(e).normalize());root.add(cone);
+    lab(mul(e,hi+size*.04),nm,'k','ax');if(noTicks)return;const s2=niceStep((hi-lo)/5);
+    for(let v=Math.ceil(lo/s2)*s2;v<hi-size*.06;v+=s2){if(Math.abs(v)<1e-9)continue;const p=mul(e,v);
+      const off=i===2?[0,-size*.03,0]:[0,0,-size*.03];lab(add(p,off),N(v),'k','tk');}});
+  return G;}
+function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x))),f=x/p;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*p;}
+
+function fitCamera(box,view){const c=[(box[0]+box[1])/2,(box[2]+box[3])/2,(box[4]+box[5])/2],size=Math.max(box[1]-box[0],box[3]-box[2],box[5]-box[4]);
+  const tgt=T(c);controls.target.copy(tgt);const dir=(view?T(view):new THREE.Vector3(.8,.42,1.25)).normalize();camera.position.copy(tgt.clone().add(dir.multiplyScalar(size*2.15)));
+  camera.near=size*.01;camera.far=size*50;camera.updateProjectionMatrix();controls.update();}
+
+function build(keepCam){
+  const s=SL[state.i];scene.remove(root);root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});
+  root=new THREE.Group();scene.add(root);labelsEl.innerHTML='';labels=[];
+  scene.background=new THREE.Color(css('stage'));
+  const g=makeG(s.box,state.sol,s.noTicks);s.build(g,state.par);
+  if(!keepCam)fitCamera(s.box,s.view);}
+
+function panel(){
+  const s=SL[state.i],el=document.getElementById('panel');
+  const lg=(s.legend||[]).map(([k,t,ty])=>`<span><i class="${ty==='plane'?'pl':ty==='dot'?'dot':''}" style="background:var(--${C[k]||k})"></i>${H(t)}</span>`).join('');
+  el.innerHTML=`<div class="eyebrow">חלק ${s.part} · ${PARTS[s.part]} · תרגיל ${s.ex}</div>
+   <h2>${H(s.title)}</h2>
+   <div class="blk"><h3>נתון</h3><p>${H(s.given)}</p></div>
+   <div class="blk"><h3>מה רואים במודל</h3><ul>${s.text.map(t=>`<li>${H(t)}</li>`).join('')}</ul></div>
+   <div class="legend">${lg}</div>
+   <div class="blk sol" ${state.sol?'':'hidden'}><h3>פתרון</h3><p>${H(s.sol)}</p></div>`;
+  document.getElementById('count').textContent=(state.i+1)+' / '+SL.length;
+  document.getElementById('jump').value=state.i;
+  const sb=document.getElementById('sliderbox'),par=document.getElementById('par');
+  if(s.param){sb.hidden=false;document.getElementById('parlab').textContent=s.param.name;Object.assign(par,{min:s.param.min,max:s.param.max,step:s.param.step});par.value=state.par;
+    document.getElementById('parout').textContent=s.param.name+' = '+N(state.par);}else sb.hidden=true;
+  const b=document.getElementById('solbtn');b.setAttribute('aria-pressed',state.sol);b.textContent=state.sol?'הסתר פתרון':'הצג פתרון';}
+
+function go(i){state.i=(i+SL.length)%SL.length;state.sol=false;const s=SL[state.i];state.par=s.param?s.param.init:null;
+  panel();build(false);try{history.replaceState(null,'','#'+s.id);}catch(e){}}
+
+// בחירת שקף
+const jump=document.getElementById('jump');
+SL.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`חלק ${s.part}, תרגיל ${s.ex} – ${s.title.replace(/[{}]/g,'')}`;jump.appendChild(o);});
+jump.onchange=()=>go(+jump.value);
+document.getElementById('next').onclick=()=>go(state.i+1);
+document.getElementById('prev').onclick=()=>go(state.i-1);
+document.getElementById('solbtn').onclick=()=>{state.sol=!state.sol;panel();build(true);};
+document.getElementById('reset').onclick=()=>fitCamera(SL[state.i].box,SL[state.i].view);
+const rot=document.getElementById('rot');rot.onclick=()=>{controls.autoRotate=!controls.autoRotate;controls.autoRotateSpeed=1.4;rot.setAttribute('aria-pressed',controls.autoRotate);};
+document.getElementById('fs').onclick=()=>{const d=document.documentElement;try{(document.fullscreenElement?document.exitFullscreen():d.requestFullscreen()).catch(()=>{});}catch(e){}};
+document.getElementById('par').oninput=e=>{state.par=+e.target.value;document.getElementById('parout').textContent=SL[state.i].param.name+' = '+N(state.par);build(true);};
+window.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if(e.key==='ArrowLeft'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(state.i+1);}
+  else if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();go(state.i-1);}
+  else if(e.key==='s'||e.key==='ס'){document.getElementById('solbtn').click();}});
+function onHash(){const h=decodeURIComponent(location.hash.slice(1));let i=SL.findIndex(x=>x.id===h);if(i<0)i=0;if(i!==state.i||!labels.length)go(i);}
+window.addEventListener('hashchange',onHash);
+// ערכת צבעים
+const reTheme=()=>{panel();build(true);};
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',reTheme);}catch(e){}
+new MutationObserver(reTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(stage);
+const v=new THREE.Vector3();
+function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);
+  const w=stage.clientWidth,h=stage.clientHeight;
+  for(const l of labels){v.copy(l.pos).project(camera);if(v.z>1||v.z<-1){l.el.style.display='none';continue;}
+    l.el.style.display='';l.el.style.left=((v.x+1)/2*w)+'px';l.el.style.top=((1-v.y)/2*h)+'px';}}
+state.i=-1;resize();onHash();loop();
+</script>
+
+</body>
+</html>
