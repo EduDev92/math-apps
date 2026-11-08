@@ -132,10 +132,18 @@ const N=x=>{const r=Math.round(x*100)/100;return (Object.is(r,-0)?0:r).toString(
 const P3=p=>'('+p.map(N).join(', ')+')';
 const D=d=>N(d)+'°';
 // math (x,y,z) -> three: x לכיוון הצופה, y ימינה, z למעלה
-// מנקודה במרחב לסצנה. במבט "כמו בדף" (TM) הסצנה עצמה נבנית כבר מוטלת: (L₀·p, L₁·p, עומק) –
-// כך עובי הקווים וגודל הנקודות אחידים, והמצלמה היא אורתוגרפית רגילה (בלי גזירה).
-let TM=null,SCALEPTS=[];
-const T=p=>TM?new THREE.Vector3(dot(TM[0],p),dot(TM[1],p),dot(TM[2],p)):new THREE.Vector3(p[1],p[2],p[0]);
+// מנקודה במרחב לסצנה. T0 – המיפוי הרגיל (three: Y למעלה = z).
+// במבט "כמו בדף" (TM) הסצנה עצמה מוטלת: q = PIV + ROT(p − PIV) ואז (L₀·q, L₁·q, עומק).
+// ROT = הסיבוב שהמשתמש עשה בגרירה, ולכן גם בסיבוב הגוף נשאר בהיטל של הדף (לא "נפחס").
+// כל אובייקט בסצנה נרשם ב-UPD ומחושב מחדש כשהסיבוב משתנה – עובי הקווים וגודל הנקודות נשארים אחידים.
+let TM=null,SCALEPTS=[],ROTQ=null,PIV=[0,0,0],UPD=[];
+const T0=p=>new THREE.Vector3(p[1],p[2],p[0]);
+const _rv=new THREE.Vector3();
+function rotP(p){if(!ROTQ)return p;const c=mv(TM,PIV);_rv.set(p[1]-c[1],p[2]-c[2],p[0]-c[0]).applyQuaternion(ROTQ);return [_rv.z+c[0],_rv.x+c[1],_rv.y+c[2]];}
+// TM = מטריצה A (3×3, שורות): מעבירה את הגוף ל"גוף של הדף" (בגוף על הצירים – זהות); אחר כך סיבוב והיטל אלכסוני
+const mv=(A,p)=>[dot(A[0],p),dot(A[1],p),dot(A[2],p)];
+const T=p=>{if(!TM)return T0(p);const q=rotP(mv(TM,p));return new THREE.Vector3(dot(CAV[0],q),dot(CAV[1],q),dot(CAV[2],q));};
+const reproject=()=>UPD.forEach(f=>f());
 
 // ---------- טקסט: {...} מתמטיקה, [[a#b]] שבר, ~AB~ וקטור עם חץ ----------
 function H(s){return s
@@ -187,7 +195,8 @@ add_({id:'t5',old:'a5',axes:1,part:'א',ex:5,title:'פירמידה ישרה – 
     g.seg(M,S1,'s',{sol:1,dash:1,label:'h = 3'});g.pt(S1,'u','S(1.5, 0.5, 3)',{sol:1});g.pt(S2,'v','S(1.5, 0.5, −3)',{sol:1});}});
 
 // שיעורי הקודקודים בשרטוט הסכמטי של החוברת (g12v2.py: par / pyr) – למבט "כמו בדף"
-const PAGE_PAR={A:[0,0],B:[2.2,0],C:[2.95,.55],D:[.75,.55],'A′':[.45,2],'B′':[2.65,2],'C′':[3.4,2.55],'D′':[1.2,2.55]};
+// סדר המפתחות חשוב: הראשון הוא הקודקוד, ושלושת הבאים – קצות המקצועות שיוצאים ממנו (ראו niceA)
+const PAGE_PAR={A:[0,0],B:[2.2,0],D:[.75,.55],'A′':[.45,2],C:[2.95,.55],'B′':[2.65,2],'C′':[3.4,2.55],'D′':[1.2,2.55]};
 const PAGE_PYR={A:[0,1],B:[1.05,0],C:[2.6,1],D:[.75,2.6]};
 add_({id:'t14',old:'a14',page:PAGE_PAR,part:'א',ex:14,title:'השלמת מקבילון',box:[1,11,-8,5,0,6],
   given:'{A(3, 2, 4) , B(2, 4, 3) , C(5, 0, 2) , B′(6, −1, 3)} (סעיף א).',
@@ -366,39 +375,69 @@ const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enab
 //  • גוף שבחוברת מצויר סכמטית (מקבילון, פירמידה) – L מותאם כך שהקודקודים יפלו בדיוק על מקומם בשרטוט (שדה page בשקף,
 //    השיעורים מ-g12v2.py). כלומר קנה המידה של כל ציר מותאם לשרטוט, והגוף לא "שטוח" גם כשהנתונים שלו שטוחים.
 //  • שקף בלי שרטוט בחוברת – מבט תלת-ממדי רגיל, והכפתור מוסתר.
-// מצלמה אורתוגרפית עם מטריצת היטל כללית. גרירה או זום עוברים למבט תלת-ממדי רגיל מכיוון ההיטל (היטל כזה לא ניתן לסיבוב).
+// גרירה מסובבת את הגוף ונשארת בהיטל של הדף (הגוף לא "נפחס"); זום מגדיל. הכפתור "כמו בדף" מעביר לתלת-ממד אמיתי (פרספקטיבה)
+// מאותו כיוון מבט, ובחזרה – מאפס להיטל של השרטוט.
 const PK=.5,PTH=38*Math.PI/180,PEX=-PK*Math.cos(PTH),PEY=-PK*Math.sin(PTH);
-const OBL={L:[[PEX,1,0],[PEY,0,1]],c:[0,0],fit:0};
+// CAV – ההיטל האלכסוני של החוברת (שתי שורות למסך + שורת עומק לאורך כיוון ההיטל, אל הצופה)
+const PDIR=[1,-PEX,-PEY],CAV=[[PEX,1,0],[PEY,0,1],unit(PDIR)];
+const OBL={A:[[1,0,0],[0,1,0],[0,0,1]],fit:0};
+// שרטוט סכמטי: מ-L המותאם (2×3) בונים "גוף של הדף" – העתקה A (3×3) כך ש-CAV∘A = L, כלומר בהיטל הוא בדיוק השרטוט.
+// יש משפחה של פתרונות A = A₀ + PDIR·gᵀ (A₀ = C⁺L); בוחרים g שבו שלושת המקצועות שיוצאים מהקודקוד הראשון בשרטוט
+// (E – למקבילון AB, AD, AA′; לפירמידה AB, AC, AD) הכי קרובים למקצועות ניצבים ושווים (יחס ערכים סינגולריים מינימלי של A·E, בלי שיקוף) –
+// כך בסיבוב הגוף נראה כמו מקבילון/פירמידה "רגילים" ולא שטוח.
+function sym3eig(M){const a=M.map(r=>r.slice());for(let it=0;it<40;it++){let p=0,q=1;if(Math.abs(a[0][2])>Math.abs(a[p][q]))[p,q]=[0,2];if(Math.abs(a[1][2])>Math.abs(a[p][q]))[p,q]=[1,2];
+    if(Math.abs(a[p][q])<1e-12)break;const th=.5*Math.atan2(2*a[p][q],a[q][q]-a[p][p]),c=Math.cos(th),s_=Math.sin(th);
+    for(let k=0;k<3;k++){const x=a[k][p],y=a[k][q];a[k][p]=c*x-s_*y;a[k][q]=s_*x+c*y;}for(let k=0;k<3;k++){const x=a[p][k],y=a[q][k];a[p][k]=c*x-s_*y;a[q][k]=s_*x+c*y;}}
+  return [a[0][0],a[1][1],a[2][2]];}
+function niceA(L,E){const C=[CAV[0],CAV[1]],G=[[dot(C[0],C[0]),dot(C[0],C[1])],[dot(C[1],C[0]),dot(C[1],C[1])]],dt=G[0][0]*G[1][1]-G[0][1]*G[1][0],
+    Gi=[[G[1][1]/dt,-G[0][1]/dt],[-G[1][0]/dt,G[0][0]/dt]];
+  // A₀ = Cᵀ G⁻¹ L  (3×3)
+  const A0=[0,1,2].map(i=>[0,1,2].map(j=>{let v=0;for(let a=0;a<2;a++)for(let b=0;b<2;b++)v+=C[a][i]*Gi[a][b]*L[b][j];return v;}));
+  const d=unit(PDIR),mk=g=>A0.map((r,i)=>r.map((v,j)=>v+d[i]*g[j]));
+  const det=A=>dot(A[0],cross(A[1],A[2]));
+  const cost=g=>{const A=mk(g),M=[0,1,2].map(i=>E.map(e=>dot(A[i],e))),MtM=[0,1,2].map(i=>[0,1,2].map(j=>M[0][i]*M[0][j]+M[1][i]*M[1][j]+M[2][i]*M[2][j])),ev=sym3eig(MtM).map(x=>Math.max(x,1e-12));
+    return Math.sqrt(Math.max(...ev)/Math.min(...ev))+(det(A)<=0?1e6:0);};
+  const sc=Math.max(...L.flat().map(Math.abs))||1;let best=null,bc=1e18;
+  for(const s0 of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1],[1,1,1],[-1,-1,-1]]){let g=mul(s0,sc),c=cost(g),st=sc;
+    for(let it=0;it<400&&st>sc*1e-6;it++){let imp=false;for(let k=0;k<3;k++)for(const sg of [1,-1]){const h=g.slice();h[k]+=sg*st;const ch=cost(h);if(ch<c){c=ch;g=h;imp=true;}}if(!imp)st/=2;}
+    if(c<bc){bc=c;best=g;}}
+  return mk(best);}
 const pcam=new THREE.OrthographicCamera(-1,1,1,-1,.01,1000);pcam.position.set(0,0,0);pcam.updateMatrixWorld();
 let pageMode=false,pageBox=null,pageMap=null;
-const pmap=(m,p)=>[dot(m.L[0],p)+m.c[0],dot(m.L[1],p)+m.c[1]];
-const pdir=m=>unit(cross(m.L[0],m.L[1]));   // כיוון ההיטל (וקטור האפס של L) – פונה אל הצופה
 // התאמה בריבועים פחותים: שורה r של [L|c] פותרת (Σ q qᵀ) a = Σ q·t, עם q = (x, y, z, 1)
 function fitMap(pts3,pts2){const A=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],b=[[0,0,0,0],[0,0,0,0]];
   pts3.forEach((p,k)=>{const q=[p[0],p[1],p[2],1];for(let i=0;i<4;i++){for(let j=0;j<4;j++)A[i][j]+=q[i]*q[j];b[0][i]+=q[i]*pts2[k][0];b[1][i]+=q[i]*pts2[k][1];}});
   const sol=r=>{const M=A.map((row,i)=>row.concat([b[r][i]]));for(let c=0;c<4;c++){let p=c;for(let i=c+1;i<4;i++)if(Math.abs(M[i][c])>Math.abs(M[p][c]))p=i;[M[c],M[p]]=[M[p],M[c]];
       for(let i=0;i<4;i++)if(i!==c){const f=M[i][c]/M[c][c];for(let j=c;j<5;j++)M[i][j]-=f*M[c][j];}}return M.map((row,i)=>row[4]/row[i]);};
   const r0=sol(0),r1=sol(1);return {L:[r0.slice(0,3),r1.slice(0,3)],c:[r0[3],r1[3]],fit:1};}
-function pageFit(F){pageMap=F.map;const q=F.fit.map(p=>T(p));let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
+let Q0=new THREE.Quaternion(),DIST0=1,lastQ=new THREE.Quaternion(),lastD=0;
+// נקודת המוצא של מבט "כמו בדף": סיבוב המצלמה הנוכחי = השרטוט בדיוק (ROT = זהות); הציר – מרכז הסיבוב של OrbitControls
+function pageStart(){const t=controls.target;PIV=[t.z,t.x,t.y];Q0.copy(camera.quaternion);DIST0=camera.position.distanceTo(t)||1;ROTQ=new THREE.Quaternion();lastQ.copy(camera.quaternion);lastD=DIST0;}
+let PFIT=[];
+function pageFit(F){pageMap=F.map;PFIT=F.fit;const q=F.fit.map(p=>T(p));let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
   q.forEach(v=>{x0=Math.min(x0,v.x);x1=Math.max(x1,v.x);y0=Math.min(y0,v.y);y1=Math.max(y1,v.y);z0=Math.min(z0,v.z);z1=Math.max(z1,v.z);});
-  pageBox={x0,x1,y0,y1,z0,z1};pageProj();}
-// הסצנה כבר מוטלת (T עם TM): מצלמה אורתוגרפית בראשית שמביטה אל −Z; העומק (z גדול = קרוב לצופה) מוזז לטווח החיתוך
-function pageProj(){if(!pageBox)return;const {x0,x1,y0,y1,z0,z1}=pageBox,cx=(x0+x1)/2,cy=(y0+y1)/2;
-  let hw=(x1-x0)/2*1.12,hh=(y1-y0)/2*1.12;const asp=camera.aspect||1;if(hw/hh>asp)hh=hw/asp;else hw=hh*asp;
-  const span=Math.max(z1-z0,x1-x0,y1-y0)||1,far=z1+span*4,near=z0-span*4;
+  const c=T(PIV);pageBox={x0,x1,y0,y1,z0,z1,cx:c.x,cy:c.y,hx:Math.max(c.x-x0,x1-c.x),hy:Math.max(c.y-y0,y1-c.y)};pageProj();}
+// הסצנה כבר מוטלת (T עם TM): מצלמה אורתוגרפית בראשית שמביטה אל −Z; העומק (z גדול = קרוב לצופה) מוזז לטווח החיתוך.
+// המסגרת סימטרית סביב מרכז הסיבוב, כך שגם בסיבוב הגוף נשאר במרכז; זום = היחס בין המרחק ההתחלתי של המצלמה למרחק הנוכחי.
+// בסיבוב המסגרת רק גדלה (לפי הנקודות של הגוף בסיבוב הנוכחי) – הגוף לא נחתך, וגם לא "קופץ" בגודל כל הזמן
+function pageProj(){if(!pageBox)return;const B=pageBox;
+  if(TM&&ROTQ)PFIT.forEach(p=>{const v=T(p);B.hx=Math.max(B.hx,Math.abs(v.x-B.cx));B.hy=Math.max(B.hy,Math.abs(v.y-B.cy));B.z0=Math.min(B.z0,v.z);B.z1=Math.max(B.z1,v.z);});
+  const {x0,x1,y0,y1,z0,z1,cx,cy}=B,zf=DIST0/(camera.position.distanceTo(controls.target)||DIST0);
+  let hw=B.hx*1.1/zf,hh=B.hy*1.1/zf;const asp=camera.aspect||1;if(hw/hh>asp)hh=hw/asp;else hw=hh*asp;
+  const span=Math.max(z1-z0,x1-x0,y1-y0)||1,far=Math.max(z1,cx,cy)+span*4,near=Math.min(z0,-span)-span*4;
   const O=new THREE.Matrix4().makeOrthographic(cx-hw,cx+hw,cy+hh,cy-hh,0,far-near);
   pcam.projectionMatrix.copy(O).multiply(new THREE.Matrix4().makeTranslation(0,0,-far));pcam.projectionMatrixInverse.copy(pcam.projectionMatrix).invert();}
-function setPage(on){const F=frame(SL[state.i]);on=on&&!!F.map;pageMode=on;const b=document.getElementById('page');
+// בכל פריים במבט "כמו בדף": אם המצלמה זזה (גרירה, זום, סיבוב אוטומטי) – מחשבים את הסיבוב היחסי ומטילים מחדש
+function pageTick(){if(!pageMode||!TM)return;const d=camera.position.distanceTo(controls.target);
+  if(lastQ.angleTo(camera.quaternion)<1e-6&&Math.abs(d-lastD)<1e-9)return;lastQ.copy(camera.quaternion);lastD=d;
+  ROTQ=Q0.clone().multiply(camera.quaternion.clone().invert());reproject();pageProj();}
+function setPage(on){const F=frame(SL[state.i]);on=on&&!!F.map;pageMode=on;controls.enablePan=!on;const b=document.getElementById('page');
   if(b){b.hidden=!F.map;b.setAttribute('aria-pressed',on);}
   const h=document.getElementById('hint');
-  if(h)h.textContent=on?(F.map.fit?'כמו בדף – קנה המידה של הצירים מותאם לשרטוט · גררו כדי לסובב בתלת-ממד':'מבט כמו בדף · גררו כדי לסובב בתלת-ממד'):'גררו לסיבוב · גלגלת לזום · מקש ימני בעכבר להזזה';
-  if(on){controls.autoRotate=false;const r=document.getElementById('rot');if(r)r.setAttribute('aria-pressed',false);}}
+  if(h)h.textContent=on?(F.map.fit?'כמו בדף – קנה המידה של הצירים מותאם לשרטוט · גררו לסיבוב, הכפתור "כמו בדף" – לתלת-ממד אמיתי':'מבט כמו בדף · גררו לסיבוב · גלגלת לזום'):'תלת-ממד אמיתי · גררו לסיבוב · גלגלת לזום · מקש ימני בעכבר להזזה';}
 // ברירת המחדל לשקף: מבט "כמו בדף" כשיש לו שרטוט בחוברת; אחרת – מבט תלת-ממדי רגיל
 function viewReset(){build(false);}
-// מעבר מ"כמו בדף" לתלת-ממד: בונים מחדש בלי ההיטל ומציבים מצלמה (בגוף על הצירים – בכיוון ההיטל האלכסוני)
-function to3D(){const m=pageMap,F=frame(SL[state.i]);setPage(false);build(true);fitCamera(F,m&&m.fit?F.dir:pdir(m));}   // מפה מותאמת (גוף "שטוח") – כיוון ההיטל שלה לא מראה את הגוף טוב, ולכן המבט הרגיל של השקף
 const cam=()=>pageMode?pcam:camera;
-controls.addEventListener('start',()=>{if(pageMode)to3D();});
 scene.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.55);dl.position.set(3,6,4);scene.add(dl);
 let root=new THREE.Group();scene.add(root);let labels=[];
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();
@@ -413,19 +452,20 @@ function makeG(box,show,noTicks,mode){
   const R=size*0.0042*kS;
   const G={size,R,objs:[],show};
   const mat=(k,o)=>new THREE.MeshLambertMaterial({color:col(k),transparent:!!o,opacity:o||1});
-  const lab=(p,text,k,cls)=>{const el=document.createElement('div');el.className='lab'+(cls?' '+cls:'');el.innerHTML=L(text);el.style.color=css(C[k]||k);labelsEl.appendChild(el);labels.push({el,pos:T(p),cls:cls||'',w:0,h:0});};
-  const tube=(a,b,r,k,o)=>{const A=T(a),B=T(b),dir=B.clone().sub(A),l=dir.length();if(l<1e-9)return;
-    const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,l,12,1,true),mat(k,o));m.position.copy(A.clone().add(B).multiplyScalar(.5));
-    m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());root.add(m);};
+  const lab=(p,text,k,cls)=>{const el=document.createElement('div');el.className='lab'+(cls?' '+cls:'');el.innerHTML=L(text);el.style.color=css(C[k]||k);labelsEl.appendChild(el);const l={el,pos:T(p),cls:cls||'',w:0,h:0};labels.push(l);UPD.push(()=>l.pos.copy(T(p)));};
+  // גליל/חרוט בגובה 1 שנמתח בין שתי נקודות (מחושב מחדש בכל סיבוב במבט "כמו בדף")
+  const Y1=new THREE.Vector3(0,1,0);
+  const stretch=(m,a,b)=>{const f=()=>{const A=T(a),B=T(b),dir=B.clone().sub(A),l=dir.length();m.visible=l>1e-9;if(!m.visible)return;
+      m.position.copy(A).add(B).multiplyScalar(.5);m.quaternion.setFromUnitVectors(Y1,dir.multiplyScalar(1/l));m.scale.set(1,l,1);};f();UPD.push(f);root.add(m);};
+  const tube=(a,b,r,k,o)=>{if(len(sub(b,a))<1e-9)return;stretch(new THREE.Mesh(new THREE.CylinderGeometry(r,r,1,12,1,true),mat(k,o)),a,b);};
   const ok=o=>!(o&&o.sol)||show;
   G.seg=(a,b,k,o={})=>{if(!ok(o))return;const r=R*(o.r||1);
     if(o.dash){const l=len(sub(b,a)),n=Math.max(2,Math.round(l/(size*0.03)));for(let i=0;i<n;i++){if(i%2)continue;tube(add(a,mul(sub(b,a),i/n)),add(a,mul(sub(b,a),(i+1)/n)),r,k);}}
     else tube(a,b,r,k);
     if(o.label)lab(mul(add(a,b),.5),o.label,k);};
-  G.pt=(p,k,text,o={})=>{if(!ok(o))return;const s=new THREE.Mesh(new THREE.SphereGeometry(R*(o.small?2.4:3.4),20,14),mat(k));s.position.copy(T(p));root.add(s);if(text)lab(p,text,k);};
+  G.pt=(p,k,text,o={})=>{if(!ok(o))return;const s=new THREE.Mesh(new THREE.SphereGeometry(R*(o.small?2.4:3.4),20,14),mat(k));const f=()=>s.position.copy(T(p));f();UPD.push(f);root.add(s);if(text)lab(p,text,k);};
   G.vec=(a,v,k,text,o={})=>{if(!ok(o))return;const l=len(v),hl=Math.min(size*0.05,l*.35),b=add(a,v),c=add(a,mul(v,(l-hl)/l));tube(a,c,R*1.5,k);
-    const cone=new THREE.Mesh(new THREE.ConeGeometry(R*4.2,T(b).distanceTo(T(c)),18),mat(k));const dir=T(v).normalize();cone.position.copy(T(add(c,mul(v,hl/2/l))));
-    cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir);root.add(cone);if(text)lab(add(a,mul(v,.62)),text,k);};
+    stretch(new THREE.Mesh(new THREE.ConeGeometry(R*4.2,1,18),mat(k)),c,b);if(text)lab(add(a,mul(v,.62)),text,k);};
   G.line=(A,u,k,o={})=>{if(!ok(o))return;let t0=-Infinity,t1=Infinity;
     for(let i=0;i<3;i++){const lo=box[2*i],hi=box[2*i+1];if(Math.abs(u[i])<1e-12){if(A[i]<lo||A[i]>hi)return;continue;}
       let a=(lo-A[i])/u[i],b=(hi-A[i])/u[i];if(a>b)[a,b]=[b,a];t0=Math.max(t0,a);t1=Math.min(t1,b);}
@@ -436,8 +476,9 @@ function makeG(box,show,noTicks,mode){
     if(P.length<3)return;const cen=mul(P.reduce(add,[0,0,0]),1/P.length);let e1=unit(cross(n,Math.abs(n[0])<.9*len(n)?[1,0,0]:[0,1,0])),e2=unit(cross(n,e1));
     P.sort((a,b)=>Math.atan2(dot(sub(a,cen),e2),dot(sub(a,cen),e1))-Math.atan2(dot(sub(b,cen),e2),dot(sub(b,cen),e1)));
     G.tri(P,k,o.op||.3);P.forEach((p,i)=>tube(p,P[(i+1)%P.length],R*.55,k,.8));};
-  G.tri=(P,k,op=.35)=>{const pos=[];for(let i=1;i<P.length-1;i++)[P[0],P[i],P[i+1]].forEach(p=>{const v=T(p);pos.push(v.x,v.y,v.z);});
-    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  G.tri=(P,k,op=.35)=>{const Q=[];for(let i=1;i<P.length-1;i++)Q.push(P[0],P[i],P[i+1]);
+    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(Q.length*3),3));
+    const f=()=>{const a=geo.attributes.position;Q.forEach((p,i)=>{const v=T(p);a.setXYZ(i,v.x,v.y,v.z);});a.needsUpdate=true;geo.computeBoundingSphere();};f();UPD.push(f);
     const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:col(k),transparent:true,opacity:op,side:THREE.DoubleSide,depthWrite:false}));root.add(m);};
   G.arc=(V,a,b,k,o={})=>{if(!ok(o))return;let A=unit(a),B=unit(b);if(!o.obtuse&&dot(A,B)<0)B=mul(B,-1);
     const th=Math.acos(Math.max(-1,Math.min(1,dot(A,B)))),W=unit(sub(B,mul(A,dot(A,B)))),r=o.rad||size*.12,pts=[];
@@ -449,12 +490,13 @@ function makeG(box,show,noTicks,mode){
   G.finish=()=>{
   if(mode==='gizmo')return;   // הגוף רחוק מהראשית: בלי צירים ורשת – כיווני הצירים מוצגים בפינת המסך (giz)
   const gm=new THREE.LineBasicMaterial({color:col('grid')}),gp=[];const st=niceStep(Math.max(sx,sy)/8);
-  for(let x=Math.ceil(box[0]/st)*st;x<=box[1]+1e-9;x+=st){const a=T([x,box[2],0]),b=T([x,box[3],0]);gp.push(a,b);}
-  for(let y=Math.ceil(box[2]/st)*st;y<=box[3]+1e-9;y+=st){const a=T([box[0],y,0]),b=T([box[1],y,0]);gp.push(a,b);}
-  root.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(gp),gm));
+  for(let x=Math.ceil(box[0]/st)*st;x<=box[1]+1e-9;x+=st)gp.push([x,box[2],0],[x,box[3],0]);
+  for(let y=Math.ceil(box[2]/st)*st;y<=box[3]+1e-9;y+=st)gp.push([box[0],y,0],[box[1],y,0]);
+  {const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(gp.length*3),3));
+   const f=()=>{const a=geo.attributes.position;gp.forEach((p,i)=>{const v=T(p);a.setXYZ(i,v.x,v.y,v.z);});a.needsUpdate=true;geo.computeBoundingSphere();};f();UPD.push(f);
+   root.add(new THREE.LineSegments(geo,gm));}
   ['x','y','z'].forEach((nm,i)=>{const e=[0,0,0];e[i]=1;const lo=Math.min(box[2*i],0),hi=Math.max(box[2*i+1],0)+size*.1;
-    G.seg(mul(e,lo),mul(e,hi-size*.04),'k',{r:.8});const cone=new THREE.Mesh(new THREE.ConeGeometry(R*3,T(mul(e,hi)).distanceTo(T(mul(e,hi-size*.045))),16),mat('k'));
-    cone.position.copy(T(mul(e,hi-size*.0225)));cone.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),T(e).normalize());root.add(cone);
+    G.seg(mul(e,lo),mul(e,hi-size*.04),'k',{r:.8});stretch(new THREE.Mesh(new THREE.ConeGeometry(R*3,1,16),mat('k')),mul(e,hi-size*.045),mul(e,hi));
     lab(mul(e,hi+size*.07),nm,'k','ax');if(noTicks)return;const s2=niceStep((hi-lo)/5);
     for(let v=Math.ceil(lo/s2)*s2;v<hi-size*.06;v+=s2){if(Math.abs(v)<1e-9)continue;const p=mul(e,v);
       const off=i===2?[0,-size*.03,0]:[0,0,-size*.03];lab(add(p,off),N(v),'k','tk');}});
@@ -467,7 +509,7 @@ function fitCamera(F,d0){const pts=F.fit,dm=unit(d0||F.dir||[1.25,.8,.42]),[u,w]
   let su=0,sw=0,sd=0;pts.forEach(p=>{const q=sub(p,c);su=Math.max(su,Math.abs(dot(q,u)));sw=Math.max(sw,Math.abs(dot(q,w)));sd=Math.max(sd,Math.abs(dot(q,dm)));});
   const vf=camera.fov*Math.PI/180,hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
   const dist=(Math.max(su/Math.tan(hf/2),sw/Math.tan(vf/2))+sd)*1.1,size=Math.max(su,sw,sd)*2||1;
-  const tgt=T(c);controls.target.copy(tgt);camera.position.copy(tgt.clone().add(T(dm).multiplyScalar(dist)));
+  const tgt=T0(c);controls.target.copy(tgt);camera.position.copy(tgt.clone().add(T0(dm).multiplyScalar(dist)));
   camera.near=size*.01;camera.far=size*60;camera.updateProjectionMatrix();controls.update();}
 
 
@@ -492,19 +534,20 @@ function frame(s){if(s._fr)return s._fr;const P=[],r=(...q)=>q.forEach(p=>P.push
       const [u,w]=basis(d);let u0=1e9,u1=-1e9,w0=1e9,w1=-1e9;P.forEach(p=>{const pu=dot(p,u),pw=dot(p,w);u0=Math.min(u0,pu);u1=Math.max(u1,pu);w0=Math.min(w0,pw);w1=Math.max(w1,pw);});
       const da=Math.abs(((az-az0+540)%360)-180),sc=(u1-u0)*(w1-w0)*(1-.18*da/180)*(1-.1*Math.abs(el-30)/30);if(sc>best){best=sc;dir=d;}}}
   // מפת ההיטל "כמו בדף": מותאמת לשרטוט הסכמטי (page), או ההיטל האלכסוני לגוף שעל הצירים
-  let map=null;if(s.page){const ks=Object.keys(s.page).filter(k=>NP[k]);map=fitMap(ks.map(k=>NP[k]),ks.map(k=>s.page[k]));}else if(mode==='axes')map=OBL;
+  let map=null;if(s.page){const ks=Object.keys(s.page).filter(k=>NP[k]);const E=ks.slice(1,4).map(k=>sub(NP[k],NP[ks[0]]));map={A:niceA(fitMap(ks.map(k=>NP[k]),ks.map(k=>s.page[k])).L,E),fit:1};}else if(mode==='axes')map=OBL;
   return s._fr={bb,mode,view,fit,dir,map};}
 function basis(d){const n=unit(d),u=unit(cross([0,0,1],n)),w=cross(n,u);return [u,w];}
 function build(keepCam){
   const s=SL[state.i];scene.remove(root);root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});
-  if(!keepCam)setPage(true);   // שקף חדש / איפוס: "כמו בדף" כשיש לשקף שרטוט בחוברת
-  {const F0=frame(s);TM=pageMode&&F0.map?[F0.map.L[0],F0.map.L[1],pdir(F0.map)]:null;SCALEPTS=F0.fit;}
+  if(!keepCam){setPage(true);fitCamera(frame(s));}   // שקף חדש / איפוס: "כמו בדף" כשיש לשקף שרטוט בחוברת; המצלמה (לתלת-ממד) – במבט הרגיל של השקף
+  {const F0=frame(s);TM=pageMode&&F0.map?F0.map.A:null;SCALEPTS=F0.fit;if(!keepCam&&TM)pageStart();if(!TM)ROTQ=null;}
+  UPD=[];
   root=new THREE.Group();scene.add(root);labelsEl.innerHTML='';labels=[];
   scene.background=new THREE.Color(css('stage'));
   const F=frame(s);const box=s.keepBox?s.box:F.view;
   const g=makeG(box,state.sol,s.noTicks,F.mode);s.build(g,state.par);g.finish();
   {const gz=document.getElementById('giz');if(F.mode==='gizmo')gz.removeAttribute('hidden');else gz.setAttribute('hidden','');}
-  if(!keepCam){if(pageMode){fitCamera(F,pdir(F.map));pageFit(F);}else fitCamera(F);}}
+  if(!keepCam&&pageMode)pageFit(F);}
 
 function panel(){
   const s=SL[state.i],el=document.getElementById('panel');
@@ -533,8 +576,9 @@ document.getElementById('next').onclick=()=>go(state.i+1);
 document.getElementById('prev').onclick=()=>go(state.i-1);
 document.getElementById('solbtn').onclick=()=>{state.sol=!state.sol;panel();build(true);};
 document.getElementById('reset').onclick=viewReset;
-document.getElementById('page').onclick=()=>{if(pageMode)to3D();else viewReset();};
-const rot=document.getElementById('rot');rot.onclick=()=>{if(pageMode)setPage(false);controls.autoRotate=!controls.autoRotate;controls.autoRotateSpeed=1.4;rot.setAttribute('aria-pressed',controls.autoRotate);};
+// לתלת-ממד אמיתי מאותו כיוון מבט; ובחזרה – ההיטל של השרטוט מהכיוון הנוכחי של המצלמה (הגוף חוזר בדיוק לשרטוט)
+document.getElementById('page').onclick=()=>{if(pageMode){setPage(false);build(true);}else{setPage(true);pageStart();build(true);pageFit(frame(SL[state.i]));}};
+const rot=document.getElementById('rot');rot.onclick=()=>{controls.autoRotate=!controls.autoRotate;controls.autoRotateSpeed=1.4;rot.setAttribute('aria-pressed',controls.autoRotate);};
 document.getElementById('fs').onclick=()=>{const d=document.documentElement;try{(document.fullscreenElement?document.exitFullscreen():d.requestFullscreen()).catch(()=>{});}catch(e){}};
 document.getElementById('par').oninput=e=>{state.par=+e.target.value;document.getElementById('parout').textContent=SL[state.i].param.name+' = '+N(state.par);build(true);};
 window.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
@@ -551,11 +595,11 @@ new MutationObserver(reTheme).observe(document.documentElement,{attributes:true,
 function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix();pageProj();}
 new ResizeObserver(resize).observe(stage);
 const v=new THREE.Vector3();
-function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,cam());
+function loop(){requestAnimationFrame(loop);controls.update();pageTick();renderer.render(scene,cam());
   const w=stage.clientWidth,h=stage.clientHeight;
   // כיווני הצירים בפינה (רק כשאין צירים בסצנה): ההיטל של שלושת וקטורי היחידה לפי סיבוב המצלמה
   const gz=document.getElementById('giz');if(!gz.hasAttribute('hidden')){const qi=camera.quaternion.clone().invert();let h2='';
-    [['x',[1,0,0]],['y',[0,1,0]],['z',[0,0,1]]].forEach(([nm,e])=>{let X,Y;if(pageMode&&TM){const P3=[[1,0,0],[0,1,0],[0,0,1]].map(q=>Math.hypot(dot(TM[0],q),dot(TM[1],q))),k=Math.max(...P3)||1;X=dot(TM[0],e)/k*24;Y=-dot(TM[1],e)/k*24;}else{const p=T(e).applyQuaternion(qi);X=p.x*24;Y=-p.y*24;}
+    [['x',[1,0,0]],['y',[0,1,0]],['z',[0,0,1]]].forEach(([nm,e])=>{let X,Y;if(pageMode&&TM){const o=T(PIV),D=[[1,0,0],[0,1,0],[0,0,1]].map(q=>T(add(PIV,q)).sub(o)),k=Math.max(...D.map(d=>Math.hypot(d.x,d.y)))||1,d=T(add(PIV,e)).sub(o);X=d.x/k*24;Y=-d.y/k*24;}else{const p=T(e).applyQuaternion(qi);X=p.x*24;Y=-p.y*24;}
       h2+=`<line x1="0" y1="0" x2="${X.toFixed(1)}" y2="${Y.toFixed(1)}"/><circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="2.2" fill="var(--axis)"/><text x="${(X*1.38).toFixed(1)}" y="${(Y*1.38+5).toFixed(1)}" text-anchor="middle">${nm}</text>`;});
     gz.innerHTML=h2;}
   // פריסת תוויות: כל תווית מנסה כמה מקומות סביב הנקודה ובוחרת את הראשון שלא עולה על תווית קודמת.
