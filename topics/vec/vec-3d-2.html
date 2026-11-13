@@ -157,13 +157,75 @@ const L=s=>H(s); // כיתוב בשרטוט
 const C={u:'c1',v:'c2',p:'c3',q:'c4',s:'sol',k:'axis'};
 const SL=[];
 const add_=o=>SL.push(o);
-const PARTS={'א':'וקטור אלגברי (6.1)','ב':'מכפלה סקלרית (6.2)','ג':'מצב הדדי בין ישרים (6.3)'};
+const PARTS={'מ':'מושגים','א':'וקטור אלגברי (6.1)','ב':'מכפלה סקלרית (6.2)','ג':'מצב הדדי בין ישרים (6.3)'};
 // עזר: גוף לפי קודקודים ורשימת מקצועות. names: {A:[x,y,z],...}; edges: 'AB BC ...' (′ נכתב כ-1: A1)
 function solid(g,V,edges,k='k',o={}){edges.split(' ').forEach(e=>{const [a,b]=e.split('-');g.seg(V[a],V[b],k,{r:o.r||.9,dash:o.dash,sol:o.sol});});}
 function labelAll(g,V,k='k',skip=''){Object.keys(V).forEach(n=>{if(skip.split(' ').includes(n))return;g.pt(V[n],k,n.replace('1','′'),{small:1});});}
 const BOX_E='A-B B-C C-D D-A A1-B1 B1-C1 C1-D1 D1-A1 A-A1 B-B1 C-C1 D-D1';
 function prism8(A,B,D,h){const C=add(B,sub(D,A));const V={A,B,C,D};['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;}
 const fr_=(a,b)=>'[['+a+'#'+b+']]';
+
+// ===== מושגים (חוברת 1) – מודלים להגדרות הבסיסיות, מקושרים ממסגרות הנוסחאות בחוברת ומהמדריך למורה =====
+add_({id:'kaxes',axes:1,part:'מ',ex:'מושג',title:'נקודה במרחב',box:[-.5,4,-.5,5,-.5,3],
+  given:'הנקודה {P(3, 4, 2)}.',
+  text:['{x} – כלפי הצופה, {y} – ימינה, {z} – למעלה.','מגיעים ל-{P}: 3 צעדים בכיוון {x}, 4 בכיוון {y} ו-2 למעלה. הנקודה {(3, 4, 0)} היא "הצל" של {P} על המישור {[xy]}.'],
+  sol:'נקודה על ציר {x}: {(a, 0, 0)} ; במישור {[xy]}: {(a, b, 0)}.',
+  legend:[['s','הדרך מהראשית ל-P','line']],
+  build(g){const P=[3,4,2],Q=[3,4,0];g.seg([0,0,0],[3,0,0],'s',{r:1.6});g.seg([3,0,0],Q,'s',{r:1.6});g.seg(Q,P,'s',{r:1.6});
+    g.seg([0,4,0],Q,'k',{r:.5,dash:1});g.seg([0,0,2],P,'k',{r:.5,dash:1});
+    g.pt(P,'u','P(3, 4, 2)');g.pt(Q,'k','(3, 4, 0)',{small:1});g.pt([3,0,0],'k','(3, 0, 0)',{small:1});g.pt([0,4,0],'k','(0, 4, 0)',{small:1});}});
+
+add_({id:'kvec',axes:1,part:'מ',ex:'מושג',title:'וקטור: ראש פחות זנב',box:[-.5,4,-.5,5,-.5,3],
+  given:'{A(1, 1, 0) , B(3, 4, 2)}.',
+  text:['{~AB~ = B − A = (2, 3, 2)} – כמה צעדים צריך כדי להגיע מ-{A} ל-{B}.','בפתרון: אותו וקטור מהראשית – הוא מגיע לנקודה {(2, 3, 2)}. וקטורים שווים: אותו אורך ואותו כיוון, בכל מקום.'],
+  sol:'{~AB~ = (2, 3, 2)} ; וקטור שזנבו בראשית "הוא" הנקודה שבראשו.',
+  legend:[['u','~AB~','line'],['v','אותו וקטור מהראשית','line']],
+  build(g){const A=[1,1,0],B=[3,4,2];g.pt(A,'k','A');g.pt(B,'k','B');g.vec(A,sub(B,A),'u','{~AB~}');
+    g.vec([0,0,0],sub(B,A),'v','',{sol:1});g.pt(sub(B,A),'v','(2, 3, 2)',{sol:1,small:1});}});
+
+add_({id:'kops',axes:1,part:'מ',ex:'מושג',title:'חיבור וקטורים וכפל בסקלר',box:[-.5,5,-.5,5,-.5,4],
+  given:'{u̲ = (3, 1, 0) , v̲ = (0, 2, 2)}.',
+  text:['חיבור – שיעור אחר שיעור: {u̲ + v̲ = (3, 3, 2)}. בשרטוט: האלכסון של המקבילית ש-{u̲} ו-{v̲} פורשים.','כפל בסקלר: {k · u̲} – אותו כיוון (או הפוך, כש-{k < 0}), אורך פי {|k|}. הזיזו את {k}.'],
+  sol:'{u̲ + v̲ = (3, 3, 2)} ; {k · u̲ = (3k, k, 0)}.',
+  legend:[['u','u̲','line'],['v','v̲','line'],['s','u̲ + v̲','line'],['p','k · u̲','line']],
+  param:{name:'k',min:-1,max:1.5,step:.25,init:1.5},
+  build(g,k){const u=[3,1,0],v=[0,2,2],O=[0,0,0],w=add(u,v);g.vec(O,u,'u','{u̲}');g.vec(O,v,'v','{v̲}');
+    g.seg(u,w,'k',{r:.5,dash:1});g.seg(v,w,'k',{r:.5,dash:1});g.vec(O,w,'s','{u̲ + v̲}');
+    if(Math.abs(k)>1e-9)g.vec([0,0,.02],mul(u,k),'p','{'+N(k)+'u̲}');}});
+
+add_({id:'kcol',axes:1,part:'מ',ex:'מושג',title:'וקטורים קולינאריים – נקודות על ישר אחד',box:[-.5,5,-.5,6,-.5,5],
+  given:'{A(0, 1, 1) , B(2, 2, 2) , C(4, 3, 3)} , {D(4, 3, 1)}.',
+  text:['{~AC~ = (4, 2, 2) = 2 · ~AB~} ⇐ {A}, {B}, {C} על ישר אחד.','{~AD~ = (4, 2, 0)} אינו כפולה של {~AB~ = (2, 1, 1)} (אין {t} אחד לכל השיעורים) ⇐ {D} לא על הישר.'],
+  sol:'{u̲ ∥ v̲ ⟺ u̲ = t · v̲} – אותו {t} בכל שלושת השיעורים.',
+  legend:[['u','~AB~','line'],['v','~AC~','line'],['p','~AD~','line']],
+  build(g){const A=[0,1,1],B=[2,2,2],C=[4,3,3],D=[4,3,1];g.line(A,sub(B,A),'k',{r:.5,dash:1});
+    g.vec(A,sub(C,A),'v','');g.vec(A,sub(B,A),'u','');g.vec(A,sub(D,A),'p','',{sol:1});['A','B','C','D'].forEach((n,i)=>g.pt([A,B,C,D][i],'k',n));}});
+
+add_({id:'kline',axes:1,part:'מ',ex:'מושג',title:'הצגה פרמטרית של ישר',box:[-1.5,4,-1.5,5,-3,5],
+  given:'{ℓ: x̲ = (1, 2, 0) + t(1, 1, 2)}.',
+  text:['{(1, 2, 0)} – נקודה על הישר, {(1, 1, 2)} – וקטור הכיוון.','כל ערך של {t} נותן נקודה אחת על הישר. הזיזו את {t}.'],
+  sol:'נקודה על הישר ⟺ יש {t} אחד שמקיים את שלוש המשוואות.',
+  legend:[['k','הישר','line'],['u','וקטור הכיוון','line'],['s','x̲(t)','line']],
+  param:{name:'t',min:-1.5,max:2,step:.25,init:1},
+  build(g,t){const A=[1,2,0],u=[1,1,2];g.line(A,u,'k',{r:1});g.pt(A,'k','(1, 2, 0)',{small:1});g.vec(A,u,'u','');
+    const P=add(A,mul(u,t));g.vec([0,0,0],P,'s','');g.pt(P,'s',P3(P));}});
+
+add_({id:'kdot',axes:1,part:'מ',ex:'מושג',title:'מכפלה סקלרית, זווית וניצבות',box:[-.5,3,-1.5,3,-.5,3],
+  given:'{u̲ = (2, 2, 0) , v̲ = (0, 2, 2) , w̲ = (1, −1, 1)}.',
+  text:['{u̲ · v̲ = 0 + 4 + 0 = 4}, {|u̲| = |v̲| = √8} ⇐ {cos α = [[4#8]] = [[1#2]]} ⇐ {α = 60°}.','{u̲ · w̲ = 2 − 2 + 0 = 0} ⇐ {u̲ ⊥ w̲}.'],
+  sol:'{u̲ · v̲ = |u̲| · |v̲| · cos α} ; מכפלה סקלרית 0 ⟺ ניצבים.',
+  legend:[['u','u̲','line'],['v','v̲','line'],['p','w̲','line']],
+  build(g){const O=[0,0,0],u=[2,2,0],v=[0,2,2],w=[1,-1,1];g.vec(O,u,'u','{u̲}');g.vec(O,v,'v','{v̲}');g.vec(O,w,'p','{w̲}');
+    g.arc(O,u,v,'s',{label:'60°',rad:.9});g.right(O,u,w,'s');}});
+
+add_({id:'kperp',axes:1,part:'מ',ex:'מושג',title:'ישר מאונך למישור',box:[-.5,4,-.5,4,-.5,3.5],
+  given:'המישור {[xy]} והישר {SH} – {S(2, 2, 3) , H(2, 2, 0)}.',
+  text:['ישר מאונך למישור ⟺ הוא מאונך לשני ישרים <b>נחתכים</b> במישור.','בודקים במכפלה סקלרית: {~HS~ · ~HA~ = 0} וגם {~HS~ · ~HB~ = 0}. אז {SH} מאונך לכל ישר במישור שעובר דרך {H}.'],
+  sol:'{SH} הוא הגובה: מאונך לבסיס.',
+  legend:[['q','המישור','plane'],['s','SH','line'],['u','שני ישרים במישור','line']],
+  build(g){const S=[2,2,3],H=[2,2,0],A=[3.5,1.5,0],B=[1,3.5,0];g.tri([[0,0,0],[4,0,0],[4,4,0],[0,4,0]],'q',.18);
+    g.seg(S,H,'s',{r:1.8});g.seg(H,A,'u',{r:1.4});g.seg(H,B,'u',{r:1.4});g.pt(S,'k','S');g.pt(H,'k','H');g.pt(A,'k','A',{small:1});g.pt(B,'k','B',{small:1});
+    g.right(H,sub(S,H),sub(A,H),'s');g.right(H,sub(S,H),sub(B,H),'s');}});
 
 // ===== חלק א =====
 add_({id:'t3',old:'a3',axes:1,part:'א',ex:3,title:'תיבה על הצירים',box:[-.5,4.5,-.5,6.5,-.5,4],
@@ -552,7 +614,7 @@ function build(keepCam){
 function panel(){
   const s=SL[state.i],el=document.getElementById('panel');
   const lg=(s.legend||[]).map(([k,t,ty])=>`<span><i class="${ty==='plane'?'pl':ty==='dot'?'dot':''}" style="background:var(--${C[k]||k})"></i>${H(t)}</span>`).join('');
-  el.innerHTML=`<div class="eyebrow">חלק ${s.part} · ${PARTS[s.part]} · תרגיל ${s.ex}</div>
+  el.innerHTML=`<div class="eyebrow">${s.part==='מ'?'מושג בסיסי – להסבר על הלוח':`חלק ${s.part} · ${PARTS[s.part]} · תרגיל ${s.ex}`}</div>
    <h2>${H(s.title)}</h2>
    <div class="blk"><h3>נתון</h3><p>${H(s.given)}</p></div>
    <div class="blk"><h3>מה רואים במודל</h3><ul>${s.text.map(t=>`<li>${H(t)}</li>`).join('')}</ul></div>
@@ -570,7 +632,7 @@ function go(i){state.i=(i+SL.length)%SL.length;state.sol=false;const s=SL[state.
 
 // בחירת שקף
 const jump=document.getElementById('jump');
-SL.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`חלק ${s.part}, תרגיל ${s.ex} – ${s.title.replace(/[{}]/g,'')}`;jump.appendChild(o);});
+SL.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(s.part==='מ'?'מושג':`חלק ${s.part}, תרגיל ${s.ex}`)+` – ${s.title.replace(/[{}]/g,'')}`;jump.appendChild(o);});
 jump.onchange=()=>go(+jump.value);
 document.getElementById('next').onclick=()=>go(state.i+1);
 document.getElementById('prev').onclick=()=>go(state.i-1);
