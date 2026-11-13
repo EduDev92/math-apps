@@ -416,7 +416,7 @@ function prism(g){solid(g,PR,'A-B B-C C-A A1-B1 B1-C1 C1-A1 A-A1 B-B1 C-C1','k',
 add_({id:'t61a',old:'g10a',axes:1,part:'ג',ex:'61א',title:'מנסרה: {C′M} ו-{A′B}',box:[-1,5,-1,10,-1,7],
   given:'{A(0, 0, 0) , B(3, 3, 0) , C(0, 9, 0) , A′(0, 0, 6)}. {M(1, 4, 2)} – מפגש התיכונים במשולש {BA′C} (בשקיפות).',
   text:['{C′M}: מ-{(0, 9, 6)} בכיוון {(1, −5, −4)}. {A′B}: מ-{(0, 0, 6)} בכיוון {(3, 3, −6)}.'],
-  sol:'<b>מצטלבים</b>: משתי המשוואות הראשונות {s = [[1#2]] , t = [[3#2]]}, ובשיעור {z}: {0 ≠ 3}.',
+  sol:'<b>מצטלבים</b>: עם {s} ל-{C′M} ו-{t} ל-{A′B}, משתי המשוואות הראשונות {s = [[3#2]] , t = [[1#2]]}, ובשיעור {z}: {0 ≠ 3}.',
   legend:[['u','{C′M}','line'],['v','{A′B}','line'],['q','המשולש {BA′C}','plane']],
   build(g){prism(g);g.line(PR.C1,sub(PRM,PR.C1),'u');g.line(PR.A1,sub(PR.B,PR.A1),'v');const [P,Q]=closest(PR.C1,sub(PRM,PR.C1),PR.A1,sub(PR.B,PR.A1));g.seg(P,Q,'s',{sol:1,r:1.5});}});
 add_({id:'t61b',old:'g10b',axes:1,part:'ג',ex:'61ב',title:'מנסרה: {A′M} ו-{BC}',box:[-1,5,-1,10,-1,7],
