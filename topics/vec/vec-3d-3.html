@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מישורים, זוויות ומרחקים – מודלים לחוברת 3</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+/* פריסה: מצגת למקרן – מודל תלת-ממדי גדול משמאל, לוח מחיר צר מימין (כמו לוח וגיר), ניווט בשורה עליונה */
+:root{
+  --bg:#eef1f5; --panel:#ffffff; --ink:#18202e; --muted:#5b6578; --rule:#d5dbe5;
+  --accent:#2f56c9; --accent-ink:#ffffff;
+  --c1:#2f56c9; --c2:#d9482b; --c3:#11897a; --c4:#7a4fb5; --sol:#c2177a; --axis:#2a3242; --grid:#c9d0dc; --stage:#f7f8fb;
+  --f-body:"Heebo","Arial Hebrew",Arial,sans-serif; --f-math:"STIX Two Text","Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f131b; --panel:#171c27; --ink:#e7ebf2; --muted:#9aa4b6; --rule:#2a3140;
+  --accent:#7f9cff; --accent-ink:#0f131b;
+  --c1:#7f9cff; --c2:#ff7a5c; --c3:#3fd0bc; --c4:#c39bff; --sol:#ff6fb8; --axis:#c3cad8; --grid:#2b3343; --stage:#131822; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0f131b; --panel:#171c27; --ink:#e7ebf2; --muted:#9aa4b6; --rule:#2a3140;
+  --accent:#7f9cff; --accent-ink:#0f131b;
+  --c1:#7f9cff; --c2:#ff7a5c; --c3:#3fd0bc; --c4:#c39bff; --sol:#ff6fb8; --axis:#c3cad8; --grid:#2b3343; --stage:#131822; color-scheme:dark }
+html,body{height:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;direction:rtl;margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;box-sizing:border-box;
+  display:flex;flex-direction:column;gap:10px}
+.m{font-family:var(--f-math);font-size:1.12em;unicode-bidi:isolate;direction:ltr;white-space:nowrap}
+.vec{display:inline-block;position:relative;padding-top:.32em;line-height:1}
+.vec::after{content:"";position:absolute;left:.05em;right:.05em;top:.06em;height:.34em;
+  background:linear-gradient(currentColor,currentColor) left .14em/calc(100% - .25em) 1.4px no-repeat;
+  -webkit-mask:none}
+.vec::before{content:"";position:absolute;right:-.02em;top:.04em;border-left:.32em solid currentColor;border-top:.17em solid transparent;border-bottom:.17em solid transparent}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.15;margin:0 .1em}
+.fr>span:first-child{border-bottom:1.3px solid currentColor;padding:0 .15em}
+u{text-underline-offset:2px}
+
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header .back{color:var(--accent);text-decoration:none;font-weight:700}
+header h1{font-size:1.25rem;font-weight:800;margin:0;letter-spacing:.01em}
+header .sub{color:var(--muted);font-size:.95rem}
+.nav{margin-inline-start:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+select,button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:7px 12px;cursor:pointer}
+button:hover,select:hover{border-color:var(--accent)}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.count{font-variant-numeric:tabular-nums;color:var(--muted);min-width:4.5em;text-align:center}
+select{max-width:min(60vw,22rem)}
+
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(18rem,30rem) 1fr;gap:12px}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 20px;overflow:auto;min-width:0;display:flex;flex-direction:column;gap:12px}
+.eyebrow{font-size:.82rem;font-weight:700;letter-spacing:.06em;color:var(--accent)}
+.panel h2{font-size:1.65rem;line-height:1.2;margin:0;text-wrap:balance}
+.blk h3{font-size:.85rem;font-weight:700;color:var(--muted);margin:0 0 4px;letter-spacing:.04em}
+.blk p,.blk li{margin:0;font-size:1.08rem;line-height:1.7}
+.blk ul{margin:0;padding-inline-start:1.1em}
+.sol{border-top:2px dashed var(--sol);padding-top:10px}
+.sol h3{color:var(--sol)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.95rem}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:4px;border-radius:2px;display:inline-block}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+.legend i.pl{height:11px;width:16px;opacity:.55;border-radius:2px}
+
+.stagewrap{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0}
+.stage{position:relative;flex:1;min-height:320px;border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--stage)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:none}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lab{position:absolute;transform:none;font-family:var(--f-math);font-size:clamp(13px,3.7vw,17px);white-space:nowrap;direction:ltr;
+  padding:1px 6px;border-radius:5px;background:color-mix(in srgb,var(--stage) 82%,transparent);font-weight:600}
+.lab.ax{font-size:clamp(15px,4vw,19px);font-style:italic;background:none}
+.lab.tk{font-size:11px;color:var(--muted);background:none;font-weight:400}
+.giz{position:absolute;bottom:26px;inset-inline-end:8px;width:74px;height:74px;pointer-events:none;overflow:visible}
+.giz text{font-family:var(--f-math);font-style:italic;font-size:15px;fill:var(--axis)}
+.giz line{stroke:var(--axis);stroke-width:2;stroke-linecap:round}
+.hint{position:absolute;bottom:8px;inset-inline-start:10px;font-size:.8rem;color:var(--muted)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.slider{display:flex;align-items:center;gap:10px;flex:1;min-width:14rem;background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:5px 12px}
+.slider input{flex:1;accent-color:var(--accent)}
+.slider output{font-family:var(--f-math);font-size:1.05rem;min-width:5.5em;direction:ltr;font-variant-numeric:tabular-nums}
+@media (max-width:860px){ main{grid-template-columns:1fr;grid-template-rows:auto minmax(380px,1fr)} .panel{order:2} body{height:auto} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="back" href="../../index.html#grade12-5">→ לרכזת</a>
+  <h1>מישורים, זוויות ומרחקים – מודלים</h1>
+  <span class="sub">כיתה יב · 5 יח"ל · לחוברת G12-U5-VEC-03 (לפי קמפוס IL)</span>
+  <div class="nav">
+    <button id="prev" aria-label="השקף הקודם">→ הקודם</button>
+    <span class="count" id="count">1 / 1</span>
+    <button id="next" aria-label="השקף הבא">הבא ←</button>
+    <select id="jump" aria-label="מעבר לשקף"></select>
+  </div>
+</header>
+<main>
+  <section class="panel" id="panel" aria-live="polite"></section>
+  <div class="stagewrap">
+    <div class="stage" id="stage"><div class="labels" id="labels"></div><svg class="giz" id="giz" viewBox="-37 -37 74 74" hidden aria-label="כיווני הצירים"></svg><div class="hint" id="hint">גררו לסיבוב · גלגלת לזום · מקש ימני בעכבר להזזה</div></div>
+    <div class="tools">
+      <button class="primary" id="solbtn" aria-pressed="false">הצג פתרון</button>
+      <button id="rot" aria-pressed="false">סיבוב אוטומטי</button>
+      <button id="page" aria-pressed="true" title="היטל כמו בשרטוט בחוברת: y ימינה, z למעלה, x באלכסון בחצי אורך">כמו בדף</button>
+      <button id="reset">איפוס מבט</button>
+      <button id="fs">מסך מלא</button>
+      <div class="slider" id="sliderbox" hidden><label for="par" id="parlab">t</label><input type="range" id="par"><output id="parout"></output></div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+// ---------- וקטורים (שיעורי מתמטיקה: x, y, z) ----------
+const add=(a,b)=>a.map((x,i)=>x+b[i]), sub=(a,b)=>a.map((x,i)=>x-b[i]), mul=(a,k)=>a.map(x=>x*k);
+const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2], len=a=>Math.sqrt(dot(a,a)), unit=a=>mul(a,1/len(a));
+const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+const footPlane=(P,n,d)=>add(P,mul(n,-(dot(n,P)+d)/dot(n,n)));
+const footLine=(P,A,u)=>add(A,mul(u,dot(sub(P,A),u)/dot(u,u)));
+const meetLP=(A,u,n,d)=>add(A,mul(u,-(dot(n,A)+d)/dot(n,u)));
+function closest(A,u,B,v){const w=sub(A,B),a=dot(u,u),b=dot(u,v),c=dot(v,v),d=dot(u,w),e=dot(v,w),D=a*c-b*b;
+  const s=(b*e-c*d)/D,t=(a*e-b*d)/D;return [add(A,mul(u,s)),add(B,mul(v,t))];}
+const deg=r=>r*180/Math.PI;
+const angVec=(a,b)=>deg(Math.acos(dot(a,b)/(len(a)*len(b))));
+const N=x=>{const r=Math.round(x*100)/100;return (Object.is(r,-0)?0:r).toString().replace('-','−');};
+const P3=p=>'('+p.map(N).join(', ')+')';
+const D=d=>N(d)+'°';
+// math (x,y,z) -> three: x לכיוון הצופה, y ימינה, z למעלה
+// מנקודה במרחב לסצנה. T0 – המיפוי הרגיל (three: Y למעלה = z).
+// במבט "כמו בדף" (TM) הסצנה עצמה מוטלת: q = PIV + ROT(p − PIV) ואז (L₀·q, L₁·q, עומק).
+// ROT = הסיבוב שהמשתמש עשה בגרירה, ולכן גם בסיבוב הגוף נשאר בהיטל של הדף (לא "נפחס").
+// כל אובייקט בסצנה נרשם ב-UPD ומחושב מחדש כשהסיבוב משתנה – עובי הקווים וגודל הנקודות נשארים אחידים.
+let TM=null,SCALEPTS=[],ROTQ=null,PIV=[0,0,0],UPD=[];
+const T0=p=>new THREE.Vector3(p[1],p[2],p[0]);
+const _rv=new THREE.Vector3();
+function rotP(p){if(!ROTQ)return p;const c=mv(TM,PIV);_rv.set(p[1]-c[1],p[2]-c[2],p[0]-c[0]).applyQuaternion(ROTQ);return [_rv.z+c[0],_rv.x+c[1],_rv.y+c[2]];}
+// TM = מטריצה A (3×3, שורות): מעבירה את הגוף ל"גוף של הדף" (בגוף על הצירים – זהות); אחר כך סיבוב והיטל אלכסוני
+const mv=(A,p)=>[dot(A[0],p),dot(A[1],p),dot(A[2],p)];
+const T=p=>{if(!TM)return T0(p);const q=rotP(mv(TM,p));return new THREE.Vector3(dot(CAV[0],q),dot(CAV[1],q),dot(CAV[2],q));};
+const reproject=()=>UPD.forEach(f=>f());
+
+// ---------- טקסט: {...} מתמטיקה, [[a#b]] שבר, ~AB~ וקטור עם חץ ----------
+function H(s){return s
+  .replace(/\[\[([^#\]]+)#([^\]]+)\]\]/g,'<span class="fr"><span>$1</span><span>$2</span></span>')
+  .replace(/~([^~]+)~/g,'<span class="vec">$1</span>')
+  .replace(/\{([^{}]+)\}/g,'<bdi class="m" dir="ltr">$1</bdi>');}
+const L=s=>H(s); // כיתוב בשרטוט
+
+// ---------- השקפים: מודל לתרגילים עם גוף, מישור או ישרים בחוברת G12-U5-VEC-03 ----------
+// id = הקישור מהחוברת: t + מספר התרגיל (#t87 = תרגיל 87; המספור ממשיך את חוברת 2, כאן 62–106). תרגיל 106 מקשר ל-t69 (אותו מקבילון).
+const C={u:'c1',v:'c2',p:'c3',q:'c4',s:'sol',k:'axis'};
+const SL=[];
+const add_=o=>SL.push(o);
+const PARTS={'ד':'מישורים (6.4)','ה':'זוויות ומרחקים (6.5)'};
+// עזר: גוף לפי קודקודים ורשימת מקצועות. names: {A:[x,y,z],...}; edges: 'AB BC ...' (′ נכתב כ-1: A1)
+function solid(g,V,edges,k='k',o={}){edges.split(' ').forEach(e=>{const [a,b]=e.split('-');g.seg(V[a],V[b],k,{r:o.r||.9,dash:o.dash,sol:o.sol});});}
+function labelAll(g,V,k='k',skip=''){Object.keys(V).forEach(n=>{if(skip.split(' ').includes(n))return;g.pt(V[n],k,n.replace('1','′'),{small:1});});}
+const BOX_E='A-B B-C C-D D-A A1-B1 B1-C1 C1-D1 D1-A1 A-A1 B-B1 C-C1 D-D1';
+function prism8(A,B,D,h){const C=add(B,sub(D,A));const V={A,B,C,D};['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;}
+const fr_=(a,b)=>'[['+a+'#'+b+']]';
+
+// ===== חלק ד – מישורים (6.4) =====
+const PAGE_PAR={A:[0,0],B:[2.2,0],D:[.75,.55],'A′':[.45,2],C:[2.95,.55],'B′':[2.65,2],'C′':[3.4,2.55],'D′':[1.2,2.55]};
+function lines2(g,A,u,B,v){g.line(A,u,'u');g.line(B,v,'v');g.pt(A,'u',P3(A),{small:1});g.pt(B,'v',P3(B),{small:1});g.vec(A,u,'u','');g.vec(B,v,'v','');}
+const PAR69=(()=>{const V={A:[1,2,0],B:[3,0,2],C:[4,0,1],D:[2,2,-1]};const h=[6,12,6];['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;})();
+add_({id:'t69',page:PAGE_PAR,part:'ד',ex:'69, 106',title:'מקבילון: מישור הבסיס וגובה',box:[0,11,-1,15,-2,9],
+  given:'{A(1, 2, 0) , C(4, 0, 1) , D(2, 2, −1) , B′(9, 12, 8)}.',
+  text:['{B = A + C − D = (3, 0, 2)}.','הנורמל של מישור הבסיס ניצב ל-{~AB~ = (2, −2, 2)} ול-{~AD~ = (1, 0, −1)}.','בפתרון: הגובה מ-{B′} הוא בדיוק המקצוע {BB′}, כי {~BB′~ = (6, 12, 6)} מקביל לנורמל {(1, 2, 1)}.'],
+  sol:'בסיס: {x + 2y + z − 5 = 0}. {S = 2√6} , {h = 6√6} , {V = 72}.',
+  legend:[['q','מישור הבסיס','plane'],['s','הגובה','line']],
+  build(g){const V=PAR69;solid(g,V,BOX_E);labelAll(g,V);g.tri([V.A,V.B,V.C,V.D],'q',.18);
+    g.seg(V.B1,V.B,'s',{sol:1,r:2});g.right(V.B,sub(V.B1,V.B),sub(V.A,V.B),'s',{sol:1});}});
+
+add_({id:'t70',axes:1,part:'ד',ex:70,title:'מישור וחיתוכיו עם הצירים',box:[-.5,5,-.5,7,-.5,3],
+  given:'המישור {3x + 2y + 6z − 12 = 0}.',
+  text:['על ציר {x}: {y = z = 0} ⇐ {3x = 12}. וכך לשאר הצירים.','המשולש {PQR} הוא החלק של המישור ברביע הראשון של המרחב.'],
+  sol:'{P(4, 0, 0) , Q(0, 6, 0) , R(0, 0, 2)}. {S = 14}, {V = [[4 · 6 · 2#6]] = 8}.',
+  legend:[['q','המשולש PQR','plane']],
+  build(g){const P=[4,0,0],Q=[0,6,0],R=[0,0,2],O=[0,0,0];g.tri([P,Q,R],'q',.28);solid(g,{P,Q,R,O},'P-Q Q-R R-P');
+    g.pt(P,'k','P');g.pt(Q,'k','Q');g.pt(R,'k','R');g.pt(O,'k','O',{small:1});
+    g.pt(P,'s','(4, 0, 0)',{sol:1,small:1});g.pt(Q,'s','(0, 6, 0)',{sol:1,small:1});g.pt(R,'s','(0, 0, 2)',{sol:1,small:1});}});
+
+[['t72a','72א','נחתכים',[2,1,3],-1,[1,0,-2],[2,1,-3],[-4,3,-4,3,-3,5],'{2(1 + 2t) + t + 3(−2 − 3t) − 1 = 0} ⇐ {t = −[[5#4]]}.','נחתכים ב-{(−[[3#2]], −[[5#4]], [[7#4]])}.',[-1.5,-1.25,1.75]],
+ ['t72b','72ב','מקביל',[3,-1,2],-2,[1,-1,2],[-2,0,3],[-3,3,-3,3,-2,5],'ההצבה נותנת {5 = 0} – אין פתרון.','<b>הישר מקביל למישור</b> ({u · n = 0}, והנקודה {(1, −1, 2)} אינה במישור).',null],
+ ['t72c','72ג','מוכל',[3,0,1],-4,[2,3,-2],[1,1,-3],[-1,4,-1,6,-6,4],'ההצבה נותנת {0 = 0} – כל {t} הוא פתרון.','<b>הישר מוכל במישור</b>.',null]
+].forEach(([id,ex,t,n,d,A,u,box,txt,sol,X])=>add_({id,keepBox:1,part:'ד',ex,title:'ישר ומישור: '+t,box,
+  given:'המישור {'+['x','y','z'].map((c,i)=>n[i]?(n[i]<0?' − ':(i?' + ':''))+(Math.abs(n[i])===1?'':Math.abs(n[i]))+c:'').join('')+' − '+(-d)+' = 0} והישר {x̲ = '+P3(A)+' + t'+P3(u)+'}.',
+  text:['מציבים נקודה כללית של הישר במשוואת המישור.',txt],sol,
+  legend:[['q','המישור','plane'],['u','הישר','line']],
+  build(g){g.plane(n,d,'q',{op:.2});g.line(A,u,'u',{r:1.6});g.pt(A,'u',P3(A),{small:1});g.vec(A,u,'u','');if(X)g.pt(X,'s','',{sol:1});}}));
+
+add_({id:'t80',keepBox:1,part:'ד',ex:80,title:'ישר החיתוך של שני מישורים',box:[-3,3,-3,9,-3,7],
+  given:'{3x − y + 2z + 1 = 0} , {x + y − z − 2 = 0}.',
+  text:['שני מישורים לא מקבילים נחתכים בישר.','מציבים {z = t} (או משתנה אחר) ופותרים את שתי המשוואות.'],
+  sol:'{ℓ: x̲ = (0, 3, 1) + t(−1, 5, 4)} ; {c = 3}.',
+  legend:[['q','המישור הראשון','plane'],['p','המישור השני','plane'],['s','ישר החיתוך','line']],
+  build(g){g.plane([3,-1,2],1,'q',{op:.2});g.plane([1,1,-1],-2,'p',{op:.2});g.line([0,3,1],[-1,5,4],'s',{sol:1,r:2.2});g.pt([0,3,1],'s','(0, 3, 1)',{sol:1,small:1});}});
+
+// ===== חלק ה – זוויות ומרחקים (6.5) =====
+add_({id:'t85',axes:1,part:'ה',ex:85,title:'זווית בין מקצוע לפאה',box:[-.5,3,-5,4,-5.5,7],
+  given:'{A(2, 3, −5) , B(2, 0, 0) , C(0, −4, 0) , D(0, 0, 6)}.',
+  text:['הזווית בין {AB} לפאה {BCD} – בין {AB} להיטל שלו על הפאה ({BF}, כש-{F} עקב האנך מ-{A}).','בנוסחה: {sin β = [[|n · u|#|n| · |u|]]}.'],
+  sol:'{BCD: 6x − 3y + 2z − 12 = 0} ; הזווית {27.74°}.',
+  legend:[['q','הפאה BCD','plane'],['u','AB','line'],['s','האנך והזווית','line']],
+  build(g){const V={A:[2,3,-5],B:[2,0,0],C:[0,-4,0],D:[0,0,6]};g.tri([V.B,V.C,V.D],'q',.22);solid(g,V,'A-B A-C A-D B-C C-D D-B');labelAll(g,V);
+    g.seg(V.A,V.B,'u',{r:1.8});const F=footPlane(V.A,[6,-3,2],-12);g.seg(V.A,F,'s',{sol:1,dash:1});g.seg(V.B,F,'s',{sol:1});g.pt(F,'s','F',{sol:1,small:1});
+    g.arc(V.B,sub(V.A,V.B),sub(F,V.B),'s',{sol:1,label:'27.74°'});}});
+
+const CUBE=prism8([0,0,0],[0,2,0],[2,0,0],[0,0,2]);
+add_({id:'t86',axes:1,part:'ה',ex:86,title:'קובייה: המישור {CAD′}',box:[-.5,3,-.5,3,-.5,3],
+  given:'מקצוע 2. {A} בראשית, {D} על ציר {x}, {B} על ציר {y}, {A′} על ציר {z}. {M} אמצע {B′C′}.',
+  text:['המישור {CAD′} עובר דרך אלכסונים של שלוש פאות.','הזווית בין ישר למישור: {sin β = [[|n · u|#|n| · |u|]]}.'],
+  sol:'{x − y − z = 0} ; {D′B}: {19.47°} ; {DM}: {74.21°} ; בין {A′BC′} לבסיס: {54.74°}.',
+  legend:[['q','המישור CAD′','plane'],['u','D′B','line'],['v','DM','line'],['p','המישור A′BC′','plane']],
+  build(g){const V=CUBE;solid(g,V,BOX_E,'k',{r:.7});labelAll(g,V);g.tri([V.C,V.A,V.D1],'q',.25);
+    g.seg(V.D1,V.B,'u',{r:1.6});const M=mul(add(V.B1,V.C1),.5);g.pt(M,'k','M',{small:1});g.seg(V.D,M,'v',{r:1.6});if(g.show)g.tri([V.A1,V.B,V.C1],'p',.16);
+    if(g.show){const F=footPlane(V.B,[1,-1,-1],0);g.seg(V.B,F,'s',{dash:1});}}});
+
+const BXK=prism8([2,0,0],[2,2,0],[0,0,0],[0,0,4]);
+add_({id:'t87',axes:1,part:'ה',ex:87,title:'תיבה: האלכסון {A′C} והמישור {KBC′}',box:[-.5,3,-.5,3,-.5,5],
+  given:'בסיס ריבוע שצלעו 2, גובה 4. {D} בראשית, {A} על ציר {x}, {C} על ציר {y}, {D′} על ציר {z}. {K} אמצע {AD′}.',
+  text:['{K = (1, 0, 2)}.','מוצאים את משוואת המישור {KBC′}, ואז {sin β = [[|n · u|#|n| · |u|]]} עם {~A′C~}.'],
+  sol:'{KBC′: 2x + z − 4 = 0} ; הזווית {46.91°}.',
+  legend:[['q','המישור KBC′','plane'],['u','A′C','line']],
+  build(g){const V=BXK;solid(g,V,BOX_E,'k',{r:.7});labelAll(g,V);const K=[1,0,2];g.pt(K,'k','K',{small:1});g.seg(V.A,V.D1,'k',{r:.5,dash:1});
+    g.plane([2,0,1],-4,'q',{op:.2});g.seg(V.A1,V.C,'u',{r:1.6});if(g.show){const X=meetLP(V.A1,sub(V.C,V.A1),[2,0,1],-4);g.pt(X,'s','',{small:1});}}});
+
+const BXC=prism8([0,0,0],[0,4,0],[2,0,0],[0,0,3]);
+add_({id:'t93',axes:1,part:'ה',ex:93,title:'תיבה: מרחק {C′} מהאלכסון {DB}',box:[-.5,3,-.5,5,-.5,4],
+  given:'{A} בראשית, {D} על ציר {x}, {B} על ציר {y}, {A′} על ציר {z}. {DD′ = 3 , DC = 4 , AD = 2}.',
+  text:['{F} – עקב האנך מ-{C′} ל-{DB}: נקודה כללית על {DB} ו-{~C′F~ · ~DB~ = 0}.','שטח המשולש {DC′B} = חצי בסיס {DB} כפול הגובה {C′F}.'],
+  sol:'{C′F = [[√305#5]] ≈ 3.49} ; {S = √61 ≈ 7.81}.',
+  legend:[['u','DB','line'],['s','C′F','line'],['q','המשולש DC′B','plane']],
+  build(g){const V=BXC;solid(g,V,BOX_E,'k',{r:.7});labelAll(g,V);g.seg(V.D,V.B,'u',{r:1.6});g.tri([V.D,V.C1,V.B],'q',.18);
+    const F=footLine(V.C1,V.D,sub(V.B,V.D));g.seg(V.C1,F,'s',{sol:1,r:1.6});g.pt(F,'s','F',{sol:1,small:1});g.right(F,sub(V.B,F),sub(V.C1,F),'s',{sol:1});}});
+
+add_({id:'t97',part:'ה',ex:97,title:'טטראדר: גובה ונפח',box:[0,2,-1,2,-1,2],
+  given:'{A(1, −1, 2) , B(1, 2, 1) , C(0, 1, 2) , D(2, 1, −1)}.',
+  text:['הגובה מ-{A} = מרחק {A} ממישור הפאה {BCD}.','נפח = [[1#3]] · שטח הבסיס · הגובה.'],
+  sol:'{BCD: 3x − y + 2z − 3 = 0} ; {h = [[5√14#14]] ≈ 1.34} ; {V = [[5#6]]}.',
+  legend:[['q','הפאה BCD','plane'],['s','הגובה','line']],
+  build(g){const V={A:[1,-1,2],B:[1,2,1],C:[0,1,2],D:[2,1,-1]};g.tri([V.B,V.C,V.D],'q',.22);solid(g,V,'A-B A-C A-D B-C C-D D-B');labelAll(g,V);
+    const F=footPlane(V.A,[3,-1,2],-3);g.seg(V.A,F,'s',{sol:1,r:1.6});g.pt(F,'s','',{sol:1,small:1});}});
+
+const BXB={A:[1,0,0],B:[0,0,0],C:[0,2,0],D:[1,2,0]};['A','B','C','D'].forEach(n=>BXB[n+'1']=add(BXB[n],[0,0,3]));
+add_({id:'t98',axes:1,part:'ה',ex:98,title:'תיבה: מרחק {C′} מהמישור {A′DB′}',box:[-.5,2,-.5,3,-.5,4],
+  given:'{B} בראשית, {A} על ציר {x}, {C} על ציר {y}. {BA = 1 , BC = 2 , B′B = 3}.',
+  text:['{A′(1, 0, 3) , D(1, 2, 0) , B′(0, 0, 3) , C′(0, 2, 3)}.','נפח הפירמידה {C′A′DB′} = [[1#3]] · שטח {A′DB′} · מרחק {C′} מהמישור.'],
+  sol:'מרחק {[[6√13#13]] ≈ 1.66} ; {S = [[√13#2]]} ; {V = 1}.',
+  legend:[['q','המשולש A′DB′','plane'],['s','האנך מ-C′','line']],
+  build(g){const V=BXB;solid(g,V,BOX_E,'k',{r:.7});labelAll(g,V);g.tri([V.A1,V.D,V.B1],'q',.25);
+    const n=cross(sub(V.D,V.A1),sub(V.B1,V.A1)),d=-dot(n,V.A1);const F=footPlane(V.C1,n,d);g.seg(V.C1,F,'s',{sol:1,r:1.6});g.pt(F,'s','',{sol:1,small:1});
+    ['A1','B1'].forEach(k=>g.seg(V.C1,V[k],'s',{sol:1,r:.6,dash:1}));g.seg(V.C1,V.D,'s',{sol:1,r:.6,dash:1});}});
+
+add_({id:'t99',axes:1,part:'ה',ex:99,title:'טטראדר ישר-זווית: מרחק {D} מהפאה',box:[-.5,7,-.5,4,-.5,3],
+  given:'{D} בראשית, {A(6, 0, 0) , B(0, 3, 0) , C(0, 0, 2)}.',
+  text:['משוואת {ABC}: שלוש נקודות על הצירים.','{π} – דרך אמצע {AB} וניצב ל-{BC}: הנורמל הוא {~BC~}.'],
+  sol:'{ABC: x + 2y + 3z − 6 = 0} ; מרחק {D}: {[[3√14#7]] ≈ 1.60} ; {π: 6y − 4z − 9 = 0} , מרחק {[[9√13#26]] ≈ 1.25}.',
+  legend:[['q','הפאה ABC','plane'],['s','האנך מ-D','line'],['p','המישור π','plane']],
+  build(g){const V={D:[0,0,0],A:[6,0,0],B:[0,3,0],C:[0,0,2]};g.tri([V.A,V.B,V.C],'q',.25);solid(g,V,'A-B B-C C-A D-A D-B D-C');labelAll(g,V);
+    const F=footPlane(V.D,[1,2,3],-6);g.seg(V.D,F,'s',{sol:1,r:1.6});g.pt(F,'s','',{sol:1,small:1});g.plane([0,6,-4],-9,'p',{sol:1,op:.12});}});
+
+add_({id:'t102',keepBox:1,part:'ה',ex:102,title:'מרחק בין ישרים מצטלבים',box:[-6,3,-1,7,-5,4],
+  given:'{A(−1, 1, −3) , B(−4, 3, −2)} על {ℓ₁} ; {C(1, 2, 2) , D(0, 5, −1)} על {ℓ₂}.',
+  text:['המישור {π} מכיל את {ℓ₁} ומקביל ל-{ℓ₂} (וקטורי הכיוון: {~AB~} ו-{~CD~}).','המרחק בין הישרים = מרחק נקודה של {ℓ₂} מהמישור {π}.'],
+  sol:'{π: 9x + 10y + 7z + 20 = 0} ; המרחק {[[63√230#230]] ≈ 4.15}. בוורוד: הקטע המאונך המשותף.',
+  legend:[['u','ℓ₁','line'],['v','ℓ₂','line'],['q','המישור π','plane'],['s','מאונך משותף','line']],
+  build(g){const A=[-1,1,-3],B=[-4,3,-2],C=[1,2,2],D=[0,5,-1];lines2(g,A,sub(B,A),C,sub(D,C));g.plane([9,10,7],20,'q',{sol:1,op:.14});
+    const [P,Q]=closest(A,sub(B,A),C,sub(D,C));g.seg(P,Q,'s',{sol:1,r:1.8});}});
+
+const PAR105=(()=>{const A=[12,-4,10],B=[6,2,-2],C=[0,2,2],C1=[8,14,16],D=add(A,sub(C,B)),h=sub(C1,C);const V={A,B,C,D};['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;})();
+add_({id:'t105',part:'ה',ex:105,title:'מקבילון: הישרים {A′M} ו-{BN}',box:[0,20,-5,14,-3,24],
+  given:'{A(12, −4, 10) , B(6, 2, −2) , C(0, 2, 2) , C′(8, 14, 16)}. {AM : MB = 2 : 1}, {N} אמצע {DC}.',
+  text:['{D = A + C − B} , {A′ = A + ~CC′~}.','הישרים לא מקבילים ואין להם נקודה משותפת ⇐ מצטלבים.'],
+  sol:'{M(8, 0, 2) , N(3, −1, 8)} ; המרחק {[[2√286#13]] ≈ 2.60}.',
+  legend:[['u','A′M','line'],['v','BN','line'],['s','מאונך משותף','line']],
+  build(g){const V=PAR105;solid(g,V,BOX_E,'k',{r:.6});labelAll(g,V);const M=[8,0,2],Nn=[3,-1,8];g.pt(M,'k','M',{small:1});g.pt(Nn,'k','N',{small:1});
+    g.seg(V.A1,M,'u',{r:1.6});g.seg(V.B,Nn,'v',{r:1.6});const [P,Q]=closest(V.A1,sub(M,V.A1),V.B,sub(Nn,V.B));g.seg(P,Q,'s',{sol:1,r:1.8});}});
+
+
+// ---------- מנוע תלת-ממד ----------
+const stage=document.getElementById('stage'),labelsEl=document.getElementById('labels');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));
+stage.prepend(renderer.domElement);
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(38,1,0.01,1000);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.12;
+// "כמו בדף": המודל נראה בדיוק כמו השרטוט בחוברת. ההיטל הוא העתקה לינארית L (2×3) + הזזה:
+//  • גוף על הצירים – ההיטל האלכסוני של g12v2.py (K = 0.5, זווית 38°): y ימינה, z למעלה, x יורד שמאלה-למטה בחצי מהאורך.
+//  • גוף שבחוברת מצויר סכמטית (מקבילון, פירמידה) – L מותאם כך שהקודקודים יפלו בדיוק על מקומם בשרטוט (שדה page בשקף,
+//    השיעורים מ-g12v2.py). כלומר קנה המידה של כל ציר מותאם לשרטוט, והגוף לא "שטוח" גם כשהנתונים שלו שטוחים.
+//  • שקף בלי שרטוט בחוברת – מבט תלת-ממדי רגיל, והכפתור מוסתר.
+// גרירה מסובבת את הגוף ונשארת בהיטל של הדף (הגוף לא "נפחס"); זום מגדיל. הכפתור "כמו בדף" מעביר לתלת-ממד אמיתי (פרספקטיבה)
+// מאותו כיוון מבט, ובחזרה – מאפס להיטל של השרטוט.
+const PK=.5,PTH=38*Math.PI/180,PEX=-PK*Math.cos(PTH),PEY=-PK*Math.sin(PTH);
+// CAV – ההיטל האלכסוני של החוברת (שתי שורות למסך + שורת עומק לאורך כיוון ההיטל, אל הצופה)
+const PDIR=[1,-PEX,-PEY],CAV=[[PEX,1,0],[PEY,0,1],unit(PDIR)];
+const OBL={A:[[1,0,0],[0,1,0],[0,0,1]],fit:0};
+// שרטוט סכמטי: מ-L המותאם (2×3) בונים "גוף של הדף" – העתקה A (3×3) כך ש-CAV∘A = L, כלומר בהיטל הוא בדיוק השרטוט.
+// יש משפחה של פתרונות A = A₀ + PDIR·gᵀ (A₀ = C⁺L); בוחרים g שבו שלושת המקצועות שיוצאים מהקודקוד הראשון בשרטוט
+// (E – למקבילון AB, AD, AA′; לפירמידה AB, AC, AD) הכי קרובים למקצועות ניצבים ושווים (יחס ערכים סינגולריים מינימלי של A·E, בלי שיקוף) –
+// כך בסיבוב הגוף נראה כמו מקבילון/פירמידה "רגילים" ולא שטוח.
+function sym3eig(M){const a=M.map(r=>r.slice());for(let it=0;it<40;it++){let p=0,q=1;if(Math.abs(a[0][2])>Math.abs(a[p][q]))[p,q]=[0,2];if(Math.abs(a[1][2])>Math.abs(a[p][q]))[p,q]=[1,2];
+    if(Math.abs(a[p][q])<1e-12)break;const th=.5*Math.atan2(2*a[p][q],a[q][q]-a[p][p]),c=Math.cos(th),s_=Math.sin(th);
+    for(let k=0;k<3;k++){const x=a[k][p],y=a[k][q];a[k][p]=c*x-s_*y;a[k][q]=s_*x+c*y;}for(let k=0;k<3;k++){const x=a[p][k],y=a[q][k];a[p][k]=c*x-s_*y;a[q][k]=s_*x+c*y;}}
+  return [a[0][0],a[1][1],a[2][2]];}
+function niceA(L,E){const C=[CAV[0],CAV[1]],G=[[dot(C[0],C[0]),dot(C[0],C[1])],[dot(C[1],C[0]),dot(C[1],C[1])]],dt=G[0][0]*G[1][1]-G[0][1]*G[1][0],
+    Gi=[[G[1][1]/dt,-G[0][1]/dt],[-G[1][0]/dt,G[0][0]/dt]];
+  // A₀ = Cᵀ G⁻¹ L  (3×3)
+  const A0=[0,1,2].map(i=>[0,1,2].map(j=>{let v=0;for(let a=0;a<2;a++)for(let b=0;b<2;b++)v+=C[a][i]*Gi[a][b]*L[b][j];return v;}));
+  const d=unit(PDIR),mk=g=>A0.map((r,i)=>r.map((v,j)=>v+d[i]*g[j]));
+  const det=A=>dot(A[0],cross(A[1],A[2]));
+  const cost=g=>{const A=mk(g),M=[0,1,2].map(i=>E.map(e=>dot(A[i],e))),MtM=[0,1,2].map(i=>[0,1,2].map(j=>M[0][i]*M[0][j]+M[1][i]*M[1][j]+M[2][i]*M[2][j])),ev=sym3eig(MtM).map(x=>Math.max(x,1e-12));
+    return Math.sqrt(Math.max(...ev)/Math.min(...ev))+(det(A)<=0?1e6:0);};
+  const sc=Math.max(...L.flat().map(Math.abs))||1;let best=null,bc=1e18;
+  for(const s0 of [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1],[1,1,1],[-1,-1,-1]]){let g=mul(s0,sc),c=cost(g),st=sc;
+    for(let it=0;it<400&&st>sc*1e-6;it++){let imp=false;for(let k=0;k<3;k++)for(const sg of [1,-1]){const h=g.slice();h[k]+=sg*st;const ch=cost(h);if(ch<c){c=ch;g=h;imp=true;}}if(!imp)st/=2;}
+    if(c<bc){bc=c;best=g;}}
+  return mk(best);}
+const pcam=new THREE.OrthographicCamera(-1,1,1,-1,.01,1000);pcam.position.set(0,0,0);pcam.updateMatrixWorld();
+let pageMode=false,pageBox=null,pageMap=null;
+// התאמה בריבועים פחותים: שורה r של [L|c] פותרת (Σ q qᵀ) a = Σ q·t, עם q = (x, y, z, 1)
+function fitMap(pts3,pts2){const A=[[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],b=[[0,0,0,0],[0,0,0,0]];
+  pts3.forEach((p,k)=>{const q=[p[0],p[1],p[2],1];for(let i=0;i<4;i++){for(let j=0;j<4;j++)A[i][j]+=q[i]*q[j];b[0][i]+=q[i]*pts2[k][0];b[1][i]+=q[i]*pts2[k][1];}});
+  const sol=r=>{const M=A.map((row,i)=>row.concat([b[r][i]]));for(let c=0;c<4;c++){let p=c;for(let i=c+1;i<4;i++)if(Math.abs(M[i][c])>Math.abs(M[p][c]))p=i;[M[c],M[p]]=[M[p],M[c]];
+      for(let i=0;i<4;i++)if(i!==c){const f=M[i][c]/M[c][c];for(let j=c;j<5;j++)M[i][j]-=f*M[c][j];}}return M.map((row,i)=>row[4]/row[i]);};
+  const r0=sol(0),r1=sol(1);return {L:[r0.slice(0,3),r1.slice(0,3)],c:[r0[3],r1[3]],fit:1};}
+let Q0=new THREE.Quaternion(),DIST0=1,lastQ=new THREE.Quaternion(),lastD=0;
+// נקודת המוצא של מבט "כמו בדף": סיבוב המצלמה הנוכחי = השרטוט בדיוק (ROT = זהות); הציר – מרכז הסיבוב של OrbitControls
+function pageStart(){const t=controls.target;PIV=[t.z,t.x,t.y];Q0.copy(camera.quaternion);DIST0=camera.position.distanceTo(t)||1;ROTQ=new THREE.Quaternion();lastQ.copy(camera.quaternion);lastD=DIST0;}
+let PFIT=[];
+function pageFit(F){pageMap=F.map;PFIT=F.fit;const q=F.fit.map(p=>T(p));let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9,z0=1e9,z1=-1e9;
+  q.forEach(v=>{x0=Math.min(x0,v.x);x1=Math.max(x1,v.x);y0=Math.min(y0,v.y);y1=Math.max(y1,v.y);z0=Math.min(z0,v.z);z1=Math.max(z1,v.z);});
+  const c=T(PIV);pageBox={x0,x1,y0,y1,z0,z1,cx:c.x,cy:c.y,hx:Math.max(c.x-x0,x1-c.x),hy:Math.max(c.y-y0,y1-c.y)};pageProj();}
+// הסצנה כבר מוטלת (T עם TM): מצלמה אורתוגרפית בראשית שמביטה אל −Z; העומק (z גדול = קרוב לצופה) מוזז לטווח החיתוך.
+// המסגרת סימטרית סביב מרכז הסיבוב, כך שגם בסיבוב הגוף נשאר במרכז; זום = היחס בין המרחק ההתחלתי של המצלמה למרחק הנוכחי.
+// בסיבוב המסגרת רק גדלה (לפי הנקודות של הגוף בסיבוב הנוכחי) – הגוף לא נחתך, וגם לא "קופץ" בגודל כל הזמן
+function pageProj(){if(!pageBox)return;const B=pageBox;
+  if(TM&&ROTQ)PFIT.forEach(p=>{const v=T(p);B.hx=Math.max(B.hx,Math.abs(v.x-B.cx));B.hy=Math.max(B.hy,Math.abs(v.y-B.cy));B.z0=Math.min(B.z0,v.z);B.z1=Math.max(B.z1,v.z);});
+  const {x0,x1,y0,y1,z0,z1,cx,cy}=B,zf=DIST0/(camera.position.distanceTo(controls.target)||DIST0);
+  let hw=B.hx*1.1/zf,hh=B.hy*1.1/zf;const asp=camera.aspect||1;if(hw/hh>asp)hh=hw/asp;else hw=hh*asp;
+  const span=Math.max(z1-z0,x1-x0,y1-y0)||1,far=Math.max(z1,cx,cy)+span*4,near=Math.min(z0,-span)-span*4;
+  const O=new THREE.Matrix4().makeOrthographic(cx-hw,cx+hw,cy+hh,cy-hh,0,far-near);
+  pcam.projectionMatrix.copy(O).multiply(new THREE.Matrix4().makeTranslation(0,0,-far));pcam.projectionMatrixInverse.copy(pcam.projectionMatrix).invert();}
+// בכל פריים במבט "כמו בדף": אם המצלמה זזה (גרירה, זום, סיבוב אוטומטי) – מחשבים את הסיבוב היחסי ומטילים מחדש
+function pageTick(){if(!pageMode||!TM)return;const d=camera.position.distanceTo(controls.target);
+  if(lastQ.angleTo(camera.quaternion)<1e-6&&Math.abs(d-lastD)<1e-9)return;lastQ.copy(camera.quaternion);lastD=d;
+  ROTQ=Q0.clone().multiply(camera.quaternion.clone().invert());reproject();pageProj();}
+function setPage(on){const F=frame(SL[state.i]);on=on&&!!F.map;pageMode=on;controls.enablePan=!on;const b=document.getElementById('page');
+  if(b){b.hidden=!F.map;b.setAttribute('aria-pressed',on);}
+  const h=document.getElementById('hint');
+  if(h)h.textContent=on?(F.map.fit?'כמו בדף – קנה המידה של הצירים מותאם לשרטוט · גררו לסיבוב, הכפתור "כמו בדף" – לתלת-ממד אמיתי':'מבט כמו בדף · גררו לסיבוב · גלגלת לזום'):'תלת-ממד אמיתי · גררו לסיבוב · גלגלת לזום · מקש ימני בעכבר להזזה';}
+// ברירת המחדל לשקף: מבט "כמו בדף" כשיש לו שרטוט בחוברת; אחרת – מבט תלת-ממדי רגיל
+function viewReset(){build(false);}
+const cam=()=>pageMode?pcam:camera;
+scene.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.55);dl.position.set(3,6,4);scene.add(dl);
+let root=new THREE.Group();scene.add(root);let labels=[];
+const css=n=>getComputedStyle(document.documentElement).getPropertyValue('--'+n).trim();
+const col=k=>new THREE.Color(css(C[k]||k));
+const state={i:0,sol:false,par:null};
+
+function makeG(box,show,noTicks,mode){
+  const sx=box[1]-box[0],sy=box[3]-box[2],sz=box[5]-box[4],size=Math.max(sx,sy,sz);
+  // במבט "כמו בדף" הסצנה בקנה המידה של השרטוט – הרדיוסים לפי גודל הגוף המוטל
+  // (לפי הנקודות של הגוף עצמו – מקבילון "שטוח" נמתח מאוד בכיוון הניצב לבסיס, ופינות התיבה החוסמת היו מנפחות את הרדיוס)
+  let kS=1;if(TM){let a0=1e9,a1=-1e9,b0=1e9,b1=-1e9;SCALEPTS.forEach(p=>{const v=T(p);a0=Math.min(a0,v.x);a1=Math.max(a1,v.x);b0=Math.min(b0,v.y);b1=Math.max(b1,v.y);});kS=Math.max(a1-a0,b1-b0)/size||1;}
+  const R=size*0.0042*kS;
+  const G={size,R,objs:[],show};
+  const mat=(k,o)=>new THREE.MeshLambertMaterial({color:col(k),transparent:!!o,opacity:o||1});
+  const lab=(p,text,k,cls)=>{const el=document.createElement('div');el.className='lab'+(cls?' '+cls:'');el.innerHTML=L(text);el.style.color=css(C[k]||k);labelsEl.appendChild(el);const l={el,pos:T(p),cls:cls||'',w:0,h:0};labels.push(l);UPD.push(()=>l.pos.copy(T(p)));};
+  // גליל/חרוט בגובה 1 שנמתח בין שתי נקודות (מחושב מחדש בכל סיבוב במבט "כמו בדף")
+  const Y1=new THREE.Vector3(0,1,0);
+  const stretch=(m,a,b)=>{const f=()=>{const A=T(a),B=T(b),dir=B.clone().sub(A),l=dir.length();m.visible=l>1e-9;if(!m.visible)return;
+      m.position.copy(A).add(B).multiplyScalar(.5);m.quaternion.setFromUnitVectors(Y1,dir.multiplyScalar(1/l));m.scale.set(1,l,1);};f();UPD.push(f);root.add(m);};
+  const tube=(a,b,r,k,o)=>{if(len(sub(b,a))<1e-9)return;stretch(new THREE.Mesh(new THREE.CylinderGeometry(r,r,1,12,1,true),mat(k,o)),a,b);};
+  const ok=o=>!(o&&o.sol)||show;
+  G.seg=(a,b,k,o={})=>{if(!ok(o))return;const r=R*(o.r||1);
+    if(o.dash){const l=len(sub(b,a)),n=Math.max(2,Math.round(l/(size*0.03)));for(let i=0;i<n;i++){if(i%2)continue;tube(add(a,mul(sub(b,a),i/n)),add(a,mul(sub(b,a),(i+1)/n)),r,k);}}
+    else tube(a,b,r,k);
+    if(o.label)lab(mul(add(a,b),.5),o.label,k);};
+  G.pt=(p,k,text,o={})=>{if(!ok(o))return;const s=new THREE.Mesh(new THREE.SphereGeometry(R*(o.small?2.4:3.4),20,14),mat(k));const f=()=>s.position.copy(T(p));f();UPD.push(f);root.add(s);if(text)lab(p,text,k);};
+  G.vec=(a,v,k,text,o={})=>{if(!ok(o))return;const l=len(v),hl=Math.min(size*0.05,l*.35),b=add(a,v),c=add(a,mul(v,(l-hl)/l));tube(a,c,R*1.5,k);
+    stretch(new THREE.Mesh(new THREE.ConeGeometry(R*4.2,1,18),mat(k)),c,b);if(text)lab(add(a,mul(v,.62)),text,k);};
+  G.line=(A,u,k,o={})=>{if(!ok(o))return;let t0=-Infinity,t1=Infinity;
+    for(let i=0;i<3;i++){const lo=box[2*i],hi=box[2*i+1];if(Math.abs(u[i])<1e-12){if(A[i]<lo||A[i]>hi)return;continue;}
+      let a=(lo-A[i])/u[i],b=(hi-A[i])/u[i];if(a>b)[a,b]=[b,a];t0=Math.max(t0,a);t1=Math.min(t1,b);}
+    if(t0>=t1)return;G.seg(add(A,mul(u,t0)),add(A,mul(u,t1)),k,{dash:o.dash,r:o.r||1.15});};
+  G.plane=(n,d,k,o={})=>{if(!ok(o))return;const c=[];for(let i=0;i<8;i++)c.push([box[i&1],box[2+((i>>1)&1)],box[4+((i>>2)&1)]]);
+    const E=[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]],P=[];
+    E.forEach(([i,j])=>{const f0=dot(n,c[i])+d,f1=dot(n,c[j])+d;if(f0===0)P.push(c[i]);if(f0*f1<0)P.push(add(c[i],mul(sub(c[j],c[i]),f0/(f0-f1))));});
+    if(P.length<3)return;const cen=mul(P.reduce(add,[0,0,0]),1/P.length);let e1=unit(cross(n,Math.abs(n[0])<.9*len(n)?[1,0,0]:[0,1,0])),e2=unit(cross(n,e1));
+    P.sort((a,b)=>Math.atan2(dot(sub(a,cen),e2),dot(sub(a,cen),e1))-Math.atan2(dot(sub(b,cen),e2),dot(sub(b,cen),e1)));
+    G.tri(P,k,o.op||.3);P.forEach((p,i)=>tube(p,P[(i+1)%P.length],R*.55,k,.8));};
+  G.tri=(P,k,op=.35)=>{const Q=[];for(let i=1;i<P.length-1;i++)Q.push(P[0],P[i],P[i+1]);
+    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(Q.length*3),3));
+    const f=()=>{const a=geo.attributes.position;Q.forEach((p,i)=>{const v=T(p);a.setXYZ(i,v.x,v.y,v.z);});a.needsUpdate=true;geo.computeBoundingSphere();};f();UPD.push(f);
+    const m=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:col(k),transparent:true,opacity:op,side:THREE.DoubleSide,depthWrite:false}));root.add(m);};
+  G.arc=(V,a,b,k,o={})=>{if(!ok(o))return;let A=unit(a),B=unit(b);if(!o.obtuse&&dot(A,B)<0)B=mul(B,-1);
+    const th=Math.acos(Math.max(-1,Math.min(1,dot(A,B)))),W=unit(sub(B,mul(A,dot(A,B)))),r=o.rad||size*.12,pts=[];
+    for(let i=0;i<=40;i++){const s=th*i/40;pts.push(add(V,add(mul(A,r*Math.cos(s)),mul(W,r*Math.sin(s)))));}
+    for(let i=0;i<40;i++)tube(pts[i],pts[i+1],R*1.3,k);const mid=th/2;if(o.label)lab(add(V,add(mul(A,r*1.35*Math.cos(mid)),mul(W,r*1.35*Math.sin(mid)))),o.label,k);};
+  G.right=(V,a,b,k,o={})=>{if(!ok(o))return;const s=size*.04,A=mul(unit(a),s),Bv=sub(b,mul(unit(a),dot(b,unit(a))));const B=mul(unit(Bv),s);
+    G.seg(add(V,A),add(add(V,A),B),k,{r:.9});G.seg(add(V,B),add(add(V,A),B),k,{r:.9});};
+  // צירים ורשת – נבנים אחרי הגוף (G.finish), כדי שהתוויות של הגוף יקבלו עדיפות בפריסה.
+  G.finish=()=>{
+  if(mode==='gizmo')return;   // הגוף רחוק מהראשית: בלי צירים ורשת – כיווני הצירים מוצגים בפינת המסך (giz)
+  const gm=new THREE.LineBasicMaterial({color:col('grid')}),gp=[];const st=niceStep(Math.max(sx,sy)/8);
+  for(let x=Math.ceil(box[0]/st)*st;x<=box[1]+1e-9;x+=st)gp.push([x,box[2],0],[x,box[3],0]);
+  for(let y=Math.ceil(box[2]/st)*st;y<=box[3]+1e-9;y+=st)gp.push([box[0],y,0],[box[1],y,0]);
+  {const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(gp.length*3),3));
+   const f=()=>{const a=geo.attributes.position;gp.forEach((p,i)=>{const v=T(p);a.setXYZ(i,v.x,v.y,v.z);});a.needsUpdate=true;geo.computeBoundingSphere();};f();UPD.push(f);
+   root.add(new THREE.LineSegments(geo,gm));}
+  ['x','y','z'].forEach((nm,i)=>{const e=[0,0,0];e[i]=1;const lo=Math.min(box[2*i],0),hi=Math.max(box[2*i+1],0)+size*.1;
+    G.seg(mul(e,lo),mul(e,hi-size*.04),'k',{r:.8});stretch(new THREE.Mesh(new THREE.ConeGeometry(R*3,1,16),mat('k')),mul(e,hi-size*.045),mul(e,hi));
+    lab(mul(e,hi+size*.07),nm,'k','ax');if(noTicks)return;const s2=niceStep((hi-lo)/5);
+    for(let v=Math.ceil(lo/s2)*s2;v<hi-size*.06;v+=s2){if(Math.abs(v)<1e-9)continue;const p=mul(e,v);
+      const off=i===2?[0,-size*.03,0]:[0,0,-size*.03];lab(add(p,off),N(v),'k','tk');}});
+  };
+  return G;}
+function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x))),f=x/p;return (f<1.5?1:f<3.5?2:f<7.5?5:10)*p;}
+
+function fitCamera(F,d0){const pts=F.fit,dm=unit(d0||F.dir||[1.25,.8,.42]),[u,w]=basis(dm);
+  let c=[0,0,0];{const lo=[1e9,1e9,1e9],hi=[-1e9,-1e9,-1e9];pts.forEach(p=>{for(let i=0;i<3;i++){lo[i]=Math.min(lo[i],p[i]);hi[i]=Math.max(hi[i],p[i]);}});c=mul(add(lo,hi),.5);}
+  let su=0,sw=0,sd=0;pts.forEach(p=>{const q=sub(p,c);su=Math.max(su,Math.abs(dot(q,u)));sw=Math.max(sw,Math.abs(dot(q,w)));sd=Math.max(sd,Math.abs(dot(q,dm)));});
+  const vf=camera.fov*Math.PI/180,hf=2*Math.atan(Math.tan(vf/2)*camera.aspect);
+  const dist=(Math.max(su/Math.tan(hf/2),sw/Math.tan(vf/2))+sd)*1.1,size=Math.max(su,sw,sd)*2||1;
+  const tgt=T0(c);controls.target.copy(tgt);camera.position.copy(tgt.clone().add(T0(dm).multiplyScalar(dist)));
+  camera.near=size*.01;camera.far=size*60;camera.updateProjectionMatrix();controls.update();}
+
+
+// מעבר "יבש" על השקף: אוסף את כל הנקודות של הגוף (כולל הפתרון) כדי לחשב את התיבה החוסמת שלו.
+function frame(s){if(s._fr)return s._fr;const P=[],r=(...q)=>q.forEach(p=>P.push(p)),z=()=>{};
+  const NP={},D={show:true,size:1,R:0,seg:(a,b)=>r(a,b),pt:(p,k,t)=>{r(p);if(t)NP[t]=p;},vec:(a,v)=>r(a,add(a,v)),tri:q=>r(...q),line:z,plane:z,arc:z,right:z,finish:z};
+  s.build(D,s.param?s.param.init:null);
+  let bb;if(s.keepBox||!P.length)bb=s.box.slice();else{bb=[1e9,-1e9,1e9,-1e9,1e9,-1e9];P.forEach(p=>{for(let i=0;i<3;i++){bb[2*i]=Math.min(bb[2*i],p[i]);bb[2*i+1]=Math.max(bb[2*i+1],p[i]);}});}
+  const size=Math.max(bb[1]-bb[0],bb[3]-bb[2],bb[5]-bb[4])||1;
+  for(let i=0;i<3;i++){const m=(bb[2*i]+bb[2*i+1])/2,h=Math.max((bb[2*i+1]-bb[2*i])/2,size*.08);bb[2*i]=m-h*1.12;bb[2*i+1]=m+h*1.12;}
+    const mode=(s.axes||s.keepBox)?'axes':'gizmo';   // צירים מלאים רק כשהגוף "יושב" על הצירים; אחרת – חצי כיוון קטנים
+  const view=mode==='axes'?[0,1,2].flatMap(i=>[Math.min(bb[2*i],0),Math.max(bb[2*i+1],0)]):bb;   // במצב צירים – גם הראשית בתמונה
+  // הנקודות שהמצלמה צריכה להכיל: הגוף, ובמצב צירים – גם הראשית וקצות הצירים; במצב "חצי כיוון" – גם החצים בפינה
+  const fit=P.slice();const sz=Math.max(view[1]-view[0],view[3]-view[2],view[5]-view[4]);
+  if(mode==='axes'){fit.push([0,0,0]);[0,1,2].forEach(i=>{const e=[0,0,0];e[i]=Math.max(view[2*i+1],0)+sz*.17;fit.push(e);});}
+  if(s.keepBox)for(let i=0;i<8;i++)fit.push([s.box[i&1],s.box[2+((i>>1)&1)],s.box[4+((i>>2)&1)]]);
+  // כיוון מבט: במצב צירים – כמו בשרטוט בחוברת (x כלפי הצופה). אחרת – הכיוון שבו הגוף נראה "רחב" ביותר
+  // (שטח המלבן החוסם של ההיטל מקסימלי), עם העדפה קלה לכיוון הרגיל, כדי שלא יתקבל גוף "שטוח" שהמימד הארוך שלו מכוון אל הצופה.
+  let dir=s.view||null;
+  if(!dir&&mode!=='axes'&&P.length>3){const az0=32.6;let best=-1;
+    for(let az=0;az<360;az+=15)for(const el of [18,30,42]){const a=az*Math.PI/180,e=el*Math.PI/180,d=[Math.cos(e)*Math.cos(a),Math.cos(e)*Math.sin(a),Math.sin(e)];
+      const [u,w]=basis(d);let u0=1e9,u1=-1e9,w0=1e9,w1=-1e9;P.forEach(p=>{const pu=dot(p,u),pw=dot(p,w);u0=Math.min(u0,pu);u1=Math.max(u1,pu);w0=Math.min(w0,pw);w1=Math.max(w1,pw);});
+      const da=Math.abs(((az-az0+540)%360)-180),sc=(u1-u0)*(w1-w0)*(1-.18*da/180)*(1-.1*Math.abs(el-30)/30);if(sc>best){best=sc;dir=d;}}}
+  // מפת ההיטל "כמו בדף": מותאמת לשרטוט הסכמטי (page), או ההיטל האלכסוני לגוף שעל הצירים
+  let map=null;if(s.page){const ks=Object.keys(s.page).filter(k=>NP[k]);const E=ks.slice(1,4).map(k=>sub(NP[k],NP[ks[0]]));map={A:niceA(fitMap(ks.map(k=>NP[k]),ks.map(k=>s.page[k])).L,E),fit:1};}else if(mode==='axes')map=OBL;
+  return s._fr={bb,mode,view,fit,dir,map};}
+function basis(d){const n=unit(d),u=unit(cross([0,0,1],n)),w=cross(n,u);return [u,w];}
+function build(keepCam){
+  const s=SL[state.i];scene.remove(root);root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});
+  if(!keepCam){setPage(true);fitCamera(frame(s));}   // שקף חדש / איפוס: "כמו בדף" כשיש לשקף שרטוט בחוברת; המצלמה (לתלת-ממד) – במבט הרגיל של השקף
+  {const F0=frame(s);TM=pageMode&&F0.map?F0.map.A:null;SCALEPTS=F0.fit;if(!keepCam&&TM)pageStart();if(!TM)ROTQ=null;}
+  UPD=[];
+  root=new THREE.Group();scene.add(root);labelsEl.innerHTML='';labels=[];
+  scene.background=new THREE.Color(css('stage'));
+  const F=frame(s);const box=s.keepBox?s.box:F.view;
+  const g=makeG(box,state.sol,s.noTicks,F.mode);s.build(g,state.par);g.finish();
+  {const gz=document.getElementById('giz');if(F.mode==='gizmo')gz.removeAttribute('hidden');else gz.setAttribute('hidden','');}
+  if(!keepCam&&pageMode)pageFit(F);}
+
+function panel(){
+  const s=SL[state.i],el=document.getElementById('panel');
+  const lg=(s.legend||[]).map(([k,t,ty])=>`<span><i class="${ty==='plane'?'pl':ty==='dot'?'dot':''}" style="background:var(--${C[k]||k})"></i>${H(t)}</span>`).join('');
+  el.innerHTML=`<div class="eyebrow">חלק ${s.part} · ${PARTS[s.part]} · תרגיל ${s.ex}</div>
+   <h2>${H(s.title)}</h2>
+   <div class="blk"><h3>נתון</h3><p>${H(s.given)}</p></div>
+   <div class="blk"><h3>מה רואים במודל</h3><ul>${s.text.map(t=>`<li>${H(t)}</li>`).join('')}</ul></div>
+   <div class="legend">${lg}</div>
+   <div class="blk sol" ${state.sol?'':'hidden'}><h3>פתרון</h3><p>${H(s.sol)}</p></div>`;
+  document.getElementById('count').textContent=(state.i+1)+' / '+SL.length;
+  document.getElementById('jump').value=state.i;
+  const sb=document.getElementById('sliderbox'),par=document.getElementById('par');
+  if(s.param){sb.hidden=false;document.getElementById('parlab').textContent=s.param.name;Object.assign(par,{min:s.param.min,max:s.param.max,step:s.param.step});par.value=state.par;
+    document.getElementById('parout').textContent=s.param.name+' = '+N(state.par);}else sb.hidden=true;
+  const b=document.getElementById('solbtn');b.setAttribute('aria-pressed',state.sol);b.textContent=state.sol?'הסתר פתרון':'הצג פתרון';}
+
+function go(i){state.i=(i+SL.length)%SL.length;state.sol=false;const s=SL[state.i];state.par=s.param?s.param.init:null;
+  panel();build(false);try{history.replaceState(null,'','#'+s.id);}catch(e){}}
+
+// בחירת שקף
+const jump=document.getElementById('jump');
+SL.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=`חלק ${s.part}, תרגיל ${s.ex} – ${s.title.replace(/[{}]/g,'')}`;jump.appendChild(o);});
+jump.onchange=()=>go(+jump.value);
+document.getElementById('next').onclick=()=>go(state.i+1);
+document.getElementById('prev').onclick=()=>go(state.i-1);
+document.getElementById('solbtn').onclick=()=>{state.sol=!state.sol;panel();build(true);};
+document.getElementById('reset').onclick=viewReset;
+// לתלת-ממד אמיתי מאותו כיוון מבט; ובחזרה – ההיטל של השרטוט מהכיוון הנוכחי של המצלמה (הגוף חוזר בדיוק לשרטוט)
+document.getElementById('page').onclick=()=>{if(pageMode){setPage(false);build(true);}else{setPage(true);pageStart();build(true);pageFit(frame(SL[state.i]));}};
+const rot=document.getElementById('rot');rot.onclick=()=>{controls.autoRotate=!controls.autoRotate;controls.autoRotateSpeed=1.4;rot.setAttribute('aria-pressed',controls.autoRotate);};
+document.getElementById('fs').onclick=()=>{const d=document.documentElement;try{(document.fullscreenElement?document.exitFullscreen():d.requestFullscreen()).catch(()=>{});}catch(e){}};
+document.getElementById('par').oninput=e=>{state.par=+e.target.value;document.getElementById('parout').textContent=SL[state.i].param.name+' = '+N(state.par);build(true);};
+window.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  if(e.key==='ArrowLeft'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(state.i+1);}
+  else if(e.key==='ArrowRight'||e.key==='PageUp'){e.preventDefault();go(state.i-1);}
+  else if(e.key==='s'||e.key==='ס'){document.getElementById('solbtn').click();}});
+function onHash(){const h=decodeURIComponent(location.hash.slice(1));let i=SL.findIndex(x=>x.id===h||x.old===h);if(i<0)i=0;if(i!==state.i||!labels.length)go(i);}
+window.addEventListener('hashchange',onHash);
+// ערכת צבעים
+const reTheme=()=>{panel();build(true);};
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',reTheme);}catch(e){}
+new MutationObserver(reTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/Math.max(1,h);camera.updateProjectionMatrix();pageProj();}
+new ResizeObserver(resize).observe(stage);
+const v=new THREE.Vector3();
+function loop(){requestAnimationFrame(loop);controls.update();pageTick();renderer.render(scene,cam());
+  const w=stage.clientWidth,h=stage.clientHeight;
+  // כיווני הצירים בפינה (רק כשאין צירים בסצנה): ההיטל של שלושת וקטורי היחידה לפי סיבוב המצלמה
+  const gz=document.getElementById('giz');if(!gz.hasAttribute('hidden')){const qi=camera.quaternion.clone().invert();let h2='';
+    [['x',[1,0,0]],['y',[0,1,0]],['z',[0,0,1]]].forEach(([nm,e])=>{let X,Y;if(pageMode&&TM){const o=T(PIV),D=[[1,0,0],[0,1,0],[0,0,1]].map(q=>T(add(PIV,q)).sub(o)),k=Math.max(...D.map(d=>Math.hypot(d.x,d.y)))||1,d=T(add(PIV,e)).sub(o);X=d.x/k*24;Y=-d.y/k*24;}else{const p=T(e).applyQuaternion(qi);X=p.x*24;Y=-p.y*24;}
+      h2+=`<line x1="0" y1="0" x2="${X.toFixed(1)}" y2="${Y.toFixed(1)}"/><circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="2.2" fill="var(--axis)"/><text x="${(X*1.38).toFixed(1)}" y="${(Y*1.38+5).toFixed(1)}" text-anchor="middle">${nm}</text>`;});
+    gz.innerHTML=h2;}
+  // פריסת תוויות: כל תווית מנסה כמה מקומות סביב הנקודה ובוחרת את הראשון שלא עולה על תווית קודמת.
+  // תוויות הגוף נוצרות לפני תוויות הצירים ולכן מקבלות עדיפות; שנתה שאין לה מקום – מוסתרת.
+  const placed=[],hit=(a)=>placed.some(b=>a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h);
+  const C_=cam();for(const l of labels){v.copy(l.pos).project(C_);if(v.z>1||v.z<-1){l.el.style.display='none';continue;}
+    l.el.style.display='';if(!l.w){l.w=l.el.offsetWidth;l.h=l.el.offsetHeight;}
+    const x=(v.x+1)/2*w,y=(1-v.y)/2*h,W=l.w,Hh=l.h,g=5;
+    const cand=l.cls==='tk'?[[x-W/2,y-Hh/2]]:l.cls==='ax'?[[x-W/2,y-Hh/2],[x+g,y-Hh/2],[x-W-g,y-Hh/2],[x-W/2,y-Hh-g]]:[[x-W/2,y-Hh-g],[x+g,y-Hh*.9],[x-W-g,y-Hh*.9],[x-W/2,y+g],[x+g,y+g*.4],[x-W-g,y+g*.4],[x-W/2,y-2*Hh-g]];
+    let pick=null;for(const [cx,cy] of cand){const r={x:cx,y:cy,w:W,h:Hh};if(!hit(r)){pick=r;break;}}
+    if(!pick){if(l.cls==='tk'){l.el.style.display='none';continue;}pick={x:cand[0][0],y:cand[0][1],w:W,h:Hh};}
+    placed.push(pick);l.el.style.left=pick.x+'px';l.el.style.top=pick.y+'px';}}
+state.i=-1;resize();onHash();loop();
+</script>
+
+</body>
+</html>
