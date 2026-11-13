@@ -231,14 +231,17 @@ add_({id:'kdpl',axes:1,part:'מ',ex:'מושג',title:'מרחק נקודה מיש
 // ===== חלק ד – מישורים (6.4) =====
 const PAGE_PAR={A:[0,0],B:[2.2,0],D:[.75,.55],'A′':[.45,2],C:[2.95,.55],'B′':[2.65,2],'C′':[3.4,2.55],'D′':[1.2,2.55]};
 function lines2(g,A,u,B,v){g.line(A,u,'u');g.line(B,v,'v');g.pt(A,'u',P3(A),{small:1});g.pt(B,'v',P3(B),{small:1});g.vec(A,u,'u','');g.vec(B,v,'v','');}
-const PAR69=(()=>{const V={A:[1,2,0],B:[3,0,2],C:[4,0,1],D:[2,2,-1]};const h=[6,12,6];['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;})();
-add_({id:'t69',page:PAGE_PAR,part:'ד',ex:'69, 106',title:'מקבילון: מישור הבסיס וגובה',box:[0,11,-1,15,-2,9],
-  given:'{A(1, 2, 0) , C(4, 0, 1) , D(2, 2, −1) , B′(9, 12, 8)}.',
-  text:['{B = A + C − D = (3, 0, 2)}.','הנורמל של מישור הבסיס ניצב ל-{~AB~ = (2, −2, 2)} ול-{~AD~ = (1, 0, −1)}.','בפתרון: הגובה מ-{B′} הוא בדיוק המקצוע {BB′}, כי {~BB′~ = (6, 12, 6)} מקביל לנורמל {(1, 2, 1)}.'],
-  sol:'בסיס: {x + 2y + z − 5 = 0}. {S = 2√6} , {h = 6√6} , {V = 72}.',
-  legend:[['q','מישור הבסיס','plane'],['s','הגובה','line']],
-  build(g){const V=PAR69;solid(g,V,BOX_E);labelAll(g,V);g.tri([V.A,V.B,V.C,V.D],'q',.18);
-    g.seg(V.B1,V.B,'s',{sol:1,r:2});g.right(V.B,sub(V.B1,V.B),sub(V.A,V.B),'s',{sol:1});}});
+const PAR69=(()=>{const V={A:[1,2,0],B:[3,0,2],C:[4,0,1],D:[2,2,-1]};const h=[1,1,3];['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;})();
+add_({id:'t69',page:PAGE_PAR,part:'ד',ex:'69, 106',title:'מקבילון: מישור הבסיס וגובה',box:[0,6,-2,4,-2,6],
+  given:'{A(1, 2, 0) , C(4, 0, 1) , D(2, 2, −1) , B′(4, 1, 5)}.',
+  text:['{B = A + C − D = (3, 0, 2)}.','הנורמל של מישור הבסיס ניצב ל-{~AB~ = (2, −2, 2)} ול-{~AD~ = (1, 0, −1)}.','בפתרון: הגובה הוא המרחק של {B′} ממישור הבסיס – האנך {B′H}. המקצוע {BB′ = (1, 1, 3)} אינו ניצב לבסיס (המקבילון משופע), לכן הגובה קצר ממנו.'],
+  sol:'בסיס: {x + 2y + z − 5 = 0}. {S = 2√6} , {h = [[|4 + 2 + 5 − 5|#√6]] = √6} , {V = 12}.',
+  legend:[['q','מישור הבסיס','plane'],['s','הגובה B′H','line']],
+  build(g){const V=PAR69;solid(g,V,BOX_E);labelAll(g,V);
+    const n=[1,2,1],H=footPlane(V.B1,n,-5),u=sub(V.B,V.A),w=sub(V.D,V.A),Q=(a,b)=>add(V.A,add(mul(u,a),mul(w,b)));
+    g.tri([V.A,V.B,V.C,V.D],'q',.18);
+    if(g.objs&&g.show){g.tri([Q(.6,0),Q(1.7,0),Q(1.7,-.9),Q(.6,-.9)],'q',.07);}   // המשך מישור הבסיס סביב H (עקב האנך מחוץ לבסיס); g.objs – רק בציור, לא בחישוב המסגרת
+    g.seg(V.B1,H,'s',{sol:1,r:2});g.seg(V.B,H,'k',{sol:1,r:.5,dash:1});g.pt(H,'s','H',{sol:1,small:1});g.right(H,sub(V.B1,H),u,'s',{sol:1});}});
 
 add_({id:'t70',axes:1,part:'ד',ex:70,title:'מישור וחיתוכיו עם הצירים',box:[-.5,5,-.5,7,-.5,3],
   given:'המישור {3x + 2y + 6z − 12 = 0}.',
@@ -406,7 +409,7 @@ function pageFit(F){pageMap=F.map;PFIT=F.fit;const q=F.fit.map(p=>T(p));let x0=1
 function pageProj(){if(!pageBox)return;const B=pageBox;
   if(TM&&ROTQ)PFIT.forEach(p=>{const v=T(p);B.hx=Math.max(B.hx,Math.abs(v.x-B.cx));B.hy=Math.max(B.hy,Math.abs(v.y-B.cy));B.z0=Math.min(B.z0,v.z);B.z1=Math.max(B.z1,v.z);});
   const {x0,x1,y0,y1,z0,z1,cx,cy}=B,zf=DIST0/(camera.position.distanceTo(controls.target)||DIST0);
-  let hw=B.hx*1.1/zf,hh=B.hy*1.1/zf;const asp=camera.aspect||1;if(hw/hh>asp)hh=hw/asp;else hw=hh*asp;
+  let hw=B.hx*1.2/zf,hh=B.hy*1.2/zf;const asp=camera.aspect||1;if(hw/hh>asp)hh=hw/asp;else hw=hh*asp;
   const span=Math.max(z1-z0,x1-x0,y1-y0)||1,far=Math.max(z1,cx,cy)+span*4,near=Math.min(z0,-span)-span*4;
   const O=new THREE.Matrix4().makeOrthographic(cx-hw,cx+hw,cy+hh,cy-hh,0,far-near);
   pcam.projectionMatrix.copy(O).multiply(new THREE.Matrix4().makeTranslation(0,0,-far));pcam.projectionMatrixInverse.copy(pcam.projectionMatrix).invert();}
