@@ -137,7 +137,12 @@ const D=d=>N(d)+'°';
 // ROT = הסיבוב שהמשתמש עשה בגרירה, ולכן גם בסיבוב הגוף נשאר בהיטל של הדף (לא "נפחס").
 // כל אובייקט בסצנה נרשם ב-UPD ומחושב מחדש כשהסיבוב משתנה – עובי הקווים וגודל הנקודות נשארים אחידים.
 let TM=null,SCALEPTS=[],ROTQ=null,PIV=[0,0,0],UPD=[];
-const T0=p=>new THREE.Vector3(p[1],p[2],p[0]);
+// WR – סיבוב העולם לשקף שהבסיס שלו לא אופקי (שדה up: הנורמל של הבסיס יפנה למעלה במסך). הצירים בפינה (giz) מסתובבים איתו.
+let WR=null;
+function rotTo(n){const a=unit(n),z=[0,0,1],c=dot(a,z),v=cross(a,z),s2=dot(v,v);if(s2<1e-12)return c>0?null:[[1,0,0],[0,-1,0],[0,0,-1]];
+  const K=[[0,-v[2],v[1]],[v[2],0,-v[0]],[-v[1],v[0],0]],K2=[0,1,2].map(i=>[0,1,2].map(j=>K[i][0]*K[0][j]+K[i][1]*K[1][j]+K[i][2]*K[2][j])),f=(1-c)/s2;
+  return [0,1,2].map(i=>[0,1,2].map(j=>(i===j?1:0)+K[i][j]+K2[i][j]*f));}
+const T0=p=>{const q=WR?[dot(WR[0],p),dot(WR[1],p),dot(WR[2],p)]:p;return new THREE.Vector3(q[1],q[2],q[0]);};
 const _rv=new THREE.Vector3();
 function rotP(p){if(!ROTQ)return p;const c=mv(TM,PIV);_rv.set(p[1]-c[1],p[2]-c[2],p[0]-c[0]).applyQuaternion(ROTQ);return [_rv.z+c[0],_rv.x+c[1],_rv.y+c[2]];}
 // TM = מטריצה A (3×3, שורות): מעבירה את הגוף ל"גוף של הדף" (בגוף על הצירים – זהות); אחר כך סיבוב והיטל אלכסוני
@@ -232,7 +237,8 @@ add_({id:'kdpl',axes:1,part:'מ',ex:'מושג',title:'מרחק נקודה מיש
 const PAGE_PAR={A:[0,0],B:[2.2,0],D:[.75,.55],'A′':[.45,2],C:[2.95,.55],'B′':[2.65,2],'C′':[3.4,2.55],'D′':[1.2,2.55]};
 function lines2(g,A,u,B,v){g.line(A,u,'u');g.line(B,v,'v');g.pt(A,'u',P3(A),{small:1});g.pt(B,'v',P3(B),{small:1});g.vec(A,u,'u','');g.vec(B,v,'v','');}
 const PAR69=(()=>{const V={A:[1,2,0],B:[3,0,2],C:[4,0,1],D:[2,2,-1]};const h=[1,1,3];['A','B','C','D'].forEach(n=>V[n+'1']=add(V[n],h));return V;})();
-add_({id:'t69',page:PAGE_PAR,part:'ד',ex:'69, 106',title:'מקבילון: מישור הבסיס וגובה',box:[0,6,-2,4,-2,6],
+// בלי page: המבט 'כמו בדף' הוא העתקה אפינית (שומרת מקבילות, לא ניצבות) – בסיבוב האנך B′H היה נראה עקום. כאן חשובה הניצבות, לכן תלת-ממד אמיתי.
+add_({id:'t69',up:[1,2,1],view:[.603,.587,-.54],part:'ד',ex:'69, 106',title:'מקבילון: מישור הבסיס וגובה',box:[0,6,-2,4,-2,6],
   given:'{A(1, 2, 0) , C(4, 0, 1) , D(2, 2, −1) , B′(4, 1, 5)}.',
   text:['{B = A + C − D = (3, 0, 2)}.','הנורמל של מישור הבסיס ניצב ל-{~AB~ = (2, −2, 2)} ול-{~AD~ = (1, 0, −1)}.','בפתרון: הגובה הוא המרחק של {B′} ממישור הבסיס – האנך {B′H}. המקצוע {BB′ = (1, 1, 3)} אינו ניצב לבסיס (המקבילון משופע), לכן הגובה קצר ממנו.'],
   sol:'בסיס: {x + 2y + z − 5 = 0}. {S = 2√6} , {h = [[|4 + 2 + 5 − 5|#√6]] = √6} , {V = 12}.',
@@ -522,9 +528,10 @@ function frame(s){if(s._fr)return s._fr;const P=[],r=(...q)=>q.forEach(p=>P.push
   // מפת ההיטל "כמו בדף": מותאמת לשרטוט הסכמטי (page), או ההיטל האלכסוני לגוף שעל הצירים
   let map=null;if(s.page){const ks=Object.keys(s.page).filter(k=>NP[k]);const E=ks.slice(1,4).map(k=>sub(NP[k],NP[ks[0]]));map={A:niceA(fitMap(ks.map(k=>NP[k]),ks.map(k=>s.page[k])).L,E),fit:1};}else if(mode==='axes')map=OBL;
   return s._fr={bb,mode,view,fit,dir,map};}
-function basis(d){const n=unit(d),u=unit(cross([0,0,1],n)),w=cross(n,u);return [u,w];}
+function basis(d){const n=unit(d),up=WR?WR[2]:[0,0,1],u=unit(cross(up,n)),w=cross(n,u);return [u,w];}   // up – הכיוון שמופיע למעלה במסך (עם WR: ה-up של השקף)
 function build(keepCam){
   const s=SL[state.i];scene.remove(root);root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});
+  WR=s.up?rotTo(s.up):null;   // לפני fitCamera – המצלמה ממוקמת בעולם המסובב
   if(!keepCam){setPage(true);fitCamera(frame(s));}   // שקף חדש / איפוס: "כמו בדף" כשיש לשקף שרטוט בחוברת; המצלמה (לתלת-ממד) – במבט הרגיל של השקף
   {const F0=frame(s);TM=pageMode&&F0.map?F0.map.A:null;SCALEPTS=F0.fit;if(!keepCam&&TM)pageStart();if(!TM)ROTQ=null;}
   UPD=[];
