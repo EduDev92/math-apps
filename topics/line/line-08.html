@@ -226,15 +226,15 @@
           <div class="calc-inputs">
             <div class="calc-input-group">
               <label for="inputM">שיפוע m</label>
-              <input type="number" id="inputM" value="4" step="1">
+              <input type="text" inputmode="decimal" autocomplete="off" data-pad="nofrac" id="inputM" value="4" step="1">
             </div>
             <div class="calc-input-group">
               <label for="inputX1">x של הנקודה</label>
-              <input type="number" id="inputX1" value="2" step="1">
+              <input type="text" inputmode="decimal" autocomplete="off" data-pad="nofrac" id="inputX1" value="2" step="1">
             </div>
             <div class="calc-input-group">
               <label for="inputY1">y של הנקודה</label>
-              <input type="number" id="inputY1" value="-3" step="1">
+              <input type="text" inputmode="decimal" autocomplete="off" data-pad="nofrac" id="inputY1" value="-3" step="1">
             </div>
           </div>
           <div class="lab-layout">
@@ -778,5 +778,6 @@
     populateTeacherDatalist();
     updateNavButtons();
   </script>
+<script src="../../shared/js/mathpad.js"></script>
 </body>
 </html>

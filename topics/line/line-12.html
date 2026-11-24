@@ -249,18 +249,18 @@
               <span class="grp-label">ישר 1 (כחול)</span>
               <div class="calc-inline-row">
                 <span>y =</span>
-                <input type="number" id="line1M" value="1" step="1">
+                <input type="text" inputmode="decimal" autocomplete="off" data-pad="nofrac" id="line1M" value="1" step="1">
                 <span>x +</span>
-                <input type="number" id="line1B" value="2" step="1">
+                <input type="text" inputmode="decimal" autocomplete="off" data-pad="nofrac" id="line1B" value="2" step="1">
               </div>
             </div>
             <div class="calc-line-group line2">
               <span class="grp-label">ישר 2 (כתום)</span>
               <div class="calc-inline-row">
                 <span>y =</span>
-                <input type="number" id="line2M" value="-1" step="1">
+                <input type="text" inputmode="decimal" autocomplete="off" data-pad="nofrac" id="line2M" value="-1" step="1">
                 <span>x +</span>
-                <input type="number" id="line2B" value="6" step="1">
+                <input type="text" inputmode="decimal" autocomplete="off" data-pad="nofrac" id="line2B" value="6" step="1">
               </div>
             </div>
           </div>
@@ -913,5 +913,6 @@
     populateTeacherDatalist();
     updateNavButtons();
   </script>
+<script src="../../shared/js/mathpad.js"></script>
 </body>
 </html>
