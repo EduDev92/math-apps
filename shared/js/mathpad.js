@@ -14,18 +14,18 @@
   const SEL='.inrow input, input.sb, .ansrow input, input[data-pad]';
   const TOUCH=window.matchMedia&&matchMedia('(pointer: coarse)').matches;
   const css=`
-#mpad{position:fixed;left:0;right:0;bottom:0;z-index:9500;direction:ltr;background:linear-gradient(180deg,#34363c,#1b1c20 40%,#141518);border-radius:18px 18px 0 0;padding:6px 10px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.4);transform:translateY(105%);transition:transform .18s ease;user-select:none;-webkit-user-select:none;touch-action:manipulation}
+#mpad{position:fixed;left:0;right:0;bottom:0;z-index:9500;direction:ltr;background:linear-gradient(180deg,#34363c,#1b1c20 40%,#141518);border-radius:18px 18px 0 0;padding:4px 10px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.4);transform:translateY(105%);transition:transform .18s ease;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 #mpad.on{transform:none}
-#mpad .top{display:flex;justify-content:space-between;align-items:center;max-width:470px;margin:0 auto 2px;color:#9a9ca3;font:700 .78rem system-ui,Arial,sans-serif;direction:rtl}
-#mpad .top .hide{background:none;border:0;color:#cfd1d6;font:700 .82rem system-ui,Arial,sans-serif;padding:4px 6px;cursor:pointer}
+#mpad .top{display:flex;justify-content:space-between;align-items:center;max-width:470px;margin:0 auto 0;color:#9a9ca3;font:700 .78rem system-ui,Arial,sans-serif;direction:rtl}
+#mpad .top .hide{background:none;border:0;color:#cfd1d6;font:700 .82rem system-ui,Arial,sans-serif;padding:2px 6px;cursor:pointer}
 #mpad .g{display:grid;grid-template-columns:repeat(5,1fr);gap:2px 9px;max-width:470px;margin:0 auto}
 #mpad .c{display:flex;flex-direction:column;align-items:stretch}
-#mpad .cap{height:15px;font:700 .64rem/15px system-ui,Arial,sans-serif;color:#d8c26a;text-align:center;direction:rtl;white-space:nowrap;overflow:hidden}
-#mpad .k{height:46px;border:0;border-radius:9px;font:600 1.5rem/1 system-ui,'Segoe UI',Arial,sans-serif;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;padding:0}
+#mpad .cap{height:12px;font:700 .6rem/12px system-ui,Arial,sans-serif;color:#d8c26a;text-align:center;direction:rtl;white-space:nowrap;overflow:hidden}
+#mpad .k{height:38px;border:0;border-radius:9px;font:600 1.5rem/1 system-ui,'Segoe UI',Arial,sans-serif;color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;padding:0}
 #mpad .k:active{transform:translateY(2px)}
 #mpad .num{background:linear-gradient(180deg,#a9acb3,#80838b);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #45474d;text-shadow:0 1px 1px rgba(0,0,0,.35)}
 #mpad .num:active{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 1px 0 #45474d}
-#mpad .fn{height:40px;margin-top:3px;background:linear-gradient(180deg,#2c2d32,#0f1012);border:1px solid #3d3f45;box-shadow:0 3px 0 #000;font-size:1.05rem;font-weight:700}
+#mpad .fn{height:32px;margin-top:2px;background:linear-gradient(180deg,#2c2d32,#0f1012);border:1px solid #3d3f45;box-shadow:0 3px 0 #000;font-size:1.05rem;font-weight:700}
 #mpad .fn:active{box-shadow:0 1px 0 #000}
 #mpad .grn{background:linear-gradient(180deg,#b5e655,#86c722);box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 0 #4f7a12;font-size:1.25rem;font-weight:700;text-shadow:0 1px 1px rgba(0,0,0,.25)}
 #mpad .arw{background:radial-gradient(circle at 50% 35%,#e3e5e9,#a7aab1);box-shadow:0 3px 0 #55575d;color:#3a3c42;font-size:1.05rem;border-radius:12px}
@@ -92,7 +92,12 @@ input.mpf-on+.mpfo{display:flex}
     pad.classList.toggle('nofrac',i.dataset.pad==='nofrac');   /* שדות שקוראים רק מספר עשרוני (למשל מעבדה ב-edumath) – בלי מקש שבר */
     pad.classList.add('on'); document.body.classList.add('mpad-on');
     document.body.style.setProperty('--mpadH',(pad.offsetHeight+16)+'px');
-    setTimeout(()=>{ const r=i.getBoundingClientRect(), top=window.innerHeight-pad.offsetHeight; if(r.bottom>top-12||r.top<60) i.scrollIntoView({block:'center',behavior:'smooth'}); },60);
+    /* גלילה: אם כל כרטיס השאלה (גרף, נתונים, שדה) נכנס מעל המקלדת – מראים אותו כולו מלמעלה.
+       אחרת – השדה צמוד מעל המקלדת, וכמה שיותר מהשאלה מעליו. כך לא צריך לגלול למעלה ולמטה. */
+    setTimeout(()=>{ const TOP=64, bottom=window.innerHeight-pad.offsetHeight-10, r0=i.getBoundingClientRect(), row=i.closest('.srow,.inrow,.ansrow'), rr=row&&row.getBoundingClientRect(), r=rr&&rr.height<window.innerHeight/3?rr:r0;
+      const ctx=i.closest('.card,.lesson-card,section')||i, c=ctx.getBoundingClientRect();
+      let dy=0; if(c.height<=bottom-TOP&&c.top<=r0.top) dy=c.top-TOP; else if(r.bottom>bottom||r.top<TOP) dy=r.bottom-bottom;
+      if(Math.abs(dy)>4) window.scrollBy({top:dy,behavior:'smooth'}); },60);
   }
   function hide(){ if(!pad) return; pad.classList.remove('on'); document.body.classList.remove('mpad-on'); if(cur) cur.classList.remove('mpad-cur'); }
   /* במגע: בלי מקלדת המכשיר. מסמנים כל שדה תשובה חדש */
